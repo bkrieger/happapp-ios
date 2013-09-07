@@ -18,6 +18,10 @@
 		C58F0F9E17DAA84B006D481E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0F9D17DAA84B006D481E /* Default-568h@2x.png */; };
 		C58F0FA117DAA84B006D481E /* HappViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FA017DAA84B006D481E /* HappViewController.m */; };
 		C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C58F0FA217DAA84B006D481E /* HappViewController.xib */; };
+		C58F0FAC17DAABBF006D481E /* HappModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FAB17DAABBF006D481E /* HappModel.m */; };
+		C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FAE17DAC122006D481E /* HappBoardVC.m */; };
+		C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FB217DAD3C5006D481E /* HappABModel.m */; };
+		C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0FB417DADE9B006D481E /* AddressBook.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +41,14 @@
 		C58F0F9F17DAA84B006D481E /* HappViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappViewController.h; sourceTree = "<group>"; };
 		C58F0FA017DAA84B006D481E /* HappViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HappViewController.m; sourceTree = "<group>"; };
 		C58F0FA317DAA84B006D481E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/HappViewController.xib; sourceTree = "<group>"; };
+		C58F0FAA17DAABBF006D481E /* HappModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappModel.h; sourceTree = "<group>"; };
+		C58F0FAB17DAABBF006D481E /* HappModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappModel.m; sourceTree = "<group>"; };
+		C58F0FAD17DAC122006D481E /* HappBoardVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappBoardVC.h; sourceTree = "<group>"; };
+		C58F0FAE17DAC122006D481E /* HappBoardVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappBoardVC.m; sourceTree = "<group>"; };
+		C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappModelDelegate.h; sourceTree = "<group>"; };
+		C58F0FB117DAD3C5006D481E /* HappABModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappABModel.h; sourceTree = "<group>"; };
+		C58F0FB217DAD3C5006D481E /* HappABModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappABModel.m; sourceTree = "<group>"; };
+		C58F0FB417DADE9B006D481E /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */,
 				C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */,
 				C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */,
 				C58F0F8C17DAA84A006D481E /* CoreGraphics.framework in Frameworks */,
@@ -56,6 +69,7 @@
 		C58F0F7B17DAA84A006D481E = {
 			isa = PBXGroup;
 			children = (
+				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
 				C58F0F8517DAA84A006D481E /* Products */,
@@ -87,6 +101,13 @@
 				C58F0F9717DAA84A006D481E /* HappAppDelegate.m */,
 				C58F0F9F17DAA84B006D481E /* HappViewController.h */,
 				C58F0FA017DAA84B006D481E /* HappViewController.m */,
+				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
+				C58F0FAE17DAC122006D481E /* HappBoardVC.m */,
+				C58F0FB117DAD3C5006D481E /* HappABModel.h */,
+				C58F0FB217DAD3C5006D481E /* HappABModel.m */,
+				C58F0FAA17DAABBF006D481E /* HappModel.h */,
+				C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */,
+				C58F0FAB17DAABBF006D481E /* HappModel.m */,
 				C58F0FA217DAA84B006D481E /* HappViewController.xib */,
 				C58F0F8E17DAA84A006D481E /* Supporting Files */,
 			);
@@ -177,6 +198,9 @@
 				C58F0F9417DAA84A006D481E /* main.m in Sources */,
 				C58F0F9817DAA84A006D481E /* HappAppDelegate.m in Sources */,
 				C58F0FA117DAA84B006D481E /* HappViewController.m in Sources */,
+				C58F0FAC17DAABBF006D481E /* HappModel.m in Sources */,
+				C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */,
+				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

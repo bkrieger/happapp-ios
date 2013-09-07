@@ -7,8 +7,11 @@
 //
 
 #import "HappViewController.h"
+#import "HappBoardVC.h"
 
 @interface HappViewController ()
+
+@property HappBoardVC *happBoard;
 
 @end
 
@@ -18,6 +21,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStylePlain];
+    [self.happBoard setUp];
+    [self pushViewController:self.happBoard animated:NO];
 }
 
 - (void)didReceiveMemoryWarning
