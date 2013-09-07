@@ -7,17 +7,32 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HappModelEnums.h"
+#import "HappComposeVCDelegate.h"
+#import "HappComposeVCDataSource.h"
 
 @protocol HappModelDelegate;
 
-@interface HappModel : NSObject<NSURLConnectionDataDelegate>
+@interface HappModel : NSObject<NSURLConnectionDataDelegate,
+                                HappComposeVCDelegate,
+                                HappComposeVCDataSource>
 
-- (id)initWithUrl:(NSString *)url
-         delegate:(NSObject<HappModelDelegate> *)delegate;
-
+- (id)initWithGetUrl:(NSString *)getUrl
+             postUrl:(NSString *)postUrl
+            delegate:(NSObject<HappModelDelegate> *)delegate;
+    
 - (void)refresh;
+
 
 - (NSInteger)getMoodPersonCount;
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index;
+
+@end
+
+@interface HappModelMoodObject : NSObject
+
+- (id)initWithTitle:(NSString *)title;
+
+- (NSString *)title;
 
 @end

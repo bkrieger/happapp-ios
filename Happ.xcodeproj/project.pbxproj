@@ -22,6 +22,8 @@
 		C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FAE17DAC122006D481E /* HappBoardVC.m */; };
 		C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FB217DAD3C5006D481E /* HappABModel.m */; };
 		C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0FB417DADE9B006D481E /* AddressBook.framework */; };
+		C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FB717DB6F78006D481E /* HappComposeVC.m */; };
+		C58F0FBA17DB7FB9006D481E /* happ_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0FB917DB7FB9006D481E /* happ_2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,12 @@
 		C58F0FB117DAD3C5006D481E /* HappABModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappABModel.h; sourceTree = "<group>"; };
 		C58F0FB217DAD3C5006D481E /* HappABModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappABModel.m; sourceTree = "<group>"; };
 		C58F0FB417DADE9B006D481E /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		C58F0FB617DB6F78006D481E /* HappComposeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappComposeVC.h; sourceTree = "<group>"; };
+		C58F0FB717DB6F78006D481E /* HappComposeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappComposeVC.m; sourceTree = "<group>"; };
+		C58F0FB917DB7FB9006D481E /* happ_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happ_2x.png; sourceTree = "<group>"; };
+		C58F0FBB17DB90B1006D481E /* HappComposeVCDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappComposeVCDelegate.h; sourceTree = "<group>"; };
+		C58F0FBC17DB90C0006D481E /* HappComposeVCDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappComposeVCDataSource.h; sourceTree = "<group>"; };
+		C58F0FBD17DB912C006D481E /* HappModelEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappModelEnums.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +77,7 @@
 		C58F0F7B17DAA84A006D481E = {
 			isa = PBXGroup;
 			children = (
+				C58F0FB917DB7FB9006D481E /* happ_2x.png */,
 				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
@@ -102,12 +111,17 @@
 				C58F0F9F17DAA84B006D481E /* HappViewController.h */,
 				C58F0FA017DAA84B006D481E /* HappViewController.m */,
 				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
+				C58F0FB617DB6F78006D481E /* HappComposeVC.h */,
+				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
 				C58F0FAE17DAC122006D481E /* HappBoardVC.m */,
 				C58F0FB117DAD3C5006D481E /* HappABModel.h */,
 				C58F0FB217DAD3C5006D481E /* HappABModel.m */,
+				C58F0FBB17DB90B1006D481E /* HappComposeVCDelegate.h */,
+				C58F0FBC17DB90C0006D481E /* HappComposeVCDataSource.h */,
 				C58F0FAA17DAABBF006D481E /* HappModel.h */,
-				C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */,
 				C58F0FAB17DAABBF006D481E /* HappModel.m */,
+				C58F0FBD17DB912C006D481E /* HappModelEnums.h */,
+				C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */,
 				C58F0FA217DAA84B006D481E /* HappViewController.xib */,
 				C58F0F8E17DAA84A006D481E /* Supporting Files */,
 			);
@@ -185,6 +199,7 @@
 				C58F0F9C17DAA84A006D481E /* Default@2x.png in Resources */,
 				C58F0F9E17DAA84B006D481E /* Default-568h@2x.png in Resources */,
 				C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */,
+				C58F0FBA17DB7FB9006D481E /* happ_2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,6 +216,7 @@
 				C58F0FAC17DAABBF006D481E /* HappModel.m in Sources */,
 				C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */,
 				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
+				C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

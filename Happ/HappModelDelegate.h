@@ -12,4 +12,6 @@
 
 - (void)modelIsReady;
 
+- (void)modelDidPost;
+
 @end
