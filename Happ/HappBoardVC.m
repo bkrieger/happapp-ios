@@ -68,14 +68,21 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.model getMoodPersonCount];
+   return [self.model getMoodPersonCount];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    // Configure the cell...
+    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    UIView *moodPersonView = [[UIView alloc] initWithFrame:cell.bounds];
+    NSDictionary *moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
+    
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:cell.bounds];
+    NSString *number = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+    NSString *message = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];
+    nameLabel.text = [[self.addressBook getNameForPhoneNumber:number] stringByAppendingString:message];
+    [moodPersonView addSubview:nameLabel];
+    [cell.contentView addSubview:moodPersonView];
     
     return cell;
 }

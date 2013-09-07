@@ -23,7 +23,9 @@
 }
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber {
-    return [self.phoneNumberNameMap objectForKey:phoneNumber];
+    NSLog(@"query: [%@],\n map: %@\n\n", phoneNumber, self.phoneNumberNameMap);
+    NSLog(@"%@", [NSString stringWithString:phoneNumber]);
+    return [self.phoneNumberNameMap objectForKey:[NSString stringWithString:phoneNumber]];
 }
 
 - (NSDictionary *)phoneNumberNameMap {
@@ -46,7 +48,7 @@
             
             for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
                 NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-                [map setObject:personName forKey:phoneNumber];
+                [map setObject:personName forKey:[phoneNumber stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [phoneNumber length])]];
             }
         }
         _phoneNumberNameMap = map;

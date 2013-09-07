@@ -11,8 +11,8 @@
 
 @interface HappModel()
 
-@property NSURLConnection *serverConnection;
-@property NSArray *moodPersons;
+@property NSString *url;
+@property (nonatomic, strong) NSMutableArray *moodPersons;
 @property NSMutableData *temporaryData;
 @property (nonatomic, weak) NSObject<HappModelDelegate> *delegate;
 
@@ -24,16 +24,20 @@
          delegate:(NSObject<HappModelDelegate> *)delegate {
     self = [super init];
     if (self) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-        _serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        _url = url;
+        _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
      }
     return self;
 }
 
 - (void)refresh {
+    [self.moodPersons removeAllObjects];
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [self.serverConnection start];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
+    NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [serverConnection start];
 }
 
 - (NSInteger)getMoodPersonCount {
@@ -41,7 +45,7 @@
 }
 
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index {
-    return self.moodPersons[index];
+    return (index < [self.moodPersons count]) ? [self.moodPersons objectAtIndex:index] : nil;
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -70,7 +74,8 @@
                                                             options:NSJSONReadingMutableContainers
                                                               error:nil];
     
-    [self.moodPersons arrayByAddingObjectsFromArray:[results objectForKey:@"data"]];
+    [self.moodPersons addObjectsFromArray:[results objectForKey:@"data"]];
+    
     [self.delegate modelIsReady];
 }
 
