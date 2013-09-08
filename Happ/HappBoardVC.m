@@ -1,7 +1,7 @@
 //
 //  HappBoardVCViewController.m
 //  Happ
-//
+// @"http://158.130.107.180:3000/api/moods?"
 //  Created by Brandon Krieger on 9/6/13.
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
@@ -12,9 +12,9 @@
 #import "HappModel.h"
 #import "HappABModel.h"
 
-#define HAPP_URL_PREFIX @"http://158.130.107.180:3000/api/moods?"
+#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/moods?"
 #define HAPP_URL_SEPARATOR @"&n[]="
-#define HAPP_URL_GET_PREFIX @"http://158.130.107.180:3000/api/moods?n[]="
+#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?n[]="
 
 
 @interface HappBoardVC ()
@@ -125,29 +125,53 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] init];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     CGRect cellRect = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height * 2);
     cell.frame = cellRect;
 
-    cell.backgroundColor = [UIColor clearColor];
     cell.backgroundView.hidden = YES;
-    NSDictionary *moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
     
-    UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
-    UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
-    personView.backgroundColor = HAPP_PURPLE_COLOR;
-    personView.frame = CGRectMake(10, 8, 60, 60);
-    personView.layer.cornerRadius = personView.frame.size.width / 2;
-    personView.layer.masksToBounds = YES;
-  
-    [cell.contentView addSubview:personView];
+    NSDictionary *moodPerson;
+    CGFloat nameLabelX;
+    CGRect nameLabelRect;
+    NSString *name;
+    
+    if ([indexPath row] == 0) {
+        cell.backgroundColor = [UIColor whiteColor];
+        moodPerson = [self.model getMoodPersonForMe];
+        
+        nameLabelX = 12;
+        nameLabelRect = CGRectMake(nameLabelX,
+                                   7,
+                                   210,
+                                   cellRect.size.height / 3);
+        name = @"Me";
+        cell.frame = CGRectMake(cellRect.origin.x, cellRect.origin.y, cellRect.size.width, cellRect.size.height / 3);
+    } else {
+        moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
+        cell.backgroundColor = [UIColor clearColor];
+        
+        UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
+        UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
+        personView.backgroundColor = HAPP_PURPLE_COLOR;
+        personView.frame = CGRectMake(10, 8, 60, 60);
+        personView.layer.cornerRadius = personView.frame.size.width / 2;
+        personView.layer.masksToBounds = YES;
+      
+        [cell.contentView addSubview:personView];
+        
+        nameLabelX = personView.frame.origin.x + personView.frame.size.width + 15;
+        nameLabelRect = CGRectMake(nameLabelX,
+                                          personView.frame.origin.y - 7,
+                                          150,
+                                          cellRect.size.height / 3);
+
+        NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+        name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
+    }
     
     // Name...
 //    CGRect nameRect = CGrectMake
-    CGFloat nameLabelX = personView.frame.origin.x + personView.frame.size.width + 15;
-    CGRect nameLabelRect = CGRectMake(nameLabelX,
-                                      personView.frame.origin.y - 7,
-                                      150,
-                                      cellRect.size.height / 3);
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:nameLabelRect];
     nameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
     nameLabel.numberOfLines = 0;
@@ -155,9 +179,7 @@
     nameLabel.backgroundColor = [UIColor clearColor];
     nameLabel.shadowOffset = CGSizeZero;
     nameLabel.shadowColor = [UIColor clearColor];
-    NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
-    nameLabel.text = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
-    
+    nameLabel.text = name;
     // Message...
     CGRect messageLabelRect = CGRectMake(nameLabelX,
                                       nameLabelRect.origin.y + nameLabelRect.size.height - 3,
@@ -180,8 +202,8 @@
     UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
     moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
                                 nameLabelRect.origin.y + 7,
-                                (personView.frame.size.width / 5) * 4,
-                                (personView.frame.size.height / 5) * 4);
+                                (60 / 5) * 4,
+                                (60 / 5) * 4);
     [cell.contentView addSubview:moodIcon];
     [cell.contentView addSubview:nameLabel];
     [cell.contentView addSubview:messageLabel];

@@ -26,8 +26,7 @@
                duration:(HappModelDuration)duration;
 - (NSInteger)getMoodPersonCount;
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index;
-
-
+- (NSDictionary *)getMoodPersonForMe;
 
 @end
 

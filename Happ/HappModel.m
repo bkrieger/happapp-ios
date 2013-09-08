@@ -10,6 +10,7 @@
 #import "HappModelDelegate.h"
 
 @interface HappModel()
+@property NSString *myPhoneNumber;
 
 @property NSString *getUrl;
 @property NSString *postUrl;
@@ -30,6 +31,7 @@
         _postUrl = postUrl;
         _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
+        _myPhoneNumber = @"6467852201";
      }
     return self;
 }
@@ -48,7 +50,26 @@
 }
 
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index {
-    return (index < [self.moodPersons count]) ? [self.moodPersons objectAtIndex:index] : nil;
+    if ((index >= [self.moodPersons count])) {
+        return nil;
+    }
+    
+    NSDictionary *moodPerson = [self.moodPersons objectAtIndex:index];
+    if ([[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]] isEqualToString:self.myPhoneNumber]) {
+        moodPerson = nil;
+    }
+    return moodPerson;
+}
+
+- (NSDictionary *)getMoodPersonForMe {
+    for (NSDictionary *moodPerson in self.moodPersons) {
+        if ([NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]]) {
+            if ([[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]] isEqualToString:self.myPhoneNumber]) {
+                return moodPerson;
+            }
+        }
+    }
+    return nil;
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -89,7 +110,7 @@
         
         [self.moodPersons addObjectsFromArray:[results objectForKey:@"data"]];
         
-        
+        NSLog(@"%@",            results);
         [self.delegate modelIsReady];
     }
 }
@@ -100,11 +121,10 @@
                    mood:(HappModelMood)mood
                duration:(HappModelDuration)duration {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"SBFormattedPhoneNumber"];
     
     NSString *postString = [NSString
         stringWithFormat:@"id=%@&msg=%@&tag=%@&duration=%@",
-                         @"6467852201",
+                         self.myPhoneNumber,
                          [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
                          [self getMoodPostDataFor:mood],
                          [self getDurationPostDataFor:duration]];
