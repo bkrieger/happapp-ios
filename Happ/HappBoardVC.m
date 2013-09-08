@@ -67,7 +67,15 @@
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
+    UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
+    self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
+    [self.navigationItem.titleView addSubview:titleImageView];
+    titleImageView.frame = CGRectMake(25,
+                                                     27,
+                                                     titleImage.size.width / 2,
+                                                     titleImage.size.height / 2);
+    
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -104,6 +112,19 @@
     [self.model refresh];
 }
 
+- (UIColor *)generateColor:(NSInteger)phoneNumber {
+    NSArray *colors = @[[UIColor colorWithRed:4/255.0f green:4/255.0f blue:170/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:4/255.0f green:167/255.0f blue:170/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:4/255.0f green:170/255.0f blue:43/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:170/255.0f green:40/255.0f blue:4/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:222/255.0f green:209/255.0f blue:31/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:31/255.0f green:196/255.0f blue:222/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:125/255.0f green:125/255.0f blue:125/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:250/255.0f green:117/255.0f blue:0/255.0f alpha:1.0f]];
+    NSInteger index = phoneNumber % [colors count];
+    return [colors objectAtIndex:index];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -129,6 +150,7 @@
     CGRect cellRect = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height * 2);
     cell.frame = cellRect;
 
+    cell.backgroundColor = [UIColor clearColor];
     cell.backgroundView.hidden = YES;
     
     NSDictionary *moodPerson;
@@ -137,7 +159,11 @@
     NSString *name;
     
     if ([indexPath row] == 0) {
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.frame = CGRectMake(cellRect.origin.x, cellRect.origin.y, cellRect.size.width - 20, cellRect.size.height - 10);
+        UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
+        backgroundView.backgroundColor = [UIColor whiteColor];
+        backgroundView.layer.cornerRadius = 10;
+        [cell.contentView addSubview:backgroundView];
         moodPerson = [self.model getMoodPersonForMe];
         
         nameLabelX = 12;
@@ -146,14 +172,11 @@
                                    210,
                                    cellRect.size.height / 3);
         name = @"Me";
-        cell.frame = CGRectMake(cellRect.origin.x, cellRect.origin.y, cellRect.size.width, cellRect.size.height / 3);
     } else {
         moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
-        cell.backgroundColor = [UIColor clearColor];
         
         UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
         UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
-        personView.backgroundColor = HAPP_PURPLE_COLOR;
         personView.frame = CGRectMake(10, 8, 60, 60);
         personView.layer.cornerRadius = personView.frame.size.width / 2;
         personView.layer.masksToBounds = YES;
@@ -167,6 +190,7 @@
                                           cellRect.size.height / 3);
 
         NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+        personView.backgroundColor = [self generateColor:[phoneNumber integerValue]];
         name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     }
     
@@ -204,9 +228,23 @@
                                 nameLabelRect.origin.y + 7,
                                 (60 / 5) * 4,
                                 (60 / 5) * 4);
-    [cell.contentView addSubview:moodIcon];
-    [cell.contentView addSubview:nameLabel];
-    [cell.contentView addSubview:messageLabel];
+    
+    if ([moodPerson objectForKey:@"message"] != nil) {
+        [cell.contentView addSubview:moodIcon];
+        [cell.contentView addSubview:nameLabel];
+        [cell.contentView addSubview:messageLabel];
+    } else {
+        UILabel *happening = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.bounds.size.width, cell.contentView.bounds.size.height)];
+        happening.textAlignment = NSTextAlignmentCenter;
+        happening.backgroundColor = [UIColor clearColor];
+        happening.text = @"What's Happening?";
+        happening.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:23];
+        happening.textColor = HAPP_PURPLE_COLOR;
+        UIButton *happeningButton = [[UIButton alloc] initWithFrame:happening.frame];
+        [happeningButton addTarget:self action:@selector(launchComposeView:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:happening];
+        [cell.contentView addSubview:happeningButton];
+    }
     
     return cell;
 }
@@ -273,13 +311,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    NSString *phoneNumber = [NSString stringWithFormat:@"sms:%@", [[self.model getMoodPersonForIndex:indexPath.row] objectForKey:@"_id"]];
+    NSURL *url = [NSURL URLWithString:phoneNumber];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 #pragma mark - HappModelDelegate methods

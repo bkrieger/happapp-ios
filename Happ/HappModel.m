@@ -1,7 +1,7 @@
 //
 //  HappModel.m
 //  Happ
-//
+// 9176785919
 //  Created by Brandon Krieger on 9/6/13.
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
@@ -50,12 +50,13 @@
 }
 
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index {
-    if ((index >= [self.moodPersons count])) {
+    if (index >= [self.moodPersons count]) {
         return nil;
     }
     
     NSDictionary *moodPerson = [self.moodPersons objectAtIndex:index];
     if ([[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]] isEqualToString:self.myPhoneNumber]) {
+        [self.moodPersons removeObject:moodPerson];
         moodPerson = nil;
     }
     return moodPerson;
