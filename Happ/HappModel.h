@@ -35,9 +35,14 @@
 @interface HappModelMoodObject : NSObject
 
 @property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, readonly) UIImage *imageInverse;
 @property HappModelMood mood;
 
-- (id)initWithTitle:(NSString *)title mood:(HappModelMood)mood;
+- (id)initWithTitle:(NSString *)title
+               mood:(HappModelMood)mood
+              image:(UIImage *)image
+       imageInverse:(UIImage *)imageInverse;
 
 @end
 

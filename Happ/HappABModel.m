@@ -17,6 +17,9 @@
 
 - (NSString *)getUrlFromContacts:(NSString *)prefix
                        separator:(NSString *)separator {
+    if (ABAddressBookGetAuthorizationStatus() != kABAuthorizationStatusAuthorized) {
+        self.phoneNumberNameMap = nil;
+    }
     NSArray *allPhoneNumbers = [self.phoneNumberNameMap allKeys];
 
     return [prefix stringByAppendingString:[allPhoneNumbers componentsJoinedByString:separator]];
@@ -31,10 +34,23 @@
     if (!_phoneNumberNameMap) {
         NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
         
-        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, nil);
-        CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        __block BOOL doesHaveAccess;
         
-        for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook); i++ )
+        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
+            ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+                doesHaveAccess = granted;
+            });
+        } else if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied) {
+            ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+                doesHaveAccess = granted;
+            });
+        } else {
+            doesHaveAccess = ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized;
+        }
+        CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
+                
+        for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook) && doesHaveAccess; i++ )
         {
             ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
             NSString *firstName =

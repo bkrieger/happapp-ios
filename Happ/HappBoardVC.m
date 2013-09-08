@@ -38,6 +38,7 @@
 
 - (void)setUp {
     self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"witewall_3_@2x.png"]];
+    self.tableView.backgroundColor = HAPP_WHITE_COLOR;
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -45,7 +46,7 @@
     CGRect vertivalLineRect = CGRectMake(50, 0, 4,
                                          self.tableView.backgroundView.bounds.size.height);
     UIView *verticalLine = [[UIView alloc] initWithFrame:vertivalLineRect];
-    verticalLine.backgroundColor = HAPP_DIVIDER_COLOR;
+    verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
     verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.tableView.backgroundView addSubview:verticalLine];
     
@@ -68,11 +69,22 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithTitle:@"Compose"
-                                                                      style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(launchComposeView:)];
-    [[self navigationItem] setRightBarButtonItem:composeButton];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    refreshControl.tintColor = HAPP_PURPLE_COLOR;
+    self.refreshControl = refreshControl;
+    
+    UIImage *composeInnerImage = [UIImage imageNamed:@"compose_ios.png"];
+    UIButton *composeInnerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [composeInnerButton setBackgroundImage:composeInnerImage forState:UIControlStateNormal];
+    composeInnerButton.frame = CGRectMake(0, 0, composeInnerImage.size.width / 2, composeInnerImage.size.height /2);
+    [composeInnerButton addTarget:self action:@selector(launchComposeView:) forControlEvents:UIControlEventTouchUpInside];
+    composeInnerButton.contentEdgeInsets = UIEdgeInsetsMake(0, -40, 0, 40);
+
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]; spacer.width = 5;
+
+    UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
+    [[self navigationItem] setRightBarButtonItems:@[spacer, composeButton ]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,6 +98,10 @@
 {
     [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
     
+}
+
+- (void)refresh {
+    [self.model refresh];
 }
 
 #pragma mark - Table view data source
@@ -103,7 +119,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
+    return 90;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -116,41 +132,57 @@
     cell.backgroundView.hidden = YES;
     NSDictionary *moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
     
-    UIImage *personImage = [UIImage imageNamed:@"happ_2x.png"];
+    UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
+    personView.backgroundColor = HAPP_PURPLE_COLOR;
     personView.frame = CGRectMake(10, 8, 60, 60);
     personView.layer.cornerRadius = personView.frame.size.width / 2;
     personView.layer.masksToBounds = YES;
   
     [cell.contentView addSubview:personView];
     
+    // Name...
 //    CGRect nameRect = CGrectMake
     CGFloat nameLabelX = personView.frame.origin.x + personView.frame.size.width + 15;
     CGRect nameLabelRect = CGRectMake(nameLabelX,
-                                      personView.frame.origin.y,
-                                      cellRect.size.width - nameLabelX,
+                                      personView.frame.origin.y - 7,
+                                      150,
                                       cellRect.size.height / 3);
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:nameLabelRect];
     nameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    nameLabel.numberOfLines = 0;
     nameLabel.textColor = HAPP_PURPLE_COLOR;
     nameLabel.backgroundColor = [UIColor clearColor];
+    nameLabel.shadowOffset = CGSizeZero;
     nameLabel.shadowColor = [UIColor clearColor];
     NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
-    NSString *message = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];
     nameLabel.text = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     
+    // Message...
     CGRect messageLabelRect = CGRectMake(nameLabelX,
-                                      personView.frame.origin.y + nameLabelRect.size.height + 2,
+                                      nameLabelRect.origin.y + nameLabelRect.size.height - 3,
                                       cellRect.size.width - nameLabelX - 80,
-                                      (cellRect.size.height / 3) * 2);
+                                      nameLabelRect.size.height * 1.2);
     UILabel *messageLabel = [[UILabel alloc] initWithFrame:messageLabelRect];
+    messageLabel.text = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];;
     messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+    messageLabel.numberOfLines = 0;
+    [messageLabel sizeToFit];
     messageLabel.textColor = HAPP_BLACK_COLOR;
     messageLabel.backgroundColor = [UIColor clearColor];
     messageLabel.shadowColor = [UIColor clearColor];
+    messageLabel.shadowOffset = CGSizeZero;
     messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    messageLabel.numberOfLines = 2;
-    messageLabel.text = message;
+    
+    // Mood Icon...
+    HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
+    HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
+    UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
+    moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
+                                nameLabelRect.origin.y + 7,
+                                (personView.frame.size.width / 5) * 4,
+                                (personView.frame.size.height / 5) * 4);
+    [cell.contentView addSubview:moodIcon];
     [cell.contentView addSubview:nameLabel];
     [cell.contentView addSubview:messageLabel];
     
@@ -211,6 +243,8 @@
     
     [self.happCompose dispose];
     self.happCompose = nil;
+    [self.refreshControl beginRefreshing];
+    [self refresh];
 }
 
 #pragma mark - Table view delegate
@@ -230,6 +264,7 @@
 
 - (void)modelIsReady {
     [self.tableView reloadData];
+    [self.refreshControl endRefreshing];
 }
 
 - (void)modelDidPost {

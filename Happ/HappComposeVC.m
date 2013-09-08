@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UIView *accerssoryView;
 @property (nonatomic, strong) UIButton *moodSelector;
 @property (nonatomic, strong) UILabel *moodSelectorValue;
+@property (nonatomic, strong) UIImageView *moodSelectorImageView;
 
 @property (nonatomic, strong) UIButton *durationSelector;
 @property (nonatomic, strong) UIView *durationSelectorVerticalDivider;
@@ -99,6 +100,7 @@
                 style:UIBarButtonItemStylePlain
                target:self
                action:@selector(sendButtonWasPressed)];
+    [sendButton setTintColor:[UIColor colorWithRed:34.0/255.0 green:97.0/255.0 blue:221.0/255.0 alpha:1]];
     [[self.composeVC navigationItem] setRightBarButtonItem:sendButton];
     
     self.catcher = [[UIButton alloc] initWithFrame:self.composeVC.view.bounds];
@@ -121,6 +123,8 @@
     
     self.durationSelectorValue.text = [self.dataSource getDurationFor:HappModelDurationDefault].title;
     self.moodSelectorValue.text = [self.dataSource getMoodFor:HappModelMoodDefault].title;
+    self.moodSelectorImageView.image = [self.dataSource getMoodFor:HappModelMoodDefault].image;
+    
     
     self.textView.inputAccessoryView = self.accerssoryView;
     [self.composeVC.view addSubview:self.catcher];
@@ -187,6 +191,7 @@
     self.durationSelectorValue.textColor = HAPP_BLACK_COLOR;
     self.durationSelectorVerticalDivider.backgroundColor = HAPP_DIVIDER_COLOR;
     self.moodSelectorValue.textColor = HAPP_BLACK_COLOR;
+    self.moodSelectorImageView.image = [self.dataSource getMoodFor:self.mood].image;
 }
 
 - (void)setSelectorSelected:(UIButton *)selector {
@@ -196,6 +201,7 @@
         self.durationSelectorVerticalDivider.backgroundColor = HAPP_WHITE_COLOR;
     } else {
         self.moodSelectorValue.textColor = HAPP_WHITE_COLOR;
+        self.moodSelectorImageView.image = [self.dataSource getMoodFor:self.mood].imageInverse;
     }
     selector.backgroundColor = HAPP_PURPLE_COLOR;
 }
@@ -252,7 +258,12 @@
         self.moodSelectorValue.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22];
         self.moodSelectorValue.textAlignment = NSTextAlignmentCenter;
         
+        CGRect imageValueFrame = CGRectMake(
+           HAPP_HORIZONTAL_PADDING * 6.5, 5, 35, 35);
+        self.moodSelectorImageView = [[UIImageView alloc] initWithFrame:imageValueFrame];
+        
         [_moodSelector addSubview:self.moodSelectorValue];
+        [_moodSelector addSubview:self.moodSelectorImageView];
     }
     return _moodSelector;
 }
@@ -389,6 +400,9 @@
         HappModelMoodObject *mood = [[self.dataSource getMoods] objectAtIndex:row];
         cellTitle.text = [mood title];
         cellTitle.textAlignment = NSTextAlignmentCenter;
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[mood image]];
+        imageView.frame = CGRectMake(-75, 0, 30, 30);
+        [cellView addSubview:imageView];
     }
     return cellView;
 }
@@ -403,6 +417,7 @@
         HappModelMoodObject *moodObject = [[self.dataSource getMoods] objectAtIndex:row];
         self.mood = moodObject.mood;
         self.moodSelectorValue.text = moodObject.title;
+        self.moodSelectorImageView.image = moodObject.imageInverse;
     }
 }
 

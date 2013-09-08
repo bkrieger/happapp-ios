@@ -89,6 +89,7 @@
         
         [self.moodPersons addObjectsFromArray:[results objectForKey:@"data"]];
         
+        
         [self.delegate modelIsReady];
     }
 }
@@ -103,7 +104,7 @@
     
     NSString *postString = [NSString
         stringWithFormat:@"id=%@&msg=%@&tag=%@&duration=%@",
-                         @"3",
+                         @"6467852201",
                          [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
                          [self getMoodPostDataFor:mood],
                          [self getDurationPostDataFor:duration]];
@@ -123,7 +124,7 @@
 - (NSArray *)getDurations {
     NSMutableArray *durations = [[NSMutableArray alloc] init];
     
-    for (NSInteger i = HappModelDurationHalfHour; i <= HappModelDurationFourHour; i++) {
+    for (NSInteger i = HappModelDurationHalfHour; i < HappModelDurationInvalid; i++) {
         [durations addObject:[self getDurationFor:i]];
     }
     
@@ -175,7 +176,7 @@
 - (NSArray *)getMoods {
     NSMutableArray *moods = [[NSMutableArray alloc] init];
     
-    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodInvalid; i++) {
+    for (NSInteger i = HappModelMoodChill; i < HappModelMoodInvalid; i++) {
         [moods addObject:[self getMoodFor:i]];
     }
     
@@ -184,41 +185,58 @@
 
 - (HappModelMoodObject *)getMoodFor:(HappModelMood)mood {
     NSString *title;
+    UIImage *image;
+    UIImage *imageInverse;
     
     switch (mood) {
         case HappModelMoodChill:
             title = @"Chill";
+            image = [UIImage imageNamed:@"chill_ios.png"];
+            imageInverse = [UIImage imageNamed:@"chill_ios_i.png"];
             break;
             
         case HappModelMoodFood:
             title = @"Food";
+            image = [UIImage imageNamed:@"food_ios.png"];
+            imageInverse = [UIImage imageNamed:@"food_ios_i.png"];
             break;
             
         case HappModelMoodMovie:
             title = @"Movie";
+            image = [UIImage imageNamed:@"movie_ios.png"];
+            imageInverse = [UIImage imageNamed:@"movie_ios_i.png"];
             break;
             
         case HappModelMoodParty:
             title = @"Party";
+            image = [UIImage imageNamed:@"party_ios.png"];
+            imageInverse = [UIImage imageNamed:@"party_ios_i.png"];
             break;
             
         case HappModelMoodSports:
             title = @"Sports";
+            image = [UIImage imageNamed:@"sport_ios.png"];
+            imageInverse = [UIImage imageNamed:@"sport_ios_i.png"];
             break;
             
         case HappModelMoodInvalid:
-            title = @"chillin";
+            title = @"Chillin'";
+            image = [UIImage imageNamed:@"chill_ios.png"];
+            imageInverse = [UIImage imageNamed:@"chill_ios_i.png"];
             break;
     }
     
-    return [[HappModelMoodObject alloc] initWithTitle:title mood:mood];
+    return [[HappModelMoodObject alloc] initWithTitle:title
+                                                 mood:mood
+                                                image:image
+                                         imageInverse:imageInverse];
 }
 
 - (NSInteger)getIndexForMood:(HappModelMood)mood {
     NSInteger index = 0;
-    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodInvalid; i++) {
+    for (NSInteger i = HappModelMoodChill; i < HappModelMoodInvalid; i++) {
         if (i == mood) {
-            index = i;
+            index = i - 1;
             break;
         }
     }
@@ -240,15 +258,15 @@
             break;
             
         case HappModelMoodMovie:
-            title = @"4";
+            title = @"3";
             break;
             
         case HappModelMoodParty:
-            title = @"8";
+            title = @"4";
             break;
             
         case HappModelMoodSports:
-            title = @"16";
+            title = @"5";
             break;
         
         case HappModelMoodInvalid:
@@ -298,11 +316,15 @@
 @implementation HappModelMoodObject
 
 - (id)initWithTitle:(NSString *)title
-               mood:(HappModelMood)mood {
+               mood:(HappModelMood)mood
+              image:(UIImage *)image
+       imageInverse:(UIImage *)imageInverse {
     self = [super init];
     if (self) {
         _title = [title copy];
         _mood = mood;
+        _image = image;
+        _imageInverse = imageInverse;
     }
     return self;
 }
