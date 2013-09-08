@@ -22,7 +22,8 @@
 @property HappModelDuration duration;
 
 @property (nonatomic, strong) UIViewController *composeVC;
-@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) UIButton *catcher;
 
 @property (nonatomic, strong) UIView *accerssoryView;
 @property (nonatomic, strong) UIButton *moodSelector;
@@ -66,10 +67,11 @@
     
     [self setUpViews];
     self.isDisplayingPickerView = NO;
+    self.catcher.hidden = YES;
     self.mood = HappModelMoodDefault;
     self.duration = HappModelDurationDefault;
     
-    [self.textField becomeFirstResponder];
+    [self.textView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -99,8 +101,9 @@
                action:@selector(sendButtonWasPressed)];
     [[self.composeVC navigationItem] setRightBarButtonItem:sendButton];
     
-
-    [self.composeVC.view addSubview:self.textField];
+    self.catcher = [[UIButton alloc] initWithFrame:self.composeVC.view.bounds];
+    [self.catcher addTarget:self action:@selector(didTapOnTextField) forControlEvents:UIControlEventTouchDown];
+    [self.composeVC.view addSubview:self.textView];
 
     self.accerssoryView = [[UIView alloc]
         initWithFrame:CGRectMake(0, 0, self.composeVC.view.bounds.size.width, 100)];
@@ -119,7 +122,8 @@
     self.durationSelectorValue.text = [self.dataSource getDurationFor:HappModelDurationDefault].title;
     self.moodSelectorValue.text = [self.dataSource getMoodFor:HappModelMoodDefault].title;
     
-    self.textField.inputAccessoryView = self.accerssoryView;
+    self.textView.inputAccessoryView = self.accerssoryView;
+    [self.composeVC.view addSubview:self.catcher];
 }
 
 #pragma mark SomethingHappened - methods
@@ -129,14 +133,14 @@
 }
 
 - (void)sendButtonWasPressed {
-    [self.happDelegate postWithMessage:self.textField.text
+    [self.happDelegate postWithMessage:self.textView.text
                                   mood:self.mood
                               duration:self.duration];
 }
 
 - (void)didTapOnDurationSelector {
     if (self.isDisplayingPickerView &&
-        self.textField.inputView == self.durationPickerView) {
+        self.textView.inputView == self.durationPickerView) {
         return;
     }
     
@@ -150,7 +154,7 @@
 
 - (void)didTapOnMoodSelector {
     if (self.isDisplayingPickerView &&
-        self.textField.inputView == self.moodPickerView) {
+        self.textView.inputView == self.moodPickerView) {
         return;
     }
     
@@ -164,12 +168,13 @@
 
 - (void)didTapOnTextField {
     if (self.isDisplayingPickerView) {
-        [self.textField endEditing:YES];
-        self.textField.inputView = nil;
+        [self.textView endEditing:YES];
+        self.textView.inputView = nil;
         
         self.isDisplayingPickerView = NO;
+        self.catcher.hidden = YES;
         [self resetSelectorState];
-        [self.textField becomeFirstResponder];
+        [self.textView becomeFirstResponder];
     }
 }
 
@@ -203,27 +208,27 @@
     pickerView.delegate = self;
     pickerView.dataSource = self;
     pickerView.showsSelectionIndicator = YES;
-    [self.textField endEditing:YES];
-    self.textField.inputView = pickerView;
+    [self.textView endEditing:YES];
+    self.textView.inputView = pickerView;
     
     self.isDisplayingPickerView = YES;
-    [self.textField becomeFirstResponder];
+    self.catcher.hidden = NO;
+    [self.textView becomeFirstResponder];
 }
 
 #pragma mark getters
 
 // Must be called after composeVC is initialized.
-- (UITextField *)textField {
-    if (!_textField) {
+- (UITextView *)textView {
+    if (!_textView) {
         CGRect textFieldFrame = CGRectInset(self.composeVC.view.bounds, 10, 10);
-        _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
-        _textField.returnKeyType = UIReturnKeySend;
-        _textField.delegate = self;
-        [_textField addTarget:self
-                       action:@selector(didTapOnTextField)
-             forControlEvents:UIControlEventTouchDown];
+        _textView = [[UITextView alloc] initWithFrame:textFieldFrame];
+        _textView.returnKeyType = UIReturnKeySend;
+        _textView.backgroundColor = [UIColor clearColor];
+        _textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
+        _textView.delegate = self;
     }
-    return _textField;
+    return _textView;
 }
 
 - (UIButton *)moodSelector {
@@ -313,16 +318,27 @@
     return _moodPickerView;
 }
 
-#pragma mark UITextFieldDelegate methods
+#pragma mark UITextViewDelegate methods
 
+-(BOOL)textView:(UITextView *)textView
+    shouldChangeTextInRange:(NSRange)range
+            replacementText:(NSString *)text {
+    if ([text isEqualToString:@"\n"]) {
+        [self.happDelegate postWithMessage:textView.text mood:self.mood duration:self.duration];
+        return NO;
+    }
+    if ([textView.text length] > 40) {
+        return NO;
+    }
+    return YES;
+}
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self.happDelegate postWithMessage:textField.text mood:self.mood duration:self.duration];
     return YES;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSUInteger newLength = [textField.text length] + [string length] - range.length;
-    return (newLength > 40) ? NO : YES;
+    self.textView.text = textField.text;
+    return YES;
 }
 
 #pragma mark UIPickerViewDelegate methods

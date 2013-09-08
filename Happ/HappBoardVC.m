@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "HappBoardVC.h"
 #import "HappComposeVC.h"
 #import "HappModel.h"
@@ -36,6 +37,19 @@
 }
 
 - (void)setUp {
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"witewall_3_@2x.png"]];
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    // Vertical Line
+    CGRect vertivalLineRect = CGRectMake(50, 0, 4,
+                                         self.tableView.backgroundView.bounds.size.height);
+    UIView *verticalLine = [[UIView alloc] initWithFrame:vertivalLineRect];
+    verticalLine.backgroundColor = HAPP_DIVIDER_COLOR;
+    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [self.tableView.backgroundView addSubview:verticalLine];
+    
+    // Set Up model
     self.model = [[HappModel alloc] initWithGetUrl:[self.addressBook
         getUrlFromContacts:HAPP_URL_GET_PREFIX
                  separator:HAPP_URL_SEPARATOR]
@@ -88,19 +102,57 @@
     return [self.model getMoodPersonCount];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 80;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] init];
-    UIView *moodPersonView = [[UIView alloc] initWithFrame:cell.bounds];
+    CGRect cellRect = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height * 2);
+    cell.frame = cellRect;
+
+    cell.backgroundColor = [UIColor clearColor];
+    cell.backgroundView.hidden = YES;
     NSDictionary *moodPerson = [self.model getMoodPersonForIndex:[indexPath row]];
     
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:cell.bounds];
+    UIImage *personImage = [UIImage imageNamed:@"happ_2x.png"];
+    UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
+    personView.frame = CGRectMake(10, 8, 60, 60);
+    personView.layer.cornerRadius = personView.frame.size.width / 2;
+    personView.layer.masksToBounds = YES;
+  
+    [cell.contentView addSubview:personView];
+    
+//    CGRect nameRect = CGrectMake
+    CGFloat nameLabelX = personView.frame.origin.x + personView.frame.size.width + 15;
+    CGRect nameLabelRect = CGRectMake(nameLabelX,
+                                      personView.frame.origin.y,
+                                      cellRect.size.width - nameLabelX,
+                                      cellRect.size.height / 3);
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:nameLabelRect];
+    nameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    nameLabel.textColor = HAPP_PURPLE_COLOR;
+    nameLabel.backgroundColor = [UIColor clearColor];
+    nameLabel.shadowColor = [UIColor clearColor];
     NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
     NSString *message = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];
-    nameLabel.text = [NSString stringWithFormat:@"%@ - %@",
-        [self.addressBook getNameForPhoneNumber:phoneNumber], message];
-    [moodPersonView addSubview:nameLabel];
-    [cell.contentView addSubview:moodPersonView];
+    nameLabel.text = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
+    
+    CGRect messageLabelRect = CGRectMake(nameLabelX,
+                                      personView.frame.origin.y + nameLabelRect.size.height + 2,
+                                      cellRect.size.width - nameLabelX - 80,
+                                      (cellRect.size.height / 3) * 2);
+    UILabel *messageLabel = [[UILabel alloc] initWithFrame:messageLabelRect];
+    messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+    messageLabel.textColor = HAPP_BLACK_COLOR;
+    messageLabel.backgroundColor = [UIColor clearColor];
+    messageLabel.shadowColor = [UIColor clearColor];
+    messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    messageLabel.numberOfLines = 2;
+    messageLabel.text = message;
+    [cell.contentView addSubview:nameLabel];
+    [cell.contentView addSubview:messageLabel];
     
     return cell;
 }

@@ -9,6 +9,8 @@ typedef enum HappModelMoods {
     HappModelMoodFood,
     HappModelMoodMovie,
     HappModelMoodParty,
+    HappModelMoodSports,
+    HappModelMoodInvalid,
     HappModelMoodDefault = HappModelMoodChill
 } HappModelMood;
 
@@ -18,5 +20,6 @@ typedef enum HappModelDurations {
     HappModelDurationTwoHour,
     HappModelDurationThreeHour,
     HappModelDurationFourHour,
+    HappModelDurationInvalid,
     HappModelDurationDefault = HappModelDurationTwoHour
 } HappModelDuration;

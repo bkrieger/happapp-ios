@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C531FB7617DC3271006A5617 /* witewall_3_@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = C531FB7517DC3271006A5617 /* witewall_3_@2X.png */; };
 		C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8717DAA84A006D481E /* UIKit.framework */; };
 		C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8917DAA84A006D481E /* Foundation.framework */; };
 		C58F0F8C17DAA84A006D481E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8B17DAA84A006D481E /* CoreGraphics.framework */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C531FB7517DC3271006A5617 /* witewall_3_@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "witewall_3_@2X.png"; sourceTree = "<group>"; };
 		C58F0F8417DAA84A006D481E /* Happ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Happ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C58F0F8717DAA84A006D481E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C58F0F8917DAA84A006D481E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -78,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				C58F0FB917DB7FB9006D481E /* happ_2x.png */,
+				C531FB7517DC3271006A5617 /* witewall_3_@2X.png */,
 				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
@@ -110,9 +113,9 @@
 				C58F0F9717DAA84A006D481E /* HappAppDelegate.m */,
 				C58F0F9F17DAA84B006D481E /* HappViewController.h */,
 				C58F0FA017DAA84B006D481E /* HappViewController.m */,
-				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
 				C58F0FB617DB6F78006D481E /* HappComposeVC.h */,
 				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
+				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
 				C58F0FAE17DAC122006D481E /* HappBoardVC.m */,
 				C58F0FB117DAD3C5006D481E /* HappABModel.h */,
 				C58F0FB217DAD3C5006D481E /* HappABModel.m */,
@@ -200,6 +203,7 @@
 				C58F0F9E17DAA84B006D481E /* Default-568h@2x.png in Resources */,
 				C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */,
 				C58F0FBA17DB7FB9006D481E /* happ_2x.png in Resources */,
+				C531FB7617DC3271006A5617 /* witewall_3_@2X.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +343,7 @@
 				C58F0FA917DAA84B006D481E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -22,7 +22,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStylePlain];
+    self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
     self.navigationBar.tintColor = HAPP_PURPLE_COLOR;
     self.navigationBar.barStyle = UIBarStyleDefault;
     [self.happBoard setUp];

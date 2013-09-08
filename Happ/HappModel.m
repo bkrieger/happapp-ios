@@ -101,7 +101,13 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"SBFormattedPhoneNumber"];
     
-    NSString *postString = [NSString stringWithFormat:@"id=%@&msg=%@&tags[]=%@&duration=%@", @"3", message, [self getMoodPostDataFor:mood], [self getDurationPostDataFor:duration]];
+    NSString *postString = [NSString
+        stringWithFormat:@"id=%@&msg=%@&tag=%@&duration=%@",
+                         @"3",
+                         [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
+                         [self getMoodPostDataFor:mood],
+                         [self getDurationPostDataFor:duration]];
+    NSLog(@"%@", postString);
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL
         URLWithString:[NSString stringWithFormat:@"%@%@",self.postUrl, postString]]];
@@ -147,13 +153,17 @@
         case HappModelDurationFourHour:
             title = @"four hours";
             break;
+            
+        case HappModelDurationInvalid:
+            title = @"chillin";
+            break;
     }
     return [[HappModelDurationObject alloc] initWithTitle:title duration:duration];
 }
 
 - (NSInteger)getIndexForDuration:(HappModelDuration)duration {
     NSInteger index = 0;
-    for (NSInteger i = HappModelDurationHalfHour; i <= HappModelDurationFourHour; i++) {
+    for (NSInteger i = HappModelDurationHalfHour; i < HappModelDurationInvalid; i++) {
         if (i == duration) {
             index = i;
             break;
@@ -165,7 +175,7 @@
 - (NSArray *)getMoods {
     NSMutableArray *moods = [[NSMutableArray alloc] init];
     
-    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodParty; i++) {
+    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodInvalid; i++) {
         [moods addObject:[self getMoodFor:i]];
     }
     
@@ -191,6 +201,14 @@
         case HappModelMoodParty:
             title = @"Party";
             break;
+            
+        case HappModelMoodSports:
+            title = @"Sports";
+            break;
+            
+        case HappModelMoodInvalid:
+            title = @"chillin";
+            break;
     }
     
     return [[HappModelMoodObject alloc] initWithTitle:title mood:mood];
@@ -198,7 +216,7 @@
 
 - (NSInteger)getIndexForMood:(HappModelMood)mood {
     NSInteger index = 0;
-    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodParty; i++) {
+    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodInvalid; i++) {
         if (i == mood) {
             index = i;
             break;
@@ -228,6 +246,15 @@
         case HappModelMoodParty:
             title = @"8";
             break;
+            
+        case HappModelMoodSports:
+            title = @"16";
+            break;
+        
+        case HappModelMoodInvalid:
+            title = @"chillin";
+            break;
+        
     }
     
     return title;
@@ -255,6 +282,10 @@
             
         case HappModelDurationFourHour:
             title = @"14400";
+            break;
+            
+        case HappModelDurationInvalid:
+            title = @"chillin";
             break;
     }
     return title;

@@ -41,7 +41,16 @@
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
             NSString *lastName =
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-            NSString *personName = [NSString                                 stringWithFormat:@"%@ %@", firstName, lastName];
+            NSString *personName = @"";
+            if (firstName) {
+                personName = [NSString stringWithFormat:@"%@%@", personName, firstName];
+            }
+            if (lastName) {
+                if (firstName) {
+                    personName = [NSString stringWithFormat:@"%@%@", personName, @" "];
+                }
+                personName = [NSString stringWithFormat:@"%@%@", personName, lastName];
+            }
             ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
             
             for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {

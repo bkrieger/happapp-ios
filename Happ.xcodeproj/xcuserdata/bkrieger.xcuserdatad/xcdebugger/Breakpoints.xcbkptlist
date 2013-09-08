@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Happ/HappBoardVC.m"
-         timestampString = "400271322.260222"
+         timestampString = "400310617.250711"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "98"
-         endingLineNumber = "98"
+         startingLineNumber = "138"
+         endingLineNumber = "138"
          landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -32,11 +32,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Happ/HappComposeVC.m"
-         timestampString = "400296076.626987"
+         timestampString = "400299415.538444"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "142"
-         endingLineNumber = "142"
+         startingLineNumber = "146"
+         endingLineNumber = "146"
          landmarkName = "-didTapOnDurationSelector"
          landmarkType = "5">
       </FileBreakpoint>
