@@ -8,6 +8,7 @@
 
 #import "HappViewController.h"
 #import "HappBoardVC.h"
+#import "HappModelEnums.h"
 
 @interface HappViewController ()
 
@@ -22,7 +23,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStylePlain];
-    self.navigationBar.tintColor = [UIColor colorWithRed:130/255.0f green:4/255.0f blue:112/255.0f alpha:1.0f];
+    self.navigationBar.tintColor = HAPP_PURPLE_COLOR;
     self.navigationBar.barStyle = UIBarStyleDefault;
     [self.happBoard setUp];
     [self pushViewController:self.happBoard animated:NO];

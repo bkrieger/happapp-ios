@@ -23,9 +23,8 @@
 }
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber {
-    NSLog(@"query: [%@],\n map: %@\n\n", phoneNumber, self.phoneNumberNameMap);
-    NSLog(@"%@", [NSString stringWithString:phoneNumber]);
-    return [self.phoneNumberNameMap objectForKey:[NSString stringWithString:phoneNumber]];
+    return [self.phoneNumberNameMap objectForKey:[NSString
+        stringWithFormat:@"%@",phoneNumber]];
 }
 
 - (NSDictionary *)phoneNumberNameMap {
@@ -42,8 +41,7 @@
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
             NSString *lastName =
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-            NSString *personName =
-                [[firstName stringByAppendingString:@" "] stringByAppendingString:lastName];
+            NSString *personName = [NSString                                 stringWithFormat:@"%@ %@", firstName, lastName];
             ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
             
             for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {

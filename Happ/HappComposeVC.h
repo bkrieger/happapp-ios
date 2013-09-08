@@ -10,7 +10,7 @@
 #import "HappComposeVCDelegate.h"
 #import "HappComposeVCDataSource.h"
 
-@interface HappComposeVC : UINavigationController<UITextFieldDelegate>
+@interface HappComposeVC : UINavigationController<UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 - (id)initWithDelegate:(NSObject<HappComposeVCDelegate> *)delegate
             dataSource:(NSObject<HappComposeVCDataSource> *)dataSource;

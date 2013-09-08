@@ -100,7 +100,8 @@
                duration:(HappModelDuration)duration {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"SBFormattedPhoneNumber"];
-    NSString *postString = [NSString stringWithFormat:@"id=%@&msg=%@&tags[]=%i&duration=%i", @"3", message, mood, 10000000];
+    
+    NSString *postString = [NSString stringWithFormat:@"id=%@&msg=%@&tags[]=%@&duration=%@", @"3", message, [self getMoodPostDataFor:mood], [self getDurationPostDataFor:duration]];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL
         URLWithString:[NSString stringWithFormat:@"%@%@",self.postUrl, postString]]];
@@ -114,13 +115,57 @@
 #pragma mark HappComposeVCDataSource methods
 
 - (NSArray *)getDurations {
-    return nil;
+    NSMutableArray *durations = [[NSMutableArray alloc] init];
+    
+    for (NSInteger i = HappModelDurationHalfHour; i <= HappModelDurationFourHour; i++) {
+        [durations addObject:[self getDurationFor:i]];
+    }
+    
+    return durations;
+}
+
+- (HappModelDurationObject *)getDurationFor:(HappModelDuration)duration {
+    NSString *title;
+    
+    switch (duration) {
+        case HappModelDurationHalfHour:
+            title = @"half hour";
+            break;
+            
+        case HappModelDurationOneHour:
+            title = @"one hour";
+            break;
+            
+        case HappModelDurationTwoHour:
+            title = @"two hours";
+            break;
+            
+        case HappModelDurationThreeHour:
+            title = @"three hours";
+            break;
+            
+        case HappModelDurationFourHour:
+            title = @"four hours";
+            break;
+    }
+    return [[HappModelDurationObject alloc] initWithTitle:title duration:duration];
+}
+
+- (NSInteger)getIndexForDuration:(HappModelDuration)duration {
+    NSInteger index = 0;
+    for (NSInteger i = HappModelDurationHalfHour; i <= HappModelDurationFourHour; i++) {
+        if (i == duration) {
+            index = i;
+            break;
+        }
+    }
+    return index;
 }
 
 - (NSArray *)getMoods {
     NSMutableArray *moods = [[NSMutableArray alloc] init];
     
-    for (NSInteger i = HappModelMoodChill; i < HappModelMoodDefault; i++) {
+    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodParty; i++) {
         [moods addObject:[self getMoodFor:i]];
     }
     
@@ -148,27 +193,102 @@
             break;
     }
     
-    return [[HappModelMoodObject alloc] initWithTitle:title];
+    return [[HappModelMoodObject alloc] initWithTitle:title mood:mood];
+}
+
+- (NSInteger)getIndexForMood:(HappModelMood)mood {
+    NSInteger index = 0;
+    for (NSInteger i = HappModelMoodChill; i <= HappModelMoodParty; i++) {
+        if (i == mood) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+#pragma mark Enum Getters
+
+- (NSString *)getMoodPostDataFor:(HappModelMood)mood {
+    NSString *title;
+    
+    switch (mood) {
+        case HappModelMoodChill:
+            title = @"1";
+            break;
+            
+        case HappModelMoodFood:
+            title = @"2";
+            break;
+            
+        case HappModelMoodMovie:
+            title = @"4";
+            break;
+            
+        case HappModelMoodParty:
+            title = @"8";
+            break;
+    }
+    
+    return title;
+}
+
+- (NSString *)getDurationPostDataFor:(HappModelDuration)duration {
+    NSString *title;
+    
+    switch (duration) {
+        case HappModelDurationHalfHour:
+            title = @"1800";
+            break;
+            
+        case HappModelDurationOneHour:
+            title = @"3600";
+            break;
+            
+        case HappModelDurationTwoHour:
+            title = @"7200";
+            break;
+            
+        case HappModelDurationThreeHour:
+            title = @"10800";
+            break;
+            
+        case HappModelDurationFourHour:
+            title = @"14400";
+            break;
+    }
+    return title;
 }
 
 @end
 
-#pragma mark HappModelMoodObject implementation
-
-@interface HappModelMoodObject()
-@property NSString *title;
-@end
+#pragma mark HappModelObjects implementation
 
 @implementation HappModelMoodObject
 
-- (id)initWithTitle:(NSString *)title {
+- (id)initWithTitle:(NSString *)title
+               mood:(HappModelMood)mood {
     self = [super init];
     if (self) {
         _title = [title copy];
+        _mood = mood;
     }
     return self;
 }
 
 @end
 
+@implementation HappModelDurationObject
+
+- (id)initWithTitle:(NSString *)title
+           duration:(HappModelDuration)duration {
+    self = [super init];
+    if (self) {
+        _title = [title copy];
+        _duration = duration;
+    }
+    return self;
+}
+
+@end
 

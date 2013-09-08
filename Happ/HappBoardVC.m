@@ -97,7 +97,8 @@
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:cell.bounds];
     NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
     NSString *message = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];
-    nameLabel.text = [[self.addressBook getNameForPhoneNumber:phoneNumber] stringByAppendingString:message];
+    nameLabel.text = [NSString stringWithFormat:@"%@ - %@",
+        [self.addressBook getNameForPhoneNumber:phoneNumber], message];
     [moodPersonView addSubview:nameLabel];
     [cell.contentView addSubview:moodPersonView];
     
@@ -145,12 +146,19 @@
 
 - (HappComposeVC *)happCompose {
     if (!_happCompose) {
-        _happCompose = [[HappComposeVC alloc] initWithDelegate:self.model dataSource:self.model];
+        _happCompose = [[HappComposeVC alloc] initWithDelegate:self dataSource:self.model];
         _happCompose.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
         _happCompose.modalPresentationStyle = UIModalPresentationCurrentContext;
         _happCompose.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     }
     return _happCompose;
+}
+
+- (void)removeHappComposeVC {
+    [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
+    
+    [self.happCompose dispose];
+    self.happCompose = nil;
 }
 
 #pragma mark - Table view delegate
@@ -173,14 +181,17 @@
 }
 
 - (void)modelDidPost {
-    [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
-    
-    [self.happCompose dispose];
-    self.happCompose = nil;
+    [self removeHappComposeVC];
 }
 
 #pragma mark - HappComposeVCDelegate methods
 
+- (void)postWithMessage:(NSString *)message mood:(HappModelMood)mood duration:(HappModelDuration)duration {
+    [self.model postWithMessage:message mood:mood duration:duration];
+}
 
+- (void)cancelCompose {
+    [self removeHappComposeVC];
+}
 
 @end

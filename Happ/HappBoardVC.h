@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "HappModelDelegate.h"
+#import "HappComposeVCDelegate.h"
 
-@interface HappBoardVC : UITableViewController<HappModelDelegate>
+@interface HappBoardVC : UITableViewController<HappModelDelegate,
+                                               HappComposeVCDelegate>
 
 // Must be called after initialization.
 - (void)setUp;

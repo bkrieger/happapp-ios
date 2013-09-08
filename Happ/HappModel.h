@@ -8,13 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "HappModelEnums.h"
-#import "HappComposeVCDelegate.h"
 #import "HappComposeVCDataSource.h"
 
 @protocol HappModelDelegate;
 
 @interface HappModel : NSObject<NSURLConnectionDataDelegate,
-                                HappComposeVCDelegate,
                                 HappComposeVCDataSource>
 
 - (id)initWithGetUrl:(NSString *)getUrl
@@ -23,16 +21,32 @@
     
 - (void)refresh;
 
-
+- (void)postWithMessage:(NSString *)message
+                   mood:(HappModelMood)mood
+               duration:(HappModelDuration)duration;
 - (NSInteger)getMoodPersonCount;
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index;
 
+
+
 @end
+
 
 @interface HappModelMoodObject : NSObject
 
-- (id)initWithTitle:(NSString *)title;
+@property (nonatomic, readonly) NSString *title;
+@property HappModelMood mood;
 
-- (NSString *)title;
+- (id)initWithTitle:(NSString *)title mood:(HappModelMood)mood;
+
+@end
+
+
+@interface HappModelDurationObject : NSObject
+
+@property (nonatomic, readonly) NSString *title;
+@property HappModelDuration duration;
+
+- (id)initWithTitle:(NSString *)title duration:(HappModelDuration)duration;
 
 @end
