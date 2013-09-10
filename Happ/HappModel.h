@@ -15,7 +15,8 @@
 @interface HappModel : NSObject<NSURLConnectionDataDelegate,
                                 HappComposeVCDataSource>
 
-- (id)initWithGetUrl:(NSString *)getUrl
+- (id)initWithGetUrlPrefix:(NSString *)getUrlPrefix
+               contactsUrl:(NSString *)contactsUrl
              postUrl:(NSString *)postUrl
             delegate:(NSObject<HappModelDelegate> *)delegate;
     

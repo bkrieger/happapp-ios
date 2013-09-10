@@ -15,6 +15,7 @@
 @property NSString *getUrl;
 @property NSString *postUrl;
 @property (nonatomic, strong) NSMutableArray *moodPersons;
+@property (nonatomic, strong) NSDictionary *meMoodPerson;
 @property NSMutableData *temporaryData;
 @property (nonatomic, weak) NSObject<HappModelDelegate> *delegate;
 
@@ -22,17 +23,18 @@
 
 @implementation HappModel
 
-- (id)initWithGetUrl:(NSString *)getUrl
-             postUrl:(NSString *)postUrl
-            delegate:(NSObject<HappModelDelegate> *)delegate {
+- (id)initWithGetUrlPrefix:(NSString *)getUrlPrefix
+               contactsUrl:(NSString *)contactsUrl
+                   postUrl:(NSString *)postUrl
+                  delegate:(NSObject<HappModelDelegate> *)delegate {
     self = [super init];
     if (self) {
-        _getUrl = getUrl;
+        _myPhoneNumber = @"6467852201";
+        _getUrl = [NSString stringWithFormat:@"%@%@%@", getUrlPrefix, _myPhoneNumber, contactsUrl];
         _postUrl = postUrl;
         _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
-        _myPhoneNumber = @"6467852201";
-     }
+    }
     return self;
 }
 
@@ -63,14 +65,7 @@
 }
 
 - (NSDictionary *)getMoodPersonForMe {
-    for (NSDictionary *moodPerson in self.moodPersons) {
-        if ([NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]]) {
-            if ([[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]] isEqualToString:self.myPhoneNumber]) {
-                return moodPerson;
-            }
-        }
-    }
-    return nil;
+    return self.meMoodPerson;
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -109,9 +104,10 @@
                                                                 options:NSJSONReadingMutableContainers
                                                                   error:nil];
         
-        [self.moodPersons addObjectsFromArray:[results objectForKey:@"data"]];
+        [self.moodPersons addObjectsFromArray:[[results objectForKey:@"data"] objectForKey:@"contacts"]];
+        self.meMoodPerson = [[results objectForKey:@"data"] objectForKey:@"me"];
         
-        NSLog(@"%@",            results);
+        NSLog(@"%@", results);
         [self.delegate modelIsReady];
     }
 }

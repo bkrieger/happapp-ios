@@ -13,9 +13,8 @@
 #import "HappABModel.h"
 
 #define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/moods?"
+#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?me="
 #define HAPP_URL_SEPARATOR @"&n[]="
-#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?n[]="
-
 
 @interface HappBoardVC ()
 
@@ -51,11 +50,9 @@
     [self.tableView.backgroundView addSubview:verticalLine];
     
     // Set Up model
-    self.model = [[HappModel alloc] initWithGetUrl:[self.addressBook
-        getUrlFromContacts:HAPP_URL_GET_PREFIX
-                 separator:HAPP_URL_SEPARATOR]
-                                           postUrl:HAPP_URL_PREFIX
-                                          delegate:self];
+    self.model = [[HappModel alloc] initWithGetUrlPrefix:HAPP_URL_GET_PREFIX
+                                             contactsUrl:[self.addressBook getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR]
+                                                 postUrl:HAPP_URL_PREFIX delegate:self];
     [self.model refresh];
 }
 

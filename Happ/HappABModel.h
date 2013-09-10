@@ -10,8 +10,7 @@
 
 @interface HappABModel : NSObject
 
-- (NSString *)getUrlFromContacts:(NSString *)prefix
-                       separator:(NSString *)separator;
+- (NSString *)getUrlFromContactsWithSeparator:(NSString *)separator;
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber;
 @end

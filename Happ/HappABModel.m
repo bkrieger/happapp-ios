@@ -15,14 +15,13 @@
 
 @implementation HappABModel
 
-- (NSString *)getUrlFromContacts:(NSString *)prefix
-                       separator:(NSString *)separator {
+- (NSString *)getUrlFromContactsWithSeparator:(NSString *)separator {
     if (ABAddressBookGetAuthorizationStatus() != kABAuthorizationStatusAuthorized) {
         self.phoneNumberNameMap = nil;
     }
     NSArray *allPhoneNumbers = [self.phoneNumberNameMap allKeys];
 
-    return [prefix stringByAppendingString:[allPhoneNumbers componentsJoinedByString:separator]];
+    return [separator stringByAppendingString:[allPhoneNumbers componentsJoinedByString:separator]];
 }
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber {
