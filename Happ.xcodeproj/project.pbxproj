@@ -16,9 +16,6 @@
 		C58F0F9217DAA84A006D481E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C58F0F9017DAA84A006D481E /* InfoPlist.strings */; };
 		C58F0F9417DAA84A006D481E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0F9317DAA84A006D481E /* main.m */; };
 		C58F0F9817DAA84A006D481E /* HappAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0F9717DAA84A006D481E /* HappAppDelegate.m */; };
-		C58F0F9A17DAA84A006D481E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0F9917DAA84A006D481E /* Default.png */; };
-		C58F0F9C17DAA84A006D481E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0F9B17DAA84A006D481E /* Default@2x.png */; };
-		C58F0F9E17DAA84B006D481E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0F9D17DAA84B006D481E /* Default-568h@2x.png */; };
 		C58F0FA117DAA84B006D481E /* HappViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FA017DAA84B006D481E /* HappViewController.m */; };
 		C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C58F0FA217DAA84B006D481E /* HappViewController.xib */; };
 		C58F0FAC17DAABBF006D481E /* HappModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FAB17DAABBF006D481E /* HappModel.m */; };
@@ -57,9 +54,6 @@
 		C58F0F9517DAA84A006D481E /* Happ-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Happ-Prefix.pch"; sourceTree = "<group>"; };
 		C58F0F9617DAA84A006D481E /* HappAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappAppDelegate.h; sourceTree = "<group>"; };
 		C58F0F9717DAA84A006D481E /* HappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HappAppDelegate.m; sourceTree = "<group>"; };
-		C58F0F9917DAA84A006D481E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		C58F0F9B17DAA84A006D481E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		C58F0F9D17DAA84B006D481E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C58F0F9F17DAA84B006D481E /* HappViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappViewController.h; sourceTree = "<group>"; };
 		C58F0FA017DAA84B006D481E /* HappViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HappViewController.m; sourceTree = "<group>"; };
 		C58F0FA317DAA84B006D481E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/HappViewController.xib; sourceTree = "<group>"; };
@@ -111,25 +105,7 @@
 		C58F0F7B17DAA84A006D481E = {
 			isa = PBXGroup;
 			children = (
-				C522DEF817DC46FD00C1BC65 /* Default@2x.png */,
-				C5AD0EC317DC486100B9FC77 /* Default.png */,
-				C5AD0EC517DC4D9400B9FC77 /* chill_ios.png */,
-				C5AD0EC617DC4D9400B9FC77 /* compose_ios.png */,
-				C5AD0EC717DC4D9400B9FC77 /* food_ios.png */,
-				C5AD0EC817DC4D9400B9FC77 /* movie_ios.png */,
-				C5AD0EC917DC4D9400B9FC77 /* party_ios.png */,
-				C5AD0ED317DC4DA300B9FC77 /* chill_ios_i.png */,
-				C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */,
-				C5AD0ED417DC4DA300B9FC77 /* food_ios_i.png */,
-				C5AD0ED517DC4DA300B9FC77 /* movie_ios_i.png */,
-				C5AD0ED617DC4DA300B9FC77 /* party_ios_i.png */,
-				C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */,
-				C5AD0ECA17DC4D9400B9FC77 /* sport_ios.png */,
-				C5AD0ECB17DC4D9400B9FC77 /* submit_ios.png */,
-				C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */,
-				C58F0FB917DB7FB9006D481E /* happ@2x.png */,
-				C531FB7517DC3271006A5617 /* witewall_3_@2X.png */,
-				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
+				C58F160717E0CE5600B90185 /* assets */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
 				C58F0F8517DAA84A006D481E /* Products */,
@@ -147,6 +123,7 @@
 		C58F0F8617DAA84A006D481E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8717DAA84A006D481E /* UIKit.framework */,
 				C58F0F8917DAA84A006D481E /* Foundation.framework */,
 				C58F0F8B17DAA84A006D481E /* CoreGraphics.framework */,
@@ -186,11 +163,33 @@
 				C58F0F9017DAA84A006D481E /* InfoPlist.strings */,
 				C58F0F9317DAA84A006D481E /* main.m */,
 				C58F0F9517DAA84A006D481E /* Happ-Prefix.pch */,
-				C58F0F9917DAA84A006D481E /* Default.png */,
-				C58F0F9B17DAA84A006D481E /* Default@2x.png */,
-				C58F0F9D17DAA84B006D481E /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C58F160717E0CE5600B90185 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				C522DEF817DC46FD00C1BC65 /* Default@2x.png */,
+				C5AD0EC317DC486100B9FC77 /* Default.png */,
+				C5AD0EC517DC4D9400B9FC77 /* chill_ios.png */,
+				C5AD0EC617DC4D9400B9FC77 /* compose_ios.png */,
+				C5AD0EC717DC4D9400B9FC77 /* food_ios.png */,
+				C5AD0EC817DC4D9400B9FC77 /* movie_ios.png */,
+				C5AD0EC917DC4D9400B9FC77 /* party_ios.png */,
+				C5AD0ED317DC4DA300B9FC77 /* chill_ios_i.png */,
+				C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */,
+				C5AD0ED417DC4DA300B9FC77 /* food_ios_i.png */,
+				C5AD0ED517DC4DA300B9FC77 /* movie_ios_i.png */,
+				C5AD0ED617DC4DA300B9FC77 /* party_ios_i.png */,
+				C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */,
+				C5AD0ECA17DC4D9400B9FC77 /* sport_ios.png */,
+				C5AD0ECB17DC4D9400B9FC77 /* submit_ios.png */,
+				C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */,
+				C58F0FB917DB7FB9006D481E /* happ@2x.png */,
+				C531FB7517DC3271006A5617 /* witewall_3_@2X.png */,
+			);
+			name = assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,9 +245,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C58F0F9217DAA84A006D481E /* InfoPlist.strings in Resources */,
-				C58F0F9A17DAA84A006D481E /* Default.png in Resources */,
-				C58F0F9C17DAA84A006D481E /* Default@2x.png in Resources */,
-				C58F0F9E17DAA84B006D481E /* Default-568h@2x.png in Resources */,
 				C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */,
 				C58F0FBA17DB7FB9006D481E /* happ@2x.png in Resources */,
 				C531FB7617DC3271006A5617 /* witewall_3_@2X.png in Resources */,
