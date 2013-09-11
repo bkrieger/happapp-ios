@@ -12,8 +12,8 @@
 #import "HappModel.h"
 #import "HappABModel.h"
 
-#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/moods?"
-#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?me="
+#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/moods?muffin=2&"
+#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?muffin=2&me="
 #define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappBoardVC ()
@@ -201,32 +201,33 @@
     nameLabel.shadowOffset = CGSizeZero;
     nameLabel.shadowColor = [UIColor clearColor];
     nameLabel.text = name;
-    // Message...
-    CGRect messageLabelRect = CGRectMake(nameLabelX,
-                                      nameLabelRect.origin.y + nameLabelRect.size.height - 3,
-                                      cellRect.size.width - nameLabelX - 80,
-                                      nameLabelRect.size.height * 1.2);
-    UILabel *messageLabel = [[UILabel alloc] initWithFrame:messageLabelRect];
-    messageLabel.text = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];;
-    messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
-    messageLabel.numberOfLines = 0;
-    [messageLabel sizeToFit];
-    messageLabel.textColor = HAPP_BLACK_COLOR;
-    messageLabel.backgroundColor = [UIColor clearColor];
-    messageLabel.shadowColor = [UIColor clearColor];
-    messageLabel.shadowOffset = CGSizeZero;
-    messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    // Mood Icon...
-    HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
-    HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
-    UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
-    moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
-                                nameLabelRect.origin.y + 7,
-                                (60 / 5) * 4,
-                                (60 / 5) * 4);
-    
-    if ([moodPerson objectForKey:@"message"] != nil) {
+    if ([moodPerson count] > 0 && [moodPerson objectForKey:@"message"]) {
+        // Message...
+        CGRect messageLabelRect = CGRectMake(nameLabelX,
+                                             nameLabelRect.origin.y + nameLabelRect.size.height - 3,
+                                             cellRect.size.width - nameLabelX - 80,
+                                             nameLabelRect.size.height * 1.2);
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:messageLabelRect];
+        messageLabel.text = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];;
+        messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+        messageLabel.numberOfLines = 0;
+        [messageLabel sizeToFit];
+        messageLabel.textColor = HAPP_BLACK_COLOR;
+        messageLabel.backgroundColor = [UIColor clearColor];
+        messageLabel.shadowColor = [UIColor clearColor];
+        messageLabel.shadowOffset = CGSizeZero;
+        messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        // Mood Icon...
+        HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
+        HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
+        UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
+        moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
+                                    nameLabelRect.origin.y + 7,
+                                    (60 / 5) * 4,
+                                    (60 / 5) * 4);
+
         [cell.contentView addSubview:moodIcon];
         [cell.contentView addSubview:nameLabel];
         [cell.contentView addSubview:messageLabel];
