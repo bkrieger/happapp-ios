@@ -70,7 +70,10 @@
             
             for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
                 NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-                [map setObject:personName forKey:[phoneNumber stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [phoneNumber length])]];
+                NSString *sanitizedPhoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [phoneNumber length])];
+                if ([sanitizedPhoneNumber length] >= 10) {
+                    [map setObject:personName forKey:[sanitizedPhoneNumber substringFromIndex:[sanitizedPhoneNumber length] - 10]];
+                }
             }
         }
         _phoneNumberNameMap = map;
