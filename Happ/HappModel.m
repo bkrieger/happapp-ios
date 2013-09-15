@@ -29,7 +29,7 @@
                   delegate:(NSObject<HappModelDelegate> *)delegate {
     self = [super init];
     if (self) {
-        _myPhoneNumber = @"6467852201";
+        _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"phoneNumber"];
         _getUrl = [NSString stringWithFormat:@"%@%@%@", getUrlPrefix, _myPhoneNumber, contactsUrl];
         _postUrl = postUrl;
         _moodPersons = [[NSMutableArray alloc] init];

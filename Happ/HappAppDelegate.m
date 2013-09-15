@@ -49,4 +49,23 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    if (!url || !url.host) {
+        return NO;
+    }
+    NSString *realVerificationCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"verificationCode"];
+    NSLog(@"A: %@ and %@", realVerificationCode, url.host);
+    if (realVerificationCode && [realVerificationCode isEqualToString:url.host]) {
+        // Phone number is verified.
+        NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"unverifiedPhoneNumber"];
+        if (phoneNumber) {
+            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"phoneNumber"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        self.window.rootViewController = [[HappViewController alloc] initWithNibName:nil bundle:nil];
+        return YES;
+    } 
+    return NO;
+}
+
 @end

@@ -7,8 +7,10 @@
 //
 
 #import "HappViewController.h"
+#import "HappEnterPhoneViewController.h"
 #import "HappBoardVC.h"
 #import "HappModelEnums.h"
+#import <MessageUI/MessageUI.h>
 
 @interface HappViewController ()
 
@@ -22,12 +24,16 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
     self.navigationBar.tintColor = HAPP_PURPLE_COLOR;
     self.navigationBar.barStyle = UIBarStyleDefault;
-    [self.happBoard setUp];
-    [self pushViewController:self.happBoard animated:NO];
-    
+    NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
+    if (phoneNumber) {
+        self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
+        [self.happBoard setUp];
+        [self pushViewController:self.happBoard animated:NO];
+    } else {
+        [self pushViewController:[[HappEnterPhoneViewController alloc] init] animated:NO];
+    }
 }
 
 - (void)didReceiveMemoryWarning

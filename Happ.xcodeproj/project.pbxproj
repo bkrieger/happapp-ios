@@ -10,6 +10,7 @@
 		C522DEF717DC46F800C1BC65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */; };
 		C522DEF917DC46FD00C1BC65 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C522DEF817DC46FD00C1BC65 /* Default@2x.png */; };
 		C531FB7617DC3271006A5617 /* witewall_3_@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = C531FB7517DC3271006A5617 /* witewall_3_@2X.png */; };
+		C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */; };
 		C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8717DAA84A006D481E /* UIKit.framework */; };
 		C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8917DAA84A006D481E /* Foundation.framework */; };
 		C58F0F8C17DAA84A006D481E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8B17DAA84A006D481E /* CoreGraphics.framework */; };
@@ -38,12 +39,15 @@
 		C5AD0EDB17DC4DA300B9FC77 /* party_ios_i.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0ED617DC4DA300B9FC77 /* party_ios_i.png */; };
 		C5AD0EDC17DC4DA300B9FC77 /* sport_ios_i.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */; };
 		C5AD0EDE17DC5B1100B9FC77 /* hippo_profile_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */; };
+		C5CB0B7417E11FDB00E014E6 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C522DEF817DC46FD00C1BC65 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C531FB7517DC3271006A5617 /* witewall_3_@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "witewall_3_@2X.png"; sourceTree = "<group>"; };
+		C56024E717E2B105004DC4EB /* HappEnterPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappEnterPhoneViewController.h; sourceTree = "<group>"; };
+		C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappEnterPhoneViewController.m; sourceTree = "<group>"; };
 		C58F0F8417DAA84A006D481E /* Happ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Happ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C58F0F8717DAA84A006D481E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C58F0F8917DAA84A006D481E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -85,6 +89,7 @@
 		C5AD0ED617DC4DA300B9FC77 /* party_ios_i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = party_ios_i.png; sourceTree = "<group>"; };
 		C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sport_ios_i.png; sourceTree = "<group>"; };
 		C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hippo_profile_ios.png; sourceTree = "<group>"; };
+		C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5CB0B7417E11FDB00E014E6 /* MessageUI.framework in Frameworks */,
 				C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */,
 				C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */,
 				C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */,
@@ -105,6 +111,7 @@
 		C58F0F7B17DAA84A006D481E = {
 			isa = PBXGroup;
 			children = (
+				C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */,
 				C58F160717E0CE5600B90185 /* assets */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
@@ -138,6 +145,8 @@
 				C58F0F9717DAA84A006D481E /* HappAppDelegate.m */,
 				C58F0F9F17DAA84B006D481E /* HappViewController.h */,
 				C58F0FA017DAA84B006D481E /* HappViewController.m */,
+				C56024E717E2B105004DC4EB /* HappEnterPhoneViewController.h */,
+				C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */,
 				C58F0FB617DB6F78006D481E /* HappComposeVC.h */,
 				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
 				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
@@ -281,6 +290,7 @@
 				C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */,
 				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
 				C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */,
+				C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
