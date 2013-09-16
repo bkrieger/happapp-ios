@@ -11,6 +11,7 @@
 #import "HappBoardVC.h"
 #import "HappModelEnums.h"
 #import <MessageUI/MessageUI.h>
+#import <AddressBookUI/AddressBookUI.h>
 
 @interface HappViewController ()
 
@@ -27,13 +28,42 @@
     self.navigationBar.tintColor = HAPP_PURPLE_COLOR;
     self.navigationBar.barStyle = UIBarStyleDefault;
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
-    if (phoneNumber) {
-        self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
-        [self.happBoard setUp];
-        [self pushViewController:self.happBoard animated:NO];
-    } else {
+    if (!phoneNumber) {
+        // The user has yet to verify their phone number
         [self pushViewController:[[HappEnterPhoneViewController alloc] init] animated:NO];
+    } else {
+        // Phone number is verified, now make sure we have Contacts permission.
+        ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
+        
+        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
+            ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
+                // First time access has been asked for.
+                if (granted) {
+                    [self startApp];
+                } else {
+                    [self displayWarningCantAccessContacts];
+                }
+            });
+        }
+        else if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
+            // The user has previously given access
+            [self startApp];
+        }
+        else {
+            // The user has previously denied access
+            [self displayWarningCantAccessContacts];
+        }
     }
+}
+
+- (void)startApp {
+    self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.happBoard setUp];
+    [self pushViewController:self.happBoard animated:NO];
+}
+
+- (void)displayWarningCantAccessContacts {
+    [[[UIAlertView alloc] initWithTitle:@"Contacts access is necessary" message:@"Please go into the iOS settings and give Happ permission to access your contacts." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 - (void)didReceiveMemoryWarning
