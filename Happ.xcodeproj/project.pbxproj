@@ -90,7 +90,6 @@
 		C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sport_ios_i.png; sourceTree = "<group>"; };
 		C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hippo_profile_ios.png; sourceTree = "<group>"; };
 		C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		C5E763E217E8094300054513 /* Twilio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Twilio.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,7 +158,6 @@
 				C58F0FAA17DAABBF006D481E /* HappModel.h */,
 				C58F0FAB17DAABBF006D481E /* HappModel.m */,
 				C58F0FBD17DB912C006D481E /* HappModelEnums.h */,
-				C5E763E217E8094300054513 /* Twilio.h */,
 				C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */,
 				C58F0FA217DAA84B006D481E /* HappViewController.xib */,
 				C58F0F8E17DAA84A006D481E /* Supporting Files */,
