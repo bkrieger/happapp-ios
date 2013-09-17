@@ -8,6 +8,7 @@
 
 #import "HappEnterPhoneViewController.h"
 #import "HappModelEnums.h"
+#import "Twilio.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface HappEnterPhoneViewController ()
@@ -39,8 +40,8 @@
 }
 
 - (void)onVerifyClick {
-    NSString *twilioId = @"...";
-    NSString *twilioSecret = @"...";
+    NSString *twilioId = TWILIO_API_KEY;
+    NSString *twilioSecret = TWILIO_API_SECRET;
     NSString *kFromNumber = @"+15165060910";
     NSString *kToNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
     NSString *randomNumber = [NSString stringWithFormat:@"%d", arc4random()];
