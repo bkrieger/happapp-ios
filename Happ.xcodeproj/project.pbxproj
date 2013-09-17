@@ -89,6 +89,7 @@
 		C5AD0ED617DC4DA300B9FC77 /* party_ios_i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = party_ios_i.png; sourceTree = "<group>"; };
 		C5AD0ED717DC4DA300B9FC77 /* sport_ios_i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sport_ios_i.png; sourceTree = "<group>"; };
 		C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hippo_profile_ios.png; sourceTree = "<group>"; };
+		C5B0A1DE17E8E853000DA2C9 /* Twilio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Twilio.h; sourceTree = "<group>"; };
 		C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -147,6 +148,7 @@
 				C58F0FA017DAA84B006D481E /* HappViewController.m */,
 				C56024E717E2B105004DC4EB /* HappEnterPhoneViewController.h */,
 				C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */,
+				C5B0A1DE17E8E853000DA2C9 /* Twilio.h */,
 				C58F0FB617DB6F78006D481E /* HappComposeVC.h */,
 				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
 				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
