@@ -93,6 +93,7 @@
                target:self
                action:@selector(cancelButtonWasPressed)];
     [[self.composeVC navigationItem] setLeftBarButtonItem:cancelButton];
+    cancelButton.tintColor = HAPP_WHITE_COLOR;
     
     // Send set up
     UIBarButtonItem *sendButton = [[UIBarButtonItem alloc]
@@ -100,7 +101,6 @@
                 style:UIBarButtonItemStylePlain
                target:self
                action:@selector(sendButtonWasPressed)];
-    [sendButton setTintColor:[UIColor colorWithRed:34.0/255.0 green:97.0/255.0 blue:221.0/255.0 alpha:1]];
     [[self.composeVC navigationItem] setRightBarButtonItem:sendButton];
     
     self.catcher = [[UIButton alloc] initWithFrame:self.composeVC.view.bounds];
@@ -296,7 +296,7 @@
         self.durationSelectorLabel = [[UILabel alloc] initWithFrame:textLabelFrame];
         self.durationSelectorLabel.backgroundColor = [UIColor clearColor];
         self.durationSelectorLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-        self.durationSelectorLabel.text = @"in the next";
+        self.durationSelectorLabel.text = @"for the next";
         self.durationSelectorLabel.textAlignment = NSTextAlignmentRight;
         
         CGRect textValueFrame = CGRectMake(

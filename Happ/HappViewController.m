@@ -25,8 +25,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationBar.tintColor = HAPP_PURPLE_COLOR;
-    self.navigationBar.barStyle = UIBarStyleDefault;
+    [UINavigationBar appearance].barTintColor = HAPP_PURPLE_COLOR;
+    [UINavigationBar appearance].alpha = 0.f;
+    [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
     if (!phoneNumber) {
         // The user has yet to verify their phone number

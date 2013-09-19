@@ -289,7 +289,7 @@
 - (HappComposeVC *)happCompose {
     if (!_happCompose) {
         _happCompose = [[HappComposeVC alloc] initWithDelegate:self dataSource:self.model];
-        _happCompose.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        _happCompose.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
         _happCompose.modalPresentationStyle = UIModalPresentationCurrentContext;
         _happCompose.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     }
