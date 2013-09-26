@@ -28,6 +28,7 @@
     [UINavigationBar appearance].barTintColor = HAPP_PURPLE_COLOR;
     [UINavigationBar appearance].alpha = 0.f;
     [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
+    [UINavigationBar appearance].tintColor = HAPP_WHITE_COLOR;
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
     if (!phoneNumber) {
         // The user has yet to verify their phone number
@@ -64,7 +65,13 @@
 }
 
 - (void)displayWarningCantAccessContacts {
-    [[[UIAlertView alloc] initWithTitle:@"Contacts access is necessary" message:@"Please go into the iOS settings and give Happ permission to access your contacts." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    [[[UIAlertView alloc] initWithTitle:@"Contacts access is necessary"
+                                message:@"Please go into the iOS settings and "
+                                        "give Happ permission to access your "
+                                        "contacts."
+                               delegate:nil
+                      cancelButtonTitle:@"OK"
+                      otherButtonTitles:nil] show];
 }
 
 - (void)didReceiveMemoryWarning

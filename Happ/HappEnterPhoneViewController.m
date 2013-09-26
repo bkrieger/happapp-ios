@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) UILabel *enterPhoneNumberLabel;
 @property (nonatomic, strong) UITextField *phoneNumberField;
+@property (nonatomic, strong) UIView *verifyRegion;
 @property (nonatomic, strong) UIButton *verifyButton;
 
 @end
@@ -26,20 +27,28 @@
     [super viewDidLoad];
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
+    
+    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, -20.f, 320.f, 64.f)];
+    colorView.opaque = NO;
+    colorView.backgroundColor = HAPP_PURPLE_COLOR;
+    [self.navigationController.navigationBar.layer insertSublayer:colorView.layer atIndex:1];
+    
     self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
     [self.navigationItem.titleView addSubview:titleImageView];
     titleImageView.frame = CGRectMake(25,
                                       27,
                                       titleImage.size.width / 2,
                                       titleImage.size.height / 2);
-    [self.view addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"witewall_3_@2x.png"]]];
+    self.view.backgroundColor = HAPP_WHITE_COLOR;
     [self.view addSubview:self.phoneNumberField];
     [self.view addSubview:self.enterPhoneNumberLabel];
-    [self.view addSubview:self.verifyButton];
+    self.phoneNumberField.inputAccessoryView = self.verifyButton;
     [self.phoneNumberField becomeFirstResponder];
 }
 
 - (void)onVerifyClick {
+    NSLog(@"Button Pressed %@", @"yo");
+
     NSString *twilioId = TWILIO_API_KEY;
     NSString *twilioSecret = TWILIO_API_SECRET;
     NSString *kFromNumber = @"+15165060910";
@@ -79,10 +88,15 @@
 - (UILabel *)enterPhoneNumberLabel {
     if (!_enterPhoneNumberLabel) {
         NSInteger offset = 30;
-        CGRect phoneNumberLabelRect = CGRectMake(offset, 15, self.view.bounds.size.width - 2*offset, 50);
+        CGRect phoneNumberLabelRect =
+            CGRectMake(offset,
+                       80 + offset,
+                       self.view.bounds.size.width - 2*offset,
+                       80);
         _enterPhoneNumberLabel = [[UILabel alloc] initWithFrame:phoneNumberLabelRect];
         _enterPhoneNumberLabel.text = @"Please enter your phone number to start using Happ.";
-        _enterPhoneNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+        _enterPhoneNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
+        _enterPhoneNumberLabel.textAlignment = NSTextAlignmentCenter;
         _enterPhoneNumberLabel.textColor = HAPP_PURPLE_COLOR;
         _enterPhoneNumberLabel.numberOfLines = 2;
     }
@@ -91,26 +105,41 @@
 
 - (UITextField *)phoneNumberField {
     if (!_phoneNumberField) {
-        NSInteger offset = 50;
-        CGRect phoneNumberRect = CGRectMake(offset, 70, self.view.bounds.size.width - 2*offset, 50);
+        NSInteger offset = 30;
+        NSInteger height = 50;
+        CGRect phoneNumberRect = CGRectMake(offset,
+                                            self.view.bounds.size.height/3,
+                                            self.view.bounds.size.width - 2*offset,
+                                            height);
         _phoneNumberField = [[UITextField alloc] initWithFrame:phoneNumberRect];
         _phoneNumberField.delegate = self;
-        _phoneNumberField.borderStyle = UITextBorderStyleRoundedRect;
+        _phoneNumberField.textAlignment = NSTextAlignmentCenter;
+        _phoneNumberField.borderStyle = UITextBorderStyleNone;
         _phoneNumberField.backgroundColor = HAPP_WHITE_COLOR;
-        _phoneNumberField.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:36];
+        _phoneNumberField.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:36];
         _phoneNumberField.keyboardType = UIKeyboardTypeNumberPad;
     }
     return _phoneNumberField;
 }
 
--(UIButton *)verifyButton {
+- (UIView *)verifyRegion {
+    if (!_verifyRegion) {
+        _verifyRegion = [[UIView alloc] initWithFrame:CGRectMake(0,
+                                                                 0,
+                                                                 self.view.bounds.size.width,
+                                                                 70)];
+        _verifyRegion.backgroundColor = HAPP_PURPLE_COLOR;
+    }
+    return _verifyRegion;
+}
+
+- (UIButton *)verifyButton {
     if (!_verifyButton) {
-        NSInteger offset = 50;
-        CGRect verifyButtonRect = CGRectMake(offset, 140, self.view.bounds.size.width - 2*offset, 50);
+        CGRect verifyButtonRect = self.verifyRegion.bounds;
         _verifyButton = [[UIButton alloc] initWithFrame:verifyButtonRect];
         _verifyButton.backgroundColor = HAPP_PURPLE_COLOR;
-        _verifyButton.layer.cornerRadius = 8.0f;
         [_verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
+        [_verifyButton setTitle:@"Verify your phone number" forState:UIControlStateDisabled];
         [_verifyButton addTarget:self action:@selector(onVerifyClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _verifyButton;
@@ -118,8 +147,20 @@
 
 #pragma mark UITextFieldDelegate methods
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    return textField.text.length < 10;
+- (BOOL)textField:(UITextField *)textField
+    shouldChangeCharactersInRange:(NSRange)range
+                replacementString:(NSString *)string {
+    NSInteger newTextLength = textField.text.length - range.length + string.length;
+    if (newTextLength == 10) {
+        self.verifyButton.enabled = YES;
+        self.verifyButton.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+        self.verifyRegion.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+    } else {
+        self.verifyButton.enabled = NO;
+        self.verifyButton.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+    }
+
+    return newTextLength <= 10;
 }
 
 @end
