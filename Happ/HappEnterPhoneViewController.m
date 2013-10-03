@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) UILabel *enterPhoneNumberLabel;
 @property (nonatomic, strong) UITextField *phoneNumberField;
-@property (nonatomic, strong) UIView *verifyRegion;
+@property (nonatomic, strong) UIView *phoneNumberLabelBackground;
 @property (nonatomic, strong) UIButton *verifyButton;
 
 @end
@@ -43,11 +43,12 @@
     [self.view addSubview:self.phoneNumberField];
     [self.view addSubview:self.enterPhoneNumberLabel];
     self.phoneNumberField.inputAccessoryView = self.verifyButton;
+    self.verifyButton.enabled = NO;
     [self.phoneNumberField becomeFirstResponder];
 }
 
 - (void)onVerifyClick {
-    NSLog(@"Button Pressed %@", @"yo");
+//    NSLog(@"Button Pressed %@", @"yo");
 
     NSString *twilioId = TWILIO_API_KEY;
     NSString *twilioSecret = TWILIO_API_SECRET;
@@ -97,7 +98,7 @@
         _enterPhoneNumberLabel.text = @"Please enter your phone number to start using Happ.";
         _enterPhoneNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
         _enterPhoneNumberLabel.textAlignment = NSTextAlignmentCenter;
-        _enterPhoneNumberLabel.textColor = HAPP_PURPLE_COLOR;
+        _enterPhoneNumberLabel.textColor = HAPP_BLACK_COLOR;
         _enterPhoneNumberLabel.numberOfLines = 2;
     }
     return _enterPhoneNumberLabel;
@@ -117,29 +118,36 @@
         _phoneNumberField.borderStyle = UITextBorderStyleNone;
         _phoneNumberField.backgroundColor = HAPP_WHITE_COLOR;
         _phoneNumberField.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:36];
+        _phoneNumberField.textColor = HAPP_BLACK_COLOR;
         _phoneNumberField.keyboardType = UIKeyboardTypeNumberPad;
     }
     return _phoneNumberField;
 }
 
-- (UIView *)verifyRegion {
-    if (!_verifyRegion) {
-        _verifyRegion = [[UIView alloc] initWithFrame:CGRectMake(0,
+- (UIView *)phoneNumberLabelBackground {
+    if (!_phoneNumberLabelBackground) {
+        _phoneNumberLabelBackground = [[UIView alloc] initWithFrame:CGRectMake(0,
                                                                  0,
                                                                  self.view.bounds.size.width,
-                                                                 70)];
-        _verifyRegion.backgroundColor = HAPP_PURPLE_COLOR;
+                                                                 200)];
+        _phoneNumberLabelBackground.backgroundColor = HAPP_PURPLE_COLOR;
     }
-    return _verifyRegion;
+    return _phoneNumberLabelBackground;
 }
 
 - (UIButton *)verifyButton {
     if (!_verifyButton) {
-        CGRect verifyButtonRect = self.verifyRegion.bounds;
+        CGRect verifyButtonRect = CGRectMake(0,
+                                             0,
+                                             self.view.bounds.size.width,
+                                             70);
         _verifyButton = [[UIButton alloc] initWithFrame:verifyButtonRect];
-        _verifyButton.backgroundColor = HAPP_PURPLE_COLOR;
+        _verifyButton.backgroundColor = HAPP_WHITE_COLOR;
+        [_verifyButton setTitleColor:HAPP_PURPLE_COLOR forState:UIControlStateNormal];
+        [_verifyButton setTitleColor:HAPP_PURPLE_ALPHA_COLOR forState:UIControlStateHighlighted];
+        [_verifyButton setTitleColor:HAPP_GRAY_COLOR forState:UIControlStateDisabled];
         [_verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
-        [_verifyButton setTitle:@"Verify your phone number" forState:UIControlStateDisabled];
+        _verifyButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
         [_verifyButton addTarget:self action:@selector(onVerifyClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _verifyButton;
@@ -180,13 +188,9 @@
     int length = [self getLength:textField.text];
 
     if(length == 10) {
-        if(range.length == 0) { return NO; }
-        self.verifyButton.enabled = YES;
-        self.verifyButton.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
-        self.verifyRegion.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
-    } else {
-        self.verifyButton.enabled = NO;
-        self.verifyButton.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+        if(range.length == 0) {
+            return NO;
+        }
     }
     
     if(length == 3) {
@@ -196,13 +200,19 @@
             textField.text = [NSString stringWithFormat:@"%@",[num substringToIndex:3]];
     } else if(length == 6) {
         NSString *num = [self formatNumber:textField.text];
-        //NSLog(@"%@",[num  substringToIndex:3]);
-        //NSLog(@"%@",[num substringFromIndex:3]);
-        textField.text = [NSString stringWithFormat:@"(%@) %@-",[num  substringToIndex:3],[num substringFromIndex:3]];
-        if(range.length > 0)
+        textField.text = [NSString stringWithFormat:@"(%@) %@-",[num substringToIndex:3],[num substringFromIndex:3]];
+        if(range.length > 0) {
             textField.text = [NSString stringWithFormat:@"(%@) %@",[num substringToIndex:3],[num substringFromIndex:3]];
+        }
     }
 
+    NSInteger newTextLength = length - range.length + string.length;
+    if (newTextLength == 10) {
+        self.verifyButton.enabled = YES;
+    } else {
+        self.verifyButton.enabled = NO;
+    }
+    
     return YES;
 }
 
