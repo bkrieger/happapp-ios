@@ -63,7 +63,6 @@
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
     self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
