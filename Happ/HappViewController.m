@@ -24,12 +24,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+
     [UINavigationBar appearance].barTintColor = HAPP_PURPLE_COLOR;
     [UINavigationBar appearance].alpha = 0.f;
     [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
     [UINavigationBar appearance].tintColor = HAPP_WHITE_COLOR;
     self.view.backgroundColor = HAPP_WHITE_COLOR;
+    
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
     if (!phoneNumber) {
         // The user has yet to verify their phone number
@@ -37,7 +38,6 @@
     } else {
         // Phone number is verified, now make sure we have Contacts permission.
         ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
-        
         if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
             ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
                 // First time access has been asked for.
@@ -74,12 +74,5 @@
                       cancelButtonTitle:nil
                       otherButtonTitles:nil] show];
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 @end

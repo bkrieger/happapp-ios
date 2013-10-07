@@ -71,7 +71,6 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     if ([connection.currentRequest.HTTPMethod isEqualToString:@"POST"]) {
-        NSLog(@"OH NO! %@", response);
     } else {
         self.temporaryData = [[NSMutableData alloc] init];
     }
@@ -106,8 +105,6 @@
         
         [self.moodPersons addObjectsFromArray:[[results objectForKey:@"data"] objectForKey:@"contacts"]];
         self.meMoodPerson = [[results objectForKey:@"data"] objectForKey:@"me"];
-        
-        NSLog(@"%@", results);
         [self.delegate modelIsReady];
     }
 }
@@ -125,13 +122,11 @@
                          [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
                          [self getMoodPostDataFor:mood],
                          [self getDurationPostDataFor:duration]];
-    NSLog(@"%@", postString);
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL
         URLWithString:[NSString stringWithFormat:@"%@%@",self.postUrl, postString]]];
     [request setHTTPMethod:@"POST"];
     
-    NSLog(@"%@", [request URL]);
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
 }

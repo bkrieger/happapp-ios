@@ -64,7 +64,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
     [self setUpViews];
     self.isDisplayingPickerView = NO;
@@ -73,12 +72,6 @@
     self.duration = HappModelDurationDefault;
     
     [self.textView becomeFirstResponder];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)setUpViews {
@@ -243,7 +236,6 @@
             self.accerssoryView.bounds.size.width,
             self.accerssoryView.bounds.size.height / 2);
         _moodSelector = [[UIButton alloc] initWithFrame:moodSelectorFrame];
-//        _moodSelector.backgroundColor = [UIColor blueColor];
         [_moodSelector addTarget:self
                           action:@selector(didTapOnMoodSelector)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -275,7 +267,6 @@
            self.accerssoryView.bounds.size.width,
            self.accerssoryView.bounds.size.height / 2);
         _durationSelector = [[UIButton alloc] initWithFrame:durationSelectorFrame];
-//        _durationSelector.backgroundColor = [UIColor redColor];
         [_durationSelector addTarget:self
                               action:@selector(didTapOnDurationSelector)
                     forControlEvents:UIControlEventTouchUpInside];

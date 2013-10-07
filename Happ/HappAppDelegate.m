@@ -60,7 +60,6 @@
         return NO;
     }
     NSString *realVerificationCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"verificationCode"];
-    NSLog(@"A: %@ and %@", realVerificationCode, url.host);
     if (realVerificationCode && [realVerificationCode isEqualToString:url.host]) {
         // Phone number is verified.
         NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"unverifiedPhoneNumber"];

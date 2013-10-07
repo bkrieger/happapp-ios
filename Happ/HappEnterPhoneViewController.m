@@ -49,14 +49,12 @@
 }
 
 - (void)onVerifyClick {
-//    NSLog(@"Button Pressed %@", @"yo");
-
     NSString *twilioId = TWILIO_API_KEY;
     NSString *twilioSecret = TWILIO_API_SECRET;
     NSString *kFromNumber = @"+15165060910";
     NSString *kToNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
     NSString *randomNumber = [NSString stringWithFormat:@"%d", abs(arc4random())];
-    NSLog(@"HERE: %@",randomNumber);
+    NSLog(@"Verification Code: %@",randomNumber);
     NSString *message = [NSString stringWithFormat:@"Thanks for using Happ! Click here to verify your phone number: happ://%@", randomNumber];
     
     [[NSUserDefaults standardUserDefaults] setObject:[self formatNumber:self.phoneNumberField.text] forKey:@"unverifiedPhoneNumber"];
@@ -76,14 +74,11 @@
     [request setHTTPBody:data];
     NSError *error;
     NSURLResponse *response;
-    NSData *receivedData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
     // Handle the received data
     if (error) {
-        NSLog(@"Error: %@", error);
-    } else {
-        NSString *receivedString = [[NSString alloc]initWithData:receivedData encoding:NSUTF8StringEncoding];
-        NSLog(@"Request sent. %@", receivedString);
+        NSLog(@"Error on Twilio POST: %@", error);
     }
     
     HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
@@ -188,7 +183,6 @@
     if(length > 10)
     {
         mobileNumber = [mobileNumber substringFromIndex: length-10];
-        NSLog(@"%@", mobileNumber);
     }
     return mobileNumber;
 }

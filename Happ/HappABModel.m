@@ -34,45 +34,34 @@
         NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
         
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
-        __block BOOL doesHaveAccess;
         
-        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {
-            ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
-                doesHaveAccess = granted;
-            });
-        } else if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied) {
-            ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
-                doesHaveAccess = granted;
-            });
-        } else {
-            doesHaveAccess = ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized;
-        }
-        CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
-                
-        for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook) && doesHaveAccess; i++ )
-        {
-            ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
-            NSString *firstName =
+        if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
+            CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
+            for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook); i++ )
+            {
+                ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
+                NSString *firstName =
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
-            NSString *lastName =
+                NSString *lastName =
                 (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-            NSString *personName = @"";
-            if (firstName) {
-                personName = [NSString stringWithFormat:@"%@%@", personName, firstName];
-            }
-            if (lastName) {
+                NSString *personName = @"";
                 if (firstName) {
-                    personName = [NSString stringWithFormat:@"%@%@", personName, @" "];
+                    personName = [NSString stringWithFormat:@"%@%@", personName, firstName];
                 }
-                personName = [NSString stringWithFormat:@"%@%@", personName, lastName];
-            }
-            ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
-            
-            for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
-                NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-                NSString *sanitizedPhoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [phoneNumber length])];
-                if ([sanitizedPhoneNumber length] >= 10) {
-                    [map setObject:personName forKey:[sanitizedPhoneNumber substringFromIndex:[sanitizedPhoneNumber length] - 10]];
+                if (lastName) {
+                    if (firstName) {
+                        personName = [NSString stringWithFormat:@"%@%@", personName, @" "];
+                    }
+                    personName = [NSString stringWithFormat:@"%@%@", personName, lastName];
+                }
+                ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
+                
+                for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
+                    NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
+                    NSString *sanitizedPhoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [phoneNumber length])];
+                    if ([sanitizedPhoneNumber length] >= 10) {
+                        [map setObject:personName forKey:[sanitizedPhoneNumber substringFromIndex:[sanitizedPhoneNumber length] - 10]];
+                    }
                 }
             }
         }
