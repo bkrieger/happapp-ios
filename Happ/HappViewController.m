@@ -29,6 +29,7 @@
     [UINavigationBar appearance].alpha = 0.f;
     [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
     [UINavigationBar appearance].tintColor = HAPP_WHITE_COLOR;
+    self.view.backgroundColor = HAPP_WHITE_COLOR;
     NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
     if (!phoneNumber) {
         // The user has yet to verify their phone number
@@ -70,7 +71,7 @@
                                         "give Happ permission to access your "
                                         "contacts."
                                delegate:nil
-                      cancelButtonTitle:@"OK"
+                      cancelButtonTitle:nil
                       otherButtonTitles:nil] show];
 }
 

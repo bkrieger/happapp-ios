@@ -9,6 +9,7 @@
 #import "HappEnterPhoneViewController.h"
 #import "HappModelEnums.h"
 #import "Twilio.h"
+#import "HappAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface HappEnterPhoneViewController ()
@@ -54,10 +55,11 @@
     NSString *twilioSecret = TWILIO_API_SECRET;
     NSString *kFromNumber = @"+15165060910";
     NSString *kToNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
-    NSString *randomNumber = [NSString stringWithFormat:@"%d", arc4random()];
+    NSString *randomNumber = [NSString stringWithFormat:@"%d", abs(arc4random())];
     NSLog(@"HERE: %@",randomNumber);
     NSString *message = [NSString stringWithFormat:@"Thanks for using Happ! Click here to verify your phone number: happ://%@", randomNumber];
-    [[NSUserDefaults standardUserDefaults] setObject:self.phoneNumberField.text forKey:@"unverifiedPhoneNumber"];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:[self formatNumber:self.phoneNumberField.text] forKey:@"unverifiedPhoneNumber"];
     [[NSUserDefaults standardUserDefaults] setObject:randomNumber forKey:@"verificationCode"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -83,6 +85,15 @@
         NSString *receivedString = [[NSString alloc]initWithData:receivedData encoding:NSUTF8StringEncoding];
         NSLog(@"Request sent. %@", receivedString);
     }
+    
+    HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Verification text sent"
+                                                   message:@"Please click on the verification link in your text message."
+                                                  delegate:nil
+                                         cancelButtonTitle:nil
+                                         otherButtonTitles:nil];
+    appDelegate.alertToDismiss = alert;
+    [alert show];
 }
 
 #pragma mark getters

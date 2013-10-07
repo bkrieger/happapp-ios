@@ -1,7 +1,7 @@
 //
 //  HappBoardVCViewController.m
 //  Happ
-// @"http://158.130.107.180:3000/api/moods?"
+//
 //  Created by Brandon Krieger on 9/6/13.
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
@@ -12,8 +12,7 @@
 #import "HappModel.h"
 #import "HappABModel.h"
 
-#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/moods?muffin=2&"
-#define HAPP_URL_GET_PREFIX @"http://54.221.209.211:3000/api/moods?muffin=2&me="
+#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?muffin=2"
 #define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappBoardVC ()
@@ -36,7 +35,6 @@
 }
 
 - (void)setUp {
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"witewall_3_@2x.png"]];
     self.tableView.backgroundColor = HAPP_WHITE_COLOR;
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -50,18 +48,15 @@
     [self.tableView.backgroundView addSubview:verticalLine];
     
     // Set Up model
-    self.model = [[HappModel alloc] initWithGetUrlPrefix:HAPP_URL_GET_PREFIX
-                                             contactsUrl:[self.addressBook getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR]
-                                                 postUrl:HAPP_URL_PREFIX delegate:self];
+    self.model = [[HappModel alloc] initWithUrlPrefix:HAPP_URL_PREFIX
+                                          contactsUrl:[self.addressBook getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR]
+                                             delegate:self];
     [self.model refresh];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];

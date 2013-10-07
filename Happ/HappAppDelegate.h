@@ -16,4 +16,6 @@
 
 @property (strong, nonatomic) HappViewController *viewController;
 
+@property (strong, nonatomic) UIAlertView *alertToDismiss;
+
 @end

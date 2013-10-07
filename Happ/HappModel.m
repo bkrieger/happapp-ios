@@ -1,7 +1,7 @@
 //
 //  HappModel.m
 //  Happ
-// 9176785919
+// 
 //  Created by Brandon Krieger on 9/6/13.
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
@@ -23,15 +23,14 @@
 
 @implementation HappModel
 
-- (id)initWithGetUrlPrefix:(NSString *)getUrlPrefix
+- (id)initWithUrlPrefix:(NSString *)urlPrefix
                contactsUrl:(NSString *)contactsUrl
-                   postUrl:(NSString *)postUrl
                   delegate:(NSObject<HappModelDelegate> *)delegate {
     self = [super init];
     if (self) {
         _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"phoneNumber"];
-        _getUrl = [NSString stringWithFormat:@"%@%@%@", getUrlPrefix, _myPhoneNumber, contactsUrl];
-        _postUrl = postUrl;
+        _getUrl = [NSString stringWithFormat:@"%@&me=%@%@", urlPrefix, _myPhoneNumber, contactsUrl];
+        _postUrl = [NSString stringWithFormat:@"%@%@", urlPrefix, contactsUrl];
         _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
     }
@@ -93,6 +92,7 @@
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
+    [self.delegate modelIsReady];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -120,7 +120,7 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     NSString *postString = [NSString
-        stringWithFormat:@"id=%@&msg=%@&tag=%@&duration=%@",
+        stringWithFormat:@"&id=%@&msg=%@&tag=%@&duration=%@",
                          self.myPhoneNumber,
                          [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
                          [self getMoodPostDataFor:mood],

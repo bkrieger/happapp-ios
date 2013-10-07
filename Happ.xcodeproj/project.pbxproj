@@ -112,7 +112,6 @@
 		C58F0F7B17DAA84A006D481E = {
 			isa = PBXGroup;
 			children = (
-				C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */,
 				C58F160717E0CE5600B90185 /* assets */,
 				C58F0F8D17DAA84A006D481E /* Happ */,
 				C58F0F8617DAA84A006D481E /* Frameworks */,
@@ -131,6 +130,7 @@
 		C58F0F8617DAA84A006D481E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */,
 				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8717DAA84A006D481E /* UIKit.framework */,
 				C58F0F8917DAA84A006D481E /* Foundation.framework */,
