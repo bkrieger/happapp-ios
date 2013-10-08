@@ -10,6 +10,8 @@
 		C522DEF717DC46F800C1BC65 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */; };
 		C522DEF917DC46FD00C1BC65 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C522DEF817DC46FD00C1BC65 /* Default@2x.png */; };
 		C531FB7617DC3271006A5617 /* witewall_3_@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = C531FB7517DC3271006A5617 /* witewall_3_@2X.png */; };
+		C53AD15518038B1F009BC207 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AD15418038B1F009BC207 /* AddressBookUI.framework */; };
+		C53AD1581803A389009BC207 /* HappFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C53AD1571803A389009BC207 /* HappFriendsVC.m */; };
 		C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */; };
 		C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8717DAA84A006D481E /* UIKit.framework */; };
 		C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8917DAA84A006D481E /* Foundation.framework */; };
@@ -46,6 +48,9 @@
 		C522DEF617DC46F800C1BC65 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C522DEF817DC46FD00C1BC65 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C531FB7517DC3271006A5617 /* witewall_3_@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "witewall_3_@2X.png"; sourceTree = "<group>"; };
+		C53AD15418038B1F009BC207 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		C53AD1561803A389009BC207 /* HappFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappFriendsVC.h; sourceTree = "<group>"; };
+		C53AD1571803A389009BC207 /* HappFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappFriendsVC.m; sourceTree = "<group>"; };
 		C56024E717E2B105004DC4EB /* HappEnterPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappEnterPhoneViewController.h; sourceTree = "<group>"; };
 		C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappEnterPhoneViewController.m; sourceTree = "<group>"; };
 		C58F0F8417DAA84A006D481E /* Happ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Happ.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C53AD15518038B1F009BC207 /* AddressBookUI.framework in Frameworks */,
 				C5CB0B7417E11FDB00E014E6 /* MessageUI.framework in Frameworks */,
 				C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */,
 				C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */,
@@ -130,6 +136,7 @@
 		C58F0F8617DAA84A006D481E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C53AD15418038B1F009BC207 /* AddressBookUI.framework */,
 				C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */,
 				C58F0FB417DADE9B006D481E /* AddressBook.framework */,
 				C58F0F8717DAA84A006D481E /* UIKit.framework */,
@@ -153,6 +160,8 @@
 				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
 				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
 				C58F0FAE17DAC122006D481E /* HappBoardVC.m */,
+				C53AD1561803A389009BC207 /* HappFriendsVC.h */,
+				C53AD1571803A389009BC207 /* HappFriendsVC.m */,
 				C58F0FB117DAD3C5006D481E /* HappABModel.h */,
 				C58F0FB217DAD3C5006D481E /* HappABModel.m */,
 				C58F0FBB17DB90B1006D481E /* HappComposeVCDelegate.h */,
@@ -293,6 +302,7 @@
 				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
 				C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */,
 				C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */,
+				C53AD1581803A389009BC207 /* HappFriendsVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

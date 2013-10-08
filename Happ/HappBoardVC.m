@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "HappBoardVC.h"
 #import "HappComposeVC.h"
+#import "HappFriendsVC.h"
 #import "HappModel.h"
 #import "HappABModel.h"
 
@@ -84,12 +85,14 @@
 
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
     [[self navigationItem] setRightBarButtonItems:@[spacer, composeButton ]];
+    
+    UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
+    [[self navigationItem] setLeftBarButtonItem:friendsButton];
 }
 
 - (void)launchComposeView:(id)sender
 {
     [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
-    
 }
 
 - (void)refresh {
@@ -142,7 +145,7 @@
     NSString *name;
     
     if ([indexPath row] == 0) {
-        cell.frame = CGRectMake(cellRect.origin.x, cellRect.origin.y, cellRect.size.width - 20, cellRect.size.height - 10);
+        cell.frame = CGRectMake(cellRect.origin.x + 5, cellRect.origin.y, cellRect.size.width - 10, cellRect.size.height);
         UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
         backgroundView.backgroundColor = [UIColor whiteColor];
         backgroundView.layer.cornerRadius = 10;
@@ -288,5 +291,51 @@
 - (void)cancelCompose {
     [self removeHappComposeVC];
 }
+
+
+#pragma mark - Friends
+
+- (void)launchFriends {
+    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithAddressBook:self.addressBook];
+    [[self navigationController] presentViewController:happFriendsVC animated:YES completion:nil];
+}
+
+#pragma mark - ABPeoplePickerNavigationControllerDelegate methods
+
+- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
+      shouldContinueAfterSelectingPerson:(ABRecordRef)person {
+    UIView *view = peoplePicker.topViewController.view;
+    UITableView *tableView = nil;
+    for(UIView *uv in view.subviews) {
+        if([uv isKindOfClass:[UITableView class]]) {
+            tableView = (UITableView*) uv;
+            break;
+        }
+    }
+    if(tableView != nil) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:[tableView indexPathForSelectedRow]];
+        if(cell.accessoryType == UITableViewCellAccessoryNone){
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            [self.addressBook setPerson:person blocked:NO];
+        } else{
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            [self.addressBook setPerson:person blocked:YES];
+        }
+        [cell setSelected:NO animated:YES];
+    }
+    return NO;
+}
+
+- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
+      shouldContinueAfterSelectingPerson:(ABRecordRef)person
+                                property:(ABPropertyID)property
+                              identifier:(ABMultiValueIdentifier)identifier {
+    return NO;
+}
+
+- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker {
+    
+}
+
 
 @end

@@ -7,10 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AddressBook/AddressBook.h>
 
 @interface HappABModel : NSObject
 
 - (NSString *)getUrlFromContactsWithSeparator:(NSString *)separator;
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber;
+
+- (NSSet *)getBlockedNumbers;
+
+- (void)setPerson:(ABRecordRef)person blocked:(BOOL)blocked;
 @end

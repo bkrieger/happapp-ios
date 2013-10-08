@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AddressBook/AddressBook.h>
+#import <AddressBookUI/ABPeoplePickerNavigationController.h>
 #import "HappModelDelegate.h"
 #import "HappComposeVCDelegate.h"
 
 @interface HappBoardVC : UITableViewController<HappModelDelegate,
-                                               HappComposeVCDelegate>
+                                               HappComposeVCDelegate,
+                                        ABPeoplePickerNavigationControllerDelegate>
 
 // Must be called after initialization.
 - (void)setUp;
