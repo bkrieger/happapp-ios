@@ -13,8 +13,7 @@
 #import "HappComposeVCDelegate.h"
 
 @interface HappBoardVC : UITableViewController<HappModelDelegate,
-                                               HappComposeVCDelegate,
-                                        ABPeoplePickerNavigationControllerDelegate>
+                                               HappComposeVCDelegate>
 
 // Must be called after initialization.
 - (void)setUp;

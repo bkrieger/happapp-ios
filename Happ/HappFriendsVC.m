@@ -11,21 +11,36 @@
 @interface HappFriendsVC ()
 
 @property (nonatomic, strong) HappABModel *happABModel;
+@property (nonatomic, strong) HappModel *happModel;
 
 @end
 
 @implementation HappFriendsVC
 
-- (id)initWithHappABModel:(HappABModel *)happABModel {
+- (id)initWithHappABModel:(HappABModel *)happABModel happModel:(HappModel *)happModel {
     self = [super init];
     if (self) {
         _happABModel = happABModel;
+        _happModel = happModel;
     }
     return self;
 }
 
 - (void)dispose {
     self.happABModel = nil;
+    self.happModel = nil;
+}
+
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.title = @"Friends";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(saveFriends)];
+}
+
+-(void)saveFriends {
+    [self.happModel updateFriends];
+    [self dispose];
+    [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source methods

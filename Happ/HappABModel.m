@@ -11,7 +11,9 @@
 #import "HappABModel.h"
 
 @interface HappABModel()
+
 @property (nonatomic, strong) NSDictionary *phoneNumberNameMap;
+
 @end
 
 @implementation HappABModel
@@ -79,7 +81,6 @@
     
     [userDefaults setObject:[newBlockedNumbers allObjects] forKey:BLOCKED_NUMBERS_KEY];
     [userDefaults synchronize];
-    NSLog(@"Blocked Numbers: %@", newBlockedNumbers);
 }
 
 - (NSDictionary *)phoneNumberNameMap {
@@ -99,7 +100,7 @@
                     NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
                     NSString *sanitizedPhoneNumber = [self sanitizePhoneNumber:phoneNumber];
                     if (sanitizedPhoneNumber && [sanitizedPhoneNumber length] >= 10) {
-                        [map setObject:personName forKey:[sanitizedPhoneNumber substringFromIndex:[sanitizedPhoneNumber length] - 10]];
+                        [map setObject:personName forKey:sanitizedPhoneNumber];
                     }
                 }
             }

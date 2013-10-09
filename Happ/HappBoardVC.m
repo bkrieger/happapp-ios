@@ -13,8 +13,6 @@
 #import "HappModel.h"
 #import "HappABModel.h"
 
-#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?muffin=2"
-#define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappBoardVC ()
 
@@ -49,9 +47,7 @@
     [self.tableView.backgroundView addSubview:verticalLine];
     
     // Set Up model
-    self.model = [[HappModel alloc] initWithUrlPrefix:HAPP_URL_PREFIX
-                                          contactsUrl:[self.addressBook getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR]
-                                             delegate:self];
+    self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
     [self.model refresh];
 }
 
@@ -296,54 +292,11 @@
 #pragma mark - Friends
 
 - (void)launchFriends {
-    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook];
+    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
     
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:navController animated:YES completion:nil];
 }
-//
-//- (void)launchFriends {
-//    ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
-//    [self presentViewController:picker animated:YES completion:nil];
-//}
-
-#pragma mark - ABPeoplePickerNavigationControllerDelegate methods
-
-- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
-      shouldContinueAfterSelectingPerson:(ABRecordRef)person {
-    UIView *view = peoplePicker.topViewController.view;
-    UITableView *tableView = nil;
-    for(UIView *uv in view.subviews) {
-        if([uv isKindOfClass:[UITableView class]]) {
-            tableView = (UITableView*) uv;
-            break;
-        }
-    }
-    if(tableView != nil) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:[tableView indexPathForSelectedRow]];
-        if(cell.accessoryType == UITableViewCellAccessoryNone){
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-            [self.addressBook setPerson:person blocked:NO];
-        } else{
-            cell.accessoryType = UITableViewCellAccessoryNone;
-            [self.addressBook setPerson:person blocked:YES];
-        }
-        [cell setSelected:NO animated:YES];
-    }
-    return NO;
-}
-
-- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
-      shouldContinueAfterSelectingPerson:(ABRecordRef)person
-                                property:(ABPropertyID)property
-                              identifier:(ABMultiValueIdentifier)identifier {
-    return NO;
-}
-
-- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker {
-    
-}
-
 
 @end

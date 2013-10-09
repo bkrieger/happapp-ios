@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 #import "HappABModel.h"
+#import "HappModel.h"
 
 @interface HappFriendsVC : UITableViewController
 
-- (id)initWithHappABModel:(HappABModel *)happABModel;
-
-- (void)dispose;
+- (id)initWithHappABModel:(HappABModel *)happABModel happModel:(HappModel *)happModel;
 
 @end
