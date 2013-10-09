@@ -12,7 +12,7 @@
 
 @interface HappFriendsVC : UITableViewController
 
-- (id)initWithAddressBook:(HappABModel *)addressBook;
+- (id)initWithHappABModel:(HappABModel *)happABModel;
 
 - (void)dispose;
 

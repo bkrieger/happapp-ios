@@ -296,9 +296,17 @@
 #pragma mark - Friends
 
 - (void)launchFriends {
-    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithAddressBook:self.addressBook];
-    [[self navigationController] presentViewController:happFriendsVC animated:YES completion:nil];
+    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
+    
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [self presentViewController:navController animated:YES completion:nil];
 }
+//
+//- (void)launchFriends {
+//    ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
+//    [self presentViewController:picker animated:YES completion:nil];
+//}
 
 #pragma mark - ABPeoplePickerNavigationControllerDelegate methods
 

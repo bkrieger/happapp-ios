@@ -11,11 +11,19 @@
 
 @interface HappABModel : NSObject
 
+// This is an NSArray<NSArray<ABRecordRef>>.
+// The outer array has an array for each character of the alphabet,
+// the inner array contains the records that start with that character.
+@property (nonatomic, strong) NSArray *contactsSeparatedByFirstLetter;
+
 - (NSString *)getUrlFromContactsWithSeparator:(NSString *)separator;
 
 - (NSString *)getNameForPhoneNumber:(NSString *)phoneNumber;
 
-- (NSSet *)getBlockedNumbers;
+- (BOOL)isPersonBlocked:(ABRecordRef)person;
 
 - (void)setPerson:(ABRecordRef)person blocked:(BOOL)blocked;
+
+- (NSString *)fullNameForPerson:(ABRecordRef)person;
+
 @end
