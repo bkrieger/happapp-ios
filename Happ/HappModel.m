@@ -8,9 +8,10 @@
 
 #import "HappModel.h"
 #import "HappModelDelegate.h"
+#import "Twilio.h"
 
-#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?muffin=2"
-#define HAPP_URL_UPDATE_FRIENDS @"http://54.221.209.211:3000/api/v1/friends?muffin=2"
+#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?"
+#define HAPP_URL_UPDATE_FRIENDS @"http://54.221.209.211:3000/api/v1/friends?"
 #define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappModel()
@@ -43,14 +44,16 @@
 }
 
 - (NSString *)createGetUrl {
-    return [NSString stringWithFormat:@"%@&me=%@%@", HAPP_URL_PREFIX, self.myPhoneNumber, self.contactsUrl];
+    return [NSString stringWithFormat:@"%@%@&me=%@%@",
+            HAPP_URL_PREFIX, AUTHENTICATION_KEY, self.myPhoneNumber, self.contactsUrl];
 }
 
 - (NSString *)createPostUrlWithMessage:(NSString *)message
                                   mood:(HappModelMood)mood
                               duration:(HappModelDuration)duration {
-    return [NSString stringWithFormat:@"%@%@&id=%@&msg=%@&tag=%@&duration=%@",
+    return [NSString stringWithFormat:@"%@%@%@&id=%@&msg=%@&tag=%@&duration=%@",
             HAPP_URL_PREFIX,
+            AUTHENTICATION_KEY,
             self.contactsUrl,
             self.myPhoneNumber,
             [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
@@ -59,7 +62,8 @@
 }
 
 - (NSString *)createUpdateFriendsUrl {
-    return [NSString stringWithFormat:@"%@&me=%@%@", HAPP_URL_UPDATE_FRIENDS, self.myPhoneNumber, self.contactsUrl];
+    return [NSString stringWithFormat:@"%@%@&me=%@%@",
+            HAPP_URL_UPDATE_FRIENDS, AUTHENTICATION_KEY, self.myPhoneNumber, self.contactsUrl];
 }
 
 - (void)refresh {
