@@ -173,6 +173,8 @@
                                           cellRect.size.height / 3);
 
         NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+        NSLog(@"%@",
+              phoneNumber);
         personView.backgroundColor = [self generateColor:[phoneNumber integerValue]];
         name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     }
