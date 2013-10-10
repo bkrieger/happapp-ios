@@ -39,11 +39,11 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     // Vertical Line
-    CGRect vertivalLineRect = CGRectMake(50, 0, 4,
+    CGRect verticalLineRect = CGRectMake(50, 0, 4,
                                          self.tableView.backgroundView.bounds.size.height);
-    UIView *verticalLine = [[UIView alloc] initWithFrame:vertivalLineRect];
+    UIView *verticalLine = [[UIView alloc] initWithFrame:verticalLineRect];
     verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
-    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+//    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.tableView.backgroundView addSubview:verticalLine];
     
     // Set Up model
@@ -59,13 +59,15 @@
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
     self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
     [self.navigationItem.titleView addSubview:titleImageView];
-    titleImageView.frame = CGRectMake(25,
-                                                     27,
-                                                     titleImage.size.width / 2,
-                                                     titleImage.size.height / 2);
+    titleImageView.frame = CGRectMake(27, 27, titleImage.size.width / 2, titleImage.size.height / 2);
     
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl setBounds:CGRectMake(
+                                         refreshControl.bounds.origin.x,
+                                         refreshControl.bounds.origin.y + 20,
+                                         refreshControl.bounds.size.width,
+                                         refreshControl.bounds.size.height)];
     [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     refreshControl.tintColor = HAPP_PURPLE_COLOR;
     self.refreshControl = refreshControl;
@@ -73,20 +75,19 @@
     UIImage *composeInnerImage = [UIImage imageNamed:@"compose_ios.png"];
     UIButton *composeInnerButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [composeInnerButton setBackgroundImage:composeInnerImage forState:UIControlStateNormal];
-    composeInnerButton.frame = CGRectMake(0, 0, composeInnerImage.size.width / 2, composeInnerImage.size.height /2);
-    [composeInnerButton addTarget:self action:@selector(launchComposeView:) forControlEvents:UIControlEventTouchUpInside];
+    composeInnerButton.frame = CGRectMake(0, 0, composeInnerImage.size.width / 2, composeInnerImage.size.height / 2);
+    [composeInnerButton addTarget:self action:@selector(launchComposeView) forControlEvents:UIControlEventTouchUpInside];
     composeInnerButton.contentEdgeInsets = UIEdgeInsetsMake(0, -40, 0, 40);
 
-    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]; spacer.width = 5;
-
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
-    [[self navigationItem] setRightBarButtonItems:@[spacer, composeButton ]];
+    self.navigationItem.rightBarButtonItem = composeButton;
     
     UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
     [[self navigationItem] setLeftBarButtonItem:friendsButton];
+    self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, 0, 0);
 }
 
-- (void)launchComposeView:(id)sender
+- (void)launchComposeView
 {
     [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
 }
@@ -100,9 +101,8 @@
                         [UIColor colorWithRed:4/255.0f green:167/255.0f blue:170/255.0f alpha:1.0f],
                         [UIColor colorWithRed:4/255.0f green:170/255.0f blue:43/255.0f alpha:1.0f],
                         [UIColor colorWithRed:170/255.0f green:40/255.0f blue:4/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:222/255.0f green:209/255.0f blue:31/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:255/255.0f green:216/255.0f blue:30/255.0f alpha:1.0f],
                         [UIColor colorWithRed:31/255.0f green:196/255.0f blue:222/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:125/255.0f green:125/255.0f blue:125/255.0f alpha:1.0f],
                         [UIColor colorWithRed:250/255.0f green:117/255.0f blue:0/255.0f alpha:1.0f]];
     NSInteger index = phoneNumber % [colors count];
     return [colors objectAtIndex:index];
@@ -141,16 +141,16 @@
     NSString *name;
     
     if ([indexPath row] == 0) {
-        cell.frame = CGRectMake(cellRect.origin.x + 5, cellRect.origin.y, cellRect.size.width - 10, cellRect.size.height);
+        cell.frame = CGRectMake(cellRect.origin.x + 5, cellRect.origin.y, cellRect.size.width - 10, cellRect.size.height - 10);
         UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
         backgroundView.backgroundColor = [UIColor whiteColor];
         backgroundView.layer.cornerRadius = 10;
         [cell.contentView addSubview:backgroundView];
         moodPerson = [self.model getMoodPersonForMe];
         
-        nameLabelX = 12;
+        nameLabelX = 20;
         nameLabelRect = CGRectMake(nameLabelX,
-                                   7,
+                                   8,
                                    210,
                                    cellRect.size.height / 3);
         name = @"Me";
@@ -173,9 +173,7 @@
                                           cellRect.size.height / 3);
 
         NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
-        NSLog(@"%@",
-              phoneNumber);
-        personView.backgroundColor = [self generateColor:[phoneNumber integerValue]];
+        personView.backgroundColor = [self generateColor:[phoneNumber hash]];
         name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     }
     
@@ -224,10 +222,7 @@
         happening.text = @"What's Happening?";
         happening.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:23];
         happening.textColor = HAPP_PURPLE_COLOR;
-        UIButton *happeningButton = [[UIButton alloc] initWithFrame:happening.frame];
-        [happeningButton addTarget:self action:@selector(launchComposeView:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:happening];
-        [cell.contentView addSubview:happeningButton];
     }
     
     return cell;
@@ -264,9 +259,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *phoneNumber = [NSString stringWithFormat:@"sms:%@", [[self.model getMoodPersonForIndex:indexPath.row] objectForKey:@"_id"]];
-    NSURL *url = [NSURL URLWithString:phoneNumber];
-    [[UIApplication sharedApplication] openURL:url];
+    if (indexPath.row == 0) {
+        [self launchComposeView];
+    } else {
+        NSString *phoneNumber = [NSString stringWithFormat:@"sms:%@", [[self.model getMoodPersonForIndex:indexPath.row] objectForKey:@"_id"]];
+        NSURL *url = [NSURL URLWithString:phoneNumber];
+        [[UIApplication sharedApplication] openURL:url];
+    }
 }
 
 #pragma mark - HappModelDelegate methods

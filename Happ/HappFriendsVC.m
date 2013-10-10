@@ -34,7 +34,7 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"Friends";
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(saveFriends)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(saveFriends)];
 }
 
 -(void)saveFriends {
