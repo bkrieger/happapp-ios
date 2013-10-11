@@ -17,8 +17,19 @@
 @interface HappBoardVC ()
 
 @property (nonatomic, strong) HappComposeVC *happCompose;
-@property HappModel *model;
-@property HappABModel *addressBook;
+@property (nonatomic, strong) HappModel *model;
+@property (nonatomic, strong) HappABModel *addressBook;
+
+@property (nonatomic, strong) UIControl *textBarContainer;
+@property (nonatomic, strong) UILabel *textBar;
+@property BOOL textBarShowing;
+// We store the contacts in a set and an array because:
+// we need an array to keep the order to display in the bottom bar;
+// but we want to have constant time lookup because that happens often.
+@property (nonatomic, strong) NSMutableSet *selectedContacts;
+@property (nonatomic, strong) NSMutableArray *selectedContactsInOrder;
+
+@property (nonatomic, strong) MFMessageComposeViewController *smsVC;
 
 @end
 
@@ -29,6 +40,7 @@
     self = [super initWithStyle:style];
     if (self) {
         _addressBook = [[HappABModel alloc] init];
+        _textBarShowing = NO;
     }
     return self;
 }
@@ -43,7 +55,7 @@
                                          self.tableView.backgroundView.bounds.size.height);
     UIView *verticalLine = [[UIView alloc] initWithFrame:verticalLineRect];
     verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
-//    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.tableView.backgroundView addSubview:verticalLine];
     
     // Set Up model
@@ -84,28 +96,8 @@
     
     UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
     [[self navigationItem] setLeftBarButtonItem:friendsButton];
-    self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, 0, 0);
-}
-
-- (void)launchComposeView
-{
-    [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
-}
-
-- (void)refresh {
-    [self.model refresh];
-}
-
-- (UIColor *)generateColor:(NSInteger)phoneNumber {
-    NSArray *colors = @[[UIColor colorWithRed:4/255.0f green:4/255.0f blue:170/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:4/255.0f green:167/255.0f blue:170/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:4/255.0f green:170/255.0f blue:43/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:170/255.0f green:40/255.0f blue:4/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:255/255.0f green:216/255.0f blue:30/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:31/255.0f green:196/255.0f blue:222/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:250/255.0f green:117/255.0f blue:0/255.0f alpha:1.0f]];
-    NSInteger index = phoneNumber % [colors count];
-    return [colors objectAtIndex:index];
+    // Get rid of padding that iOS adds by default around tableview
+    self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, -40, 0);
 }
 
 #pragma mark - Table view data source
@@ -203,16 +195,26 @@
         messageLabel.shadowOffset = CGSizeZero;
         messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
-        // Mood Icon...
-        HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
-        HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
-        UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
-        moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
-                                    nameLabelRect.origin.y + 7,
-                                    (60 / 5) * 4,
-                                    (60 / 5) * 4);
+        // Mood Icon or checkbox
+        if (self.textBarShowing) {
+            if ([self.selectedContacts containsObject:moodPerson]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            } else {
+                cell.accessoryType = UITableViewCellAccessoryNone;
+            }
+        } else {
+            HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
+            HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
+            UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
+            moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
+                                        nameLabelRect.origin.y + 7,
+                                        (60 / 5) * 4,
+                                        (60 / 5) * 4);
+            
+            [cell.contentView addSubview:moodIcon];
 
-        [cell.contentView addSubview:moodIcon];
+        }
+        
         [cell.contentView addSubview:nameLabel];
         [cell.contentView addSubview:messageLabel];
     } else {
@@ -236,36 +238,38 @@
     return NO;
 }
 
-- (HappComposeVC *)happCompose {
-    if (!_happCompose) {
-        _happCompose = [[HappComposeVC alloc] initWithDelegate:self dataSource:self.model];
-        _happCompose.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
-        _happCompose.modalPresentationStyle = UIModalPresentationCurrentContext;
-        _happCompose.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    }
-    return _happCompose;
-}
-
-- (void)removeHappComposeVC {
-    [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
-    
-    [self.happCompose dispose];
-    self.happCompose = nil;
-    [self.refreshControl beginRefreshing];
-    [self refresh];
-}
-
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
         [self launchComposeView];
     } else {
-        NSString *phoneNumber = [NSString stringWithFormat:@"sms:%@", [[self.model getMoodPersonForIndex:indexPath.row] objectForKey:@"_id"]];
-        NSURL *url = [NSURL URLWithString:phoneNumber];
-        [[UIApplication sharedApplication] openURL:url];
+        NSDictionary *moodPerson = [self.model getMoodPersonForIndex:[indexPath row] - 1];
+        if ([self.selectedContacts containsObject:moodPerson]) {
+            // Contact was previously selected.
+            [self.selectedContacts removeObject:moodPerson];
+            [self.selectedContactsInOrder removeObject:moodPerson];
+            if ([self.selectedContacts count] == 0) {
+                // Now no contacts are selected, so remove the text bar.
+                [self setTextBarEnabled:NO];
+            }
+        } else {
+            // The contact was not already selected.
+            [self.selectedContacts addObject:moodPerson];
+            [self.selectedContactsInOrder addObject:moodPerson];
+            if (!self.textBarShowing) {
+                // This is the first selected person
+                [self setTextBarEnabled:YES];
+            }
+        }
+        [self updateTextBarText];
     }
+}
+
+#pragma mark MFMessageComposeViewControllerDelegate methods
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self.smsVC dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - HappModelDelegate methods
@@ -273,6 +277,7 @@
 - (void)modelIsReady {
     [self.tableView reloadData];
     [self.refreshControl endRefreshing];
+    [self setTextBarEnabled:NO];
 }
 
 - (void)modelDidPost {
@@ -289,15 +294,130 @@
     [self removeHappComposeVC];
 }
 
+#pragma mark - Getters
 
-#pragma mark - Friends
+- (UIControl *)textBarContainer {
+    if (!_textBarContainer) {
+        CGRect frame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
+        _textBarContainer = [[UIControl alloc] initWithFrame:frame];
+        _textBarContainer.backgroundColor = HAPP_PURPLE_COLOR;
+        [_textBarContainer addSubview:self.textBar];
+        [_textBarContainer addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _textBarContainer;
+}
+
+- (UILabel *)textBar {
+    if (!_textBar) {
+        CGRect frame = CGRectMake(10, 0, self.tableView.frame.size.width - 20, 40);
+        _textBar = [[UILabel alloc] initWithFrame:frame];
+        _textBar.lineBreakMode = NSLineBreakByTruncatingHead;
+        _textBar.textColor = HAPP_WHITE_COLOR;
+    }
+    return _textBar;
+}
+
+- (NSMutableSet *)selectedContacts {
+    if (!_selectedContacts) {
+        _selectedContacts = [[NSMutableSet alloc] init];
+    }
+    return _selectedContacts;
+}
+
+- (NSMutableArray *)selectedContactsInOrder {
+    if (!_selectedContactsInOrder) {
+        _selectedContactsInOrder = [[NSMutableArray alloc] init];
+    }
+    return _selectedContactsInOrder;
+}
+
+- (HappComposeVC *)happCompose {
+    if (!_happCompose) {
+        _happCompose = [[HappComposeVC alloc] initWithDelegate:self dataSource:self.model];
+        _happCompose.navigationBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+        _happCompose.modalPresentationStyle = UIModalPresentationCurrentContext;
+        _happCompose.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    }
+    return _happCompose;
+}
+
+#pragma mark - selectors
+
+- (void)launchComposeView
+{
+    [self setTextBarEnabled:NO];
+    [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
+}
 
 - (void)launchFriends {
+    [self setTextBarEnabled:NO];
     HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
     
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:navController animated:YES completion:nil];
+}
+
+- (void)sendText {
+    self.smsVC = [[MFMessageComposeViewController alloc] init];
+    if ([MFMessageComposeViewController canSendText]) {
+        self.smsVC.recipients = [self.selectedContactsInOrder valueForKey:@"_id"];
+        self.smsVC.messageComposeDelegate = self;
+        [self presentViewController:self.smsVC animated:YES completion:nil];
+    }
+}
+
+#pragma mark - Helpers
+
+- (void)refresh {
+    [self.model refresh];
+}
+
+- (UIColor *)generateColor:(NSInteger)phoneNumber {
+    NSArray *colors = @[[UIColor colorWithRed:4/255.0f green:4/255.0f blue:170/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:4/255.0f green:167/255.0f blue:170/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:4/255.0f green:170/255.0f blue:43/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:170/255.0f green:40/255.0f blue:4/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:255/255.0f green:216/255.0f blue:30/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:31/255.0f green:196/255.0f blue:222/255.0f alpha:1.0f],
+                        [UIColor colorWithRed:250/255.0f green:117/255.0f blue:0/255.0f alpha:1.0f]];
+    NSInteger index = phoneNumber % [colors count];
+    return [colors objectAtIndex:index];
+}
+
+- (void)setTextBarEnabled:(BOOL)enabled {
+    if (enabled) {
+        self.tableView.contentInset = UIEdgeInsetsMake(34, 0, 0, 0);
+        [self.navigationController.view addSubview:self.textBarContainer];
+        self.textBarShowing = YES;
+    } else {
+        self.tableView.contentInset = UIEdgeInsetsMake(34, 0, -40, 0);
+        [self.textBarContainer removeFromSuperview];
+        self.textBarShowing = NO;
+        [self.selectedContacts removeAllObjects];
+        [self.selectedContactsInOrder removeAllObjects];
+    }
+}
+
+- (void)updateTextBarText {
+    NSMutableArray *names = [[NSMutableArray alloc] initWithCapacity:[self.selectedContactsInOrder count]];
+    for (NSDictionary *moodPerson in self.selectedContactsInOrder) {
+        NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+        NSString *name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
+        NSString *firstName = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
+        [names addObject:firstName];
+    }
+    self.textBar.text = [NSString stringWithFormat:@"Text %@", [names componentsJoinedByString:@", "]];
+    [self.tableView reloadData];
+}
+
+- (void)removeHappComposeVC {
+    [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
+    
+    [self.happCompose dispose];
+    self.happCompose = nil;
+    [self.refreshControl beginRefreshing];
+    [self refresh];
 }
 
 @end

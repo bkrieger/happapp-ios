@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <AddressBook/AddressBook.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
+#import <MessageUI/MessageUI.h>
 #import "HappModelDelegate.h"
 #import "HappComposeVCDelegate.h"
 
-@interface HappBoardVC : UITableViewController<HappModelDelegate,
-                                               HappComposeVCDelegate>
+@interface HappBoardVC : UITableViewController<HappModelDelegate, HappComposeVCDelegate, MFMessageComposeViewControllerDelegate>
 
 // Must be called after initialization.
 - (void)setUp;
