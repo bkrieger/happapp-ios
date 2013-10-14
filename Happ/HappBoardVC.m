@@ -46,18 +46,6 @@
 }
 
 - (void)setUp {
-    self.tableView.backgroundColor = HAPP_WHITE_COLOR;
-    self.tableView.separatorColor = [UIColor clearColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
-    // Vertical Line
-    CGRect verticalLineRect = CGRectMake(50, 0, 4,
-                                         self.tableView.backgroundView.bounds.size.height);
-    UIView *verticalLine = [[UIView alloc] initWithFrame:verticalLineRect];
-    verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
-    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    [self.tableView.backgroundView addSubview:verticalLine];
-    
     // Set Up model
     self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
     [self.model refresh];
@@ -67,12 +55,24 @@
 {
     [super viewDidLoad];
     
+    self.tableView.backgroundColor = HAPP_WHITE_COLOR;
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
     self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
     [self.navigationItem.titleView addSubview:titleImageView];
     titleImageView.frame = CGRectMake(27, 27, titleImage.size.width / 2, titleImage.size.height / 2);
     
+    // Vertical Line
+    CGRect verticalLineRect = CGRectMake(38, -200, 4,
+                                         self.tableView.bounds.size.height * 2);
+    UIView *verticalLine = [[UIView alloc] initWithFrame:verticalLineRect];
+    verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
+    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    verticalLine.layer.zPosition = -1;
+    [self.tableView addSubview:verticalLine];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl setBounds:CGRectMake(
