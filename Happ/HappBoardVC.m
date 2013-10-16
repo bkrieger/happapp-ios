@@ -20,6 +20,8 @@
 @property (nonatomic, strong) HappModel *model;
 @property (nonatomic, strong) HappABModel *addressBook;
 
+@property (nonatomic, strong) UIImageView *nothingIsHappeningView;
+
 @property (nonatomic, strong) UIControl *textBarContainer;
 @property (nonatomic, strong) UILabel *textBar;
 @property BOOL textBarShowing;
@@ -74,6 +76,7 @@
     verticalLine.layer.zPosition = -1;
     [self.tableView addSubview:verticalLine];
     
+    // Refresh control
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl setBounds:CGRectMake(
                                          refreshControl.bounds.origin.x,
@@ -109,8 +112,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSInteger count = [self.model getMoodPersonCount];
+    if (count == 0) {
+        [self.tableView addSubview:self.nothingIsHappeningView];
+    } else {
+        [self.nothingIsHappeningView removeFromSuperview];
+    }
     // Add 1 for "me"
-    return [self.model getMoodPersonCount] + 1;
+    return count + 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -177,7 +186,7 @@
     nameLabel.shadowOffset = CGSizeZero;
     nameLabel.shadowColor = [UIColor clearColor];
     nameLabel.text = name;
-    
+
     if ([moodPerson objectForKey:@"message"]) {
         // Message...
         CGRect messageLabelRect = CGRectMake(nameLabelX,
@@ -185,7 +194,7 @@
                                              cellRect.size.width - nameLabelX - 80,
                                              nameLabelRect.size.height * 1.2);
         UILabel *messageLabel = [[UILabel alloc] initWithFrame:messageLabelRect];
-        messageLabel.text = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];;
+        messageLabel.text = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"message"]];
         messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
         messageLabel.numberOfLines = 0;
         [messageLabel sizeToFit];
@@ -196,23 +205,17 @@
         messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         // Mood Icon or checkbox
-        if (self.textBarShowing) {
-            if ([self.selectedContacts containsObject:moodPerson]) {
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-            } else {
-                cell.accessoryType = UITableViewCellAccessoryNone;
-            }
+        CGRect sideIconFrame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16, nameLabelRect.origin.y + 7, 48, 48);
+        if (self.textBarShowing && [self.selectedContacts containsObject:moodPerson]) {
+            UIImageView *checkmarkIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"check_ios.png"]];
+            checkmarkIcon.frame = sideIconFrame;
+            [cell.contentView addSubview:checkmarkIcon];
         } else {
             HappModelMood mood = [[NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"tag"]] integerValue];
             HappModelMoodObject *moodObject = [self.model getMoodFor:mood];
             UIImageView *moodIcon = [[UIImageView alloc] initWithImage:moodObject.image];
-            moodIcon.frame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16,
-                                        nameLabelRect.origin.y + 7,
-                                        (60 / 5) * 4,
-                                        (60 / 5) * 4);
-            
+            moodIcon.frame = sideIconFrame;
             [cell.contentView addSubview:moodIcon];
-
         }
         
         [cell.contentView addSubview:nameLabel];
@@ -252,6 +255,9 @@
             if ([self.selectedContacts count] == 0) {
                 // Now no contacts are selected, so remove the text bar.
                 [self setTextBarEnabled:NO];
+            } else {
+                // If the bar is not going away, we need to update the text.
+                [self updateTextBarText];
             }
         } else {
             // The contact was not already selected.
@@ -261,9 +267,11 @@
                 // This is the first selected person
                 [self setTextBarEnabled:YES];
             }
+            [self updateTextBarText];
         }
-        [self updateTextBarText];
     }
+    // Checkmarks will have changed, so we need to reload the table.
+    [self.tableView reloadData];
 }
 
 #pragma mark MFMessageComposeViewControllerDelegate methods
@@ -298,7 +306,7 @@
 
 - (UIControl *)textBarContainer {
     if (!_textBarContainer) {
-        CGRect frame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
+        CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
         _textBarContainer = [[UIControl alloc] initWithFrame:frame];
         _textBarContainer.backgroundColor = HAPP_PURPLE_COLOR;
         [_textBarContainer addSubview:self.textBar];
@@ -315,6 +323,20 @@
         _textBar.textColor = HAPP_WHITE_COLOR;
     }
     return _textBar;
+}
+
+- (UIImageView *)nothingIsHappeningView {
+    if (!_nothingIsHappeningView) {
+        // Nothing is happening
+        UIImage *nothingIsHappeningImage = [UIImage imageNamed:@"sad_hippo_xhdpi.png"];
+        _nothingIsHappeningView = [[UIImageView alloc] initWithImage:nothingIsHappeningImage];
+        _nothingIsHappeningView.frame = CGRectMake(
+                                                   (self.tableView.frame.size.width - nothingIsHappeningImage.size.width) / 2,
+                                                   130,
+                                                   nothingIsHappeningImage.size.width,
+                                                   nothingIsHappeningImage.size.height);
+    }
+    return _nothingIsHappeningView;
 }
 
 - (NSMutableSet *)selectedContacts {
@@ -387,12 +409,21 @@
 
 - (void)setTextBarEnabled:(BOOL)enabled {
     if (enabled) {
-        self.tableView.contentInset = UIEdgeInsetsMake(34, 0, 0, 0);
         [self.navigationController.view addSubview:self.textBarContainer];
+        CGRect onScreenFrame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
+        [UIView animateWithDuration:0.25 animations:^{
+            self.textBarContainer.frame = onScreenFrame;
+            self.tableView.contentInset = UIEdgeInsetsMake(34, 0, 0, 0);
+        }];
         self.textBarShowing = YES;
     } else {
-        self.tableView.contentInset = UIEdgeInsetsMake(34, 0, -40, 0);
-        [self.textBarContainer removeFromSuperview];
+        CGRect offScreenFrame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
+        [UIView animateWithDuration:0.25 animations:^{
+            self.textBarContainer.frame = offScreenFrame;
+            self.tableView.contentInset = UIEdgeInsetsMake(34, 0, -40, 0);
+        } completion:^(BOOL finished) {
+            [self.textBarContainer removeFromSuperview];
+        }];
         self.textBarShowing = NO;
         [self.selectedContacts removeAllObjects];
         [self.selectedContactsInOrder removeAllObjects];
@@ -408,7 +439,6 @@
         [names addObject:firstName];
     }
     self.textBar.text = [NSString stringWithFormat:@"Text %@", [names componentsJoinedByString:@", "]];
-    [self.tableView reloadData];
 }
 
 - (void)removeHappComposeVC {
