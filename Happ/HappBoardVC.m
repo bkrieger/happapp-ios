@@ -20,7 +20,10 @@
 @property (nonatomic, strong) HappModel *model;
 @property (nonatomic, strong) HappABModel *addressBook;
 
+@property (nonatomic, strong) UIImageView *stillRefreshView;
+@property (nonatomic, strong) UIImageView *animatingRefreshView;
 @property (nonatomic, strong) UIImageView *nothingIsHappeningView;
+@property (nonatomic, strong) UIView *verticalLine;
 
 @property (nonatomic, strong) UIControl *textBarContainer;
 @property (nonatomic, strong) UILabel *textBar;
@@ -67,24 +70,15 @@
     [self.navigationItem.titleView addSubview:titleImageView];
     titleImageView.frame = CGRectMake(27, 27, titleImage.size.width / 2, titleImage.size.height / 2);
     
-    // Vertical Line
-    CGRect verticalLineRect = CGRectMake(38, -200, 4,
-                                         self.tableView.bounds.size.height * 2);
-    UIView *verticalLine = [[UIView alloc] initWithFrame:verticalLineRect];
-    verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
-    verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    verticalLine.layer.zPosition = -1;
-    [self.tableView addSubview:verticalLine];
-    
     // Refresh control
+    UIView *refreshBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -600, 320, 630)];
+    refreshBackgroundView.backgroundColor = [UIColor colorWithRed:237/255.0f green:201/255.0f blue:225/255.0f alpha:1.0f];
+    [self.tableView addSubview:refreshBackgroundView];
+    [self.tableView addSubview:self.stillRefreshView];
+    // We use the UIRefreshControl to do all the work for us, but we cover it up with our own image.
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl setBounds:CGRectMake(
-                                         refreshControl.bounds.origin.x,
-                                         refreshControl.bounds.origin.y + 20,
-                                         refreshControl.bounds.size.width,
-                                         refreshControl.bounds.size.height)];
-    [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    refreshControl.tintColor = HAPP_PURPLE_COLOR;
+    [refreshControl addTarget:self action:@selector(refreshControlStarted) forControlEvents:UIControlEventValueChanged];
+    refreshControl.tintColor = [UIColor clearColor];
     self.refreshControl = refreshControl;
     
     UIImage *composeInnerImage = [UIImage imageNamed:@"compose_ios.png"];
@@ -115,8 +109,10 @@
     NSInteger count = [self.model getMoodPersonCount];
     if (count == 0) {
         [self.tableView addSubview:self.nothingIsHappeningView];
+        [self.verticalLine removeFromSuperview];
     } else {
         [self.nothingIsHappeningView removeFromSuperview];
+        [self.tableView addSubview:self.verticalLine];
     }
     // Add 1 for "me"
     return count + 1;
@@ -142,7 +138,7 @@
     NSString *name;
     
     if ([indexPath row] == 0) {
-        cell.frame = CGRectMake(cellRect.origin.x + 5, cellRect.origin.y, cellRect.size.width - 10, cellRect.size.height - 10);
+        cell.frame = CGRectMake(cellRect.origin.x + 10, cellRect.origin.y, cellRect.size.width - 20, cellRect.size.height - 10);
         UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
         backgroundView.backgroundColor = [UIColor whiteColor];
         backgroundView.layer.cornerRadius = 10;
@@ -221,7 +217,7 @@
         [cell.contentView addSubview:nameLabel];
         [cell.contentView addSubview:messageLabel];
     } else {
-        UILabel *happening = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.bounds.size.width, cell.contentView.bounds.size.height)];
+        UILabel *happening = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, cell.contentView.bounds.size.width, cell.contentView.bounds.size.height - 20)];
         happening.textAlignment = NSTextAlignmentCenter;
         happening.backgroundColor = [UIColor clearColor];
         happening.text = @"What's Happening?";
@@ -280,11 +276,25 @@
     [self.smsVC dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Scroll view delegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // Stretch the still hippo as you pull to refresh.
+    CGFloat stretchedHeight = (scrollView.contentOffset.y * -1.0f) - 42.0f;
+    if (stretchedHeight < 0) {
+        stretchedHeight = 0;
+    }
+    self.stillRefreshView.frame = CGRectMake(self.stillRefreshView.frame.origin.x,
+                                             -stretchedHeight + 25,
+                                             self.stillRefreshView.frame.size.width,
+                                             stretchedHeight);
+}
+
 #pragma mark - HappModelDelegate methods
 
 - (void)modelIsReady {
     [self.tableView reloadData];
-    [self.refreshControl endRefreshing];
+    [self refreshControlFinished];
     [self setTextBarEnabled:NO];
 }
 
@@ -323,6 +333,54 @@
         _textBar.textColor = HAPP_WHITE_COLOR;
     }
     return _textBar;
+}
+
+- (UIImageView *)stillRefreshView {
+    if (!_stillRefreshView) {
+        UIImage *image = [UIImage imageNamed:@"still_hippo.png"];
+        CGRect frame = CGRectMake(
+                                  (self.tableView.frame.size.width - image.size.width) / 2,
+                                  -25,
+                                  image.size.width,
+                                  image.size.height);
+        _stillRefreshView = [[UIImageView alloc] initWithImage:image];
+        _stillRefreshView.frame = frame;
+    }
+    return _stillRefreshView;
+}
+
+- (UIImageView *)animatingRefreshView {
+    if (!_animatingRefreshView) {
+        UIImage *image1 = [UIImage imageNamed:@"dancing_hippo1.png"];
+        UIImage *image2 = [UIImage imageNamed:@"dancing_hippo2.png"];
+        UIImage *image3 = [UIImage imageNamed:@"dancing_hippo3.png"];
+        UIImage *image4 = [UIImage imageNamed:@"dancing_hippo4.png"];
+        UIImage *image5 = [UIImage imageNamed:@"dancing_hippo5.png"];
+        UIImage *image6 = [UIImage imageNamed:@"dancing_hippo6.png"];
+        UIImage *image7 = [UIImage imageNamed:@"dancing_hippo7.png"];
+        CGRect frame = CGRectMake(
+                                  (self.tableView.frame.size.width - image1.size.width) / 2,
+                                  -25,
+                                  image1.size.width,
+                                  image1.size.height);
+        _animatingRefreshView = [[UIImageView alloc] initWithFrame:frame];
+        _animatingRefreshView.animationImages = [NSArray arrayWithObjects:image1, image2, image3, image4, image5, image6, image7, nil];
+        _animatingRefreshView.animationDuration = 0.5f;
+        _animatingRefreshView.animationRepeatCount = 0;
+    }
+    return _animatingRefreshView;
+}
+
+- (UIView *)verticalLine {
+    if (!_verticalLine) {
+        CGRect frame = CGRectMake(38, -self.tableView.bounds.size.height, 4,
+                                             self.tableView.bounds.size.height * 3);
+        _verticalLine = [[UIView alloc] initWithFrame:frame];
+        _verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
+        _verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        _verticalLine.layer.zPosition = -1;
+    }
+    return _verticalLine;
 }
 
 - (UIImageView *)nothingIsHappeningView {
@@ -390,6 +448,20 @@
 }
 
 #pragma mark - Helpers
+
+- (void)refreshControlStarted {
+    [self refresh];
+    [self.stillRefreshView removeFromSuperview];
+    [self.tableView addSubview:self.animatingRefreshView];
+    [self.animatingRefreshView startAnimating];
+}
+
+- (void)refreshControlFinished {
+    [self.animatingRefreshView stopAnimating];
+    [self.animatingRefreshView removeFromSuperview];
+    [self.tableView addSubview:self.stillRefreshView];
+    [self.refreshControl endRefreshing];
+}
 
 - (void)refresh {
     [self.model refresh];
