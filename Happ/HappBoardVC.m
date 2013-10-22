@@ -12,6 +12,7 @@
 #import "HappFriendsVC.h"
 #import "HappModel.h"
 #import "HappABModel.h"
+#import "HappArcView.h"
 
 
 @interface HappBoardVC ()
@@ -59,16 +60,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     self.tableView.backgroundColor = HAPP_WHITE_COLOR;
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
-    self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
+    self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width * 2, titleImage.size.height * 2)];
     [self.navigationItem.titleView addSubview:titleImageView];
-    titleImageView.frame = CGRectMake(27, 27, titleImage.size.width / 2, titleImage.size.height / 2);
+    titleImageView.frame = CGRectMake(27, 27, titleImage.size.width, titleImage.size.height);
     
     // Refresh control
     UIView *refreshBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -600, 320, 630)];
@@ -125,9 +125,16 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] init];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     CGRect cellRect = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height * 2);
     cell.frame = cellRect;
+    
+    UIView *selectedView = [[UIView alloc] initWithFrame:cell.frame];
+    selectedView.backgroundColor = [UIColor clearColor];
+    CALayer *sublayer = [CALayer layer];
+    sublayer.backgroundColor = [HAPP_PURPLE_ALPHA_COLOR CGColor];
+    sublayer.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height * .85);
+    [selectedView.layer addSublayer:sublayer];
+    cell.selectedBackgroundView = selectedView;
 
     cell.backgroundColor = [UIColor clearColor];
     cell.backgroundView.hidden = YES;
@@ -138,6 +145,7 @@
     NSString *name;
     
     if ([indexPath row] == 0) {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.frame = CGRectMake(cellRect.origin.x + 10, cellRect.origin.y, cellRect.size.width - 20, cellRect.size.height - 10);
         UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
         backgroundView.backgroundColor = [UIColor whiteColor];
@@ -154,23 +162,27 @@
     } else {
         // subtract 1 because row 0 is me person.
         moodPerson = [self.model getMoodPersonForIndex:[indexPath row] - 1];
-        
+        NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
+        UIColor *color = [self generateColor:[phoneNumber hash]];
+
         UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
         UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
-        personView.frame = CGRectMake(10, 8, 60, 60);
-        personView.layer.cornerRadius = personView.frame.size.width / 2;
-        personView.layer.masksToBounds = YES;
-      
-        [cell.contentView addSubview:personView];
-        
-        nameLabelX = personView.frame.origin.x + personView.frame.size.width + 15;
+        personView.frame = CGRectMake(0, 0, personImage.size.width, personImage.size.height);
+
+        HappArcView *leftIconView = [[HappArcView alloc] initWithColor:color angle:2];
+        leftIconView.frame = CGRectMake(10, 8, personImage.size.width, personImage.size.height);
+        leftIconView.layer.cornerRadius = leftIconView.frame.size.width / 2;
+        leftIconView.layer.masksToBounds = YES;
+        leftIconView.backgroundColor = color;
+        [leftIconView addSubview:personView];
+        [cell.contentView addSubview:leftIconView];
+                
+        nameLabelX = leftIconView.frame.origin.x + personView.frame.size.width + 15;
         nameLabelRect = CGRectMake(nameLabelX,
-                                          personView.frame.origin.y - 7,
+                                          leftIconView.frame.origin.y - 7,
                                           150,
                                           cellRect.size.height / 3);
 
-        NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
-        personView.backgroundColor = [self generateColor:[phoneNumber hash]];
         name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     }
     
@@ -201,7 +213,7 @@
         messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         // Mood Icon or checkbox
-        CGRect sideIconFrame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16, nameLabelRect.origin.y + 7, 48, 48);
+        CGRect sideIconFrame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16, nameLabelRect.origin.y + 12, 48, 48);
         if (self.textBarShowing && [self.selectedContacts containsObject:moodPerson]) {
             UIImageView *checkmarkIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"check_ios.png"]];
             checkmarkIcon.frame = sideIconFrame;
@@ -228,7 +240,6 @@
     
     return cell;
 }
-
 
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

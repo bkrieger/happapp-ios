@@ -11,7 +11,7 @@
 #import "HappABModel.h"
 #import "HappModel.h"
 
-@interface HappFriendsVC : UITableViewController
+@interface HappFriendsVC : UITableViewController<UIAlertViewDelegate>
 
 - (id)initWithHappABModel:(HappABModel *)happABModel happModel:(HappModel *)happModel;
 

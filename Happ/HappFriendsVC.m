@@ -33,14 +33,32 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"Friends";
+    self.navigationItem.title = @"Contacts";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(saveFriends)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset" style:UIBarButtonItemStylePlain target:self action:@selector(resetFriends)];
+    self.tableView.sectionIndexColor = HAPP_PURPLE_COLOR;
+    [[UITableViewCell appearance] setTintColor:HAPP_PURPLE_COLOR];
 }
 
 -(void)saveFriends {
     [self.happModel updateFriends];
     [self dispose];
     [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)resetFriends {
+    UIAlertView *confirmResetView = [[UIAlertView alloc] initWithTitle:@"Reset friends" message:@"Are you sure you want to reset your friends to all contacts?" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Yes", @"No", nil];
+    [confirmResetView show];
+}
+
+#pragma mark - UI alert view delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        // YES
+        [self.happABModel unblockAllContacts];
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - Table view data source methods
@@ -55,6 +73,7 @@
     
     UITableViewCell *cell = [[UITableViewCell alloc] init];
     cell.textLabel.text = name;
+    cell.textLabel.textColor = HAPP_BLACK_COLOR;
 
     if ([self.happABModel isPersonBlocked:person]) {
         cell.accessoryType = UITableViewCellAccessoryNone;

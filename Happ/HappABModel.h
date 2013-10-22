@@ -24,6 +24,8 @@
 
 - (void)setPerson:(ABRecordRef)person blocked:(BOOL)blocked;
 
+- (void)unblockAllContacts;
+
 - (NSString *)fullNameForPerson:(ABRecordRef)person;
 
 @end

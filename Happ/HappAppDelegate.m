@@ -9,6 +9,7 @@
 #import "HappAppDelegate.h"
 
 #import "HappViewController.h"
+#import "HappModelEnums.h"
 
 @implementation HappAppDelegate
 
@@ -64,7 +65,7 @@
         // Phone number is verified.
         NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"unverifiedPhoneNumber"];
         if (phoneNumber) {
-            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"phoneNumber"];
+            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:PHONE_NUMBER_KEY];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
         self.window.rootViewController = [[HappViewController alloc] initWithNibName:nil bundle:nil];

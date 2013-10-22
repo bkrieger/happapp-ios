@@ -35,7 +35,7 @@
     self = [super init];
     if (self) {
         _happABModel = happABModel;
-        _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"phoneNumber"];
+        _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:PHONE_NUMBER_KEY];
         _contactsUrl = [happABModel getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR];
         _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
@@ -168,6 +168,11 @@
     
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
+    
+    // Increment stored count of number of posts.
+    NSInteger count = [[NSUserDefaults standardUserDefaults] integerForKey:HAPPS_POSTED_COUNT_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:count+1 forKey:HAPPS_POSTED_COUNT_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark HappComposeVCDataSource methods
@@ -206,8 +211,16 @@
             title = @"four hours";
             break;
             
+        case HappModelDurationFiveHour:
+            title = @"five hours";
+            break;
+            
+        case HappModelDurationSixHour:
+            title = @"six hours";
+            break;
+            
         case HappModelDurationInvalid:
-            title = @"chillin";
+            title = @"unsure";
             break;
     }
     return [[HappModelDurationObject alloc] initWithTitle:title duration:duration];
@@ -353,8 +366,16 @@
             title = @"14400";
             break;
             
+        case HappModelDurationFiveHour:
+            title = @"18000";
+            break;
+            
+        case HappModelDurationSixHour:
+            title = @"21600";
+            break;
+            
         case HappModelDurationInvalid:
-            title = @"chillin";
+            title = @"unsure";
             break;
     }
     return title;

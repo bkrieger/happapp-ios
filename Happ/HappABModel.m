@@ -83,6 +83,12 @@
     [userDefaults synchronize];
 }
 
+- (void)unblockAllContacts {
+    NSArray *blockedNumbers = [[NSArray alloc] init];
+    [[NSUserDefaults standardUserDefaults] setObject:blockedNumbers forKey:BLOCKED_NUMBERS_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NSDictionary *)phoneNumberNameMap {
     if (!_phoneNumberNameMap) {
         NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
