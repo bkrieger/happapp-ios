@@ -60,15 +60,17 @@
     if (!url || !url.host) {
         return NO;
     }
-    NSString *realVerificationCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"verificationCode"];
+    NSString *realVerificationCode = [[NSUserDefaults standardUserDefaults] objectForKey:VERIFICATION_CODE_KEY];
     if (realVerificationCode && [realVerificationCode isEqualToString:url.host]) {
         // Phone number is verified.
-        NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"unverifiedPhoneNumber"];
+        NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:UNVERIFIED_PHONE_NUMBER_KEY];
         if (phoneNumber) {
             [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:PHONE_NUMBER_KEY];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        self.window.rootViewController = [[HappViewController alloc] initWithNibName:nil bundle:nil];
+        self.viewController = [[HappViewController alloc] initWithNibName:@"HappViewController" bundle:nil];
+        self.window.rootViewController = self.viewController;
+//        self.window.rootViewController = [[HappViewController alloc] initWithNibName:nil bundle:nil];
         return YES;
     } 
     return NO;

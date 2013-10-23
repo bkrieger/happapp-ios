@@ -8,6 +8,10 @@
 
 #define HAPPS_POSTED_COUNT_KEY @"happsPostedCount"
 #define PHONE_NUMBER_KEY @"phoneNumber"
+#define UNVERIFIED_PHONE_NUMBER_KEY @"unverifiedPhoneNumber"
+#define VERIFICATION_CODE_KEY @"verificationCode"
+
+#define HAPP_RESET_NOTIFICATION @"happResetNotification"
 
 typedef enum HappModelMoods {
     HappModelMoodChill = 1,

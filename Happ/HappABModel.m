@@ -39,6 +39,9 @@
 -(BOOL)isPersonBlocked:(ABRecordRef)person {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSArray *blockedNumbersArray = [userDefaults arrayForKey:BLOCKED_NUMBERS_KEY];
+    if (!blockedNumbersArray) {
+        return NO;
+    }
     NSSet *blockedNumbers = [NSSet setWithArray:blockedNumbersArray];
     
     ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);

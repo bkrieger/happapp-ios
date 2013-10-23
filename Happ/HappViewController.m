@@ -24,14 +24,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAppState:) name:HAPP_RESET_NOTIFICATION object:nil];
 
-    [UINavigationBar appearance].barTintColor = HAPP_PURPLE_COLOR;
+    self.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
     [UINavigationBar appearance].alpha = 0.f;
     [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
     [UINavigationBar appearance].tintColor = HAPP_WHITE_COLOR;
     self.view.backgroundColor = HAPP_WHITE_COLOR;
     
-    NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:@"phoneNumber"];
+    [self prepareForStartup];
+}
+
+- (void)prepareForStartup {
+    NSString *phoneNumber = [[NSUserDefaults standardUserDefaults] stringForKey:PHONE_NUMBER_KEY];
     if (!phoneNumber) {
         // The user has yet to verify their phone number
         [self pushViewController:[[HappEnterPhoneViewController alloc] init] animated:NO];
@@ -69,10 +75,15 @@
     [[[UIAlertView alloc] initWithTitle:@"Contacts access is necessary"
                                 message:@"Please go into the iOS settings and "
                                         "give Happ permission to access your "
-                                        "contacts."
+                                        "contacts.\n\nLocated in\nSettings > Privacy > Contacts"
                                delegate:nil
                       cancelButtonTitle:nil
                       otherButtonTitles:nil] show];
+}
+
+- (void)resetAppState:(NSNotification *)notification {
+    self.viewControllers = @[];
+    [self prepareForStartup];
 }
 
 @end

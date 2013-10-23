@@ -21,11 +21,14 @@
 @property (nonatomic, strong) HappModel *model;
 @property (nonatomic, strong) HappABModel *addressBook;
 
+@property BOOL isRefreshing;
+
 @property (nonatomic, strong) UIImageView *stillRefreshView;
 @property (nonatomic, strong) UIImageView *animatingRefreshView;
 @property (nonatomic, strong) UIImageView *nothingIsHappeningView;
 @property (nonatomic, strong) UIView *verticalLine;
 
+@property (nonatomic, strong) UIToolbar *textBarContainerContainer;
 @property (nonatomic, strong) UIControl *textBarContainer;
 @property (nonatomic, strong) UILabel *textBar;
 @property BOOL textBarShowing;
@@ -47,6 +50,7 @@
     if (self) {
         _addressBook = [[HappABModel alloc] init];
         _textBarShowing = NO;
+        _isRefreshing = NO;
     }
     return self;
 }
@@ -54,12 +58,13 @@
 - (void)setUp {
     // Set Up model
     self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
-    [self.model refresh];
+    [self refresh];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationController.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
     self.tableView.backgroundColor = HAPP_WHITE_COLOR;
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -80,22 +85,9 @@
     [refreshControl addTarget:self action:@selector(refreshControlStarted) forControlEvents:UIControlEventValueChanged];
     refreshControl.tintColor = [UIColor clearColor];
     self.refreshControl = refreshControl;
-    
-    UIImage *composeInnerImage = [UIImage imageNamed:@"compose_ios.png"];
-    UIButton *composeInnerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [composeInnerButton setBackgroundImage:composeInnerImage forState:UIControlStateNormal];
-    composeInnerButton.frame = CGRectMake(0, 0, composeInnerImage.size.width / 2, composeInnerImage.size.height / 2);
-    [composeInnerButton addTarget:self action:@selector(launchComposeView) forControlEvents:UIControlEventTouchUpInside];
-    composeInnerButton.contentEdgeInsets = UIEdgeInsetsMake(0, -40, 0, 40);
 
-    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    spacer.width = -10;
-    
-    UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
-    self.navigationItem.rightBarButtonItems = @[spacer, composeButton];
-//    
-//    UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
-//    [[self navigationItem] setLeftBarButtonItem:friendsButton];
+    UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(launchComposeView)];
+    self.navigationItem.rightBarButtonItem = composeButton;
     
     UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(launchSettings)];
     self.navigationItem.leftBarButtonItem = settingsButton;
@@ -139,12 +131,16 @@
     selectedView.backgroundColor = [UIColor clearColor];
     CALayer *sublayer = [CALayer layer];
     sublayer.backgroundColor = [HAPP_PURPLE_ALPHA_COLOR CGColor];
-    sublayer.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height * .85);
+    sublayer.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height * .89);
     [selectedView.layer addSublayer:sublayer];
     cell.selectedBackgroundView = selectedView;
 
     cell.backgroundColor = [UIColor clearColor];
     cell.backgroundView.hidden = YES;
+    
+    if (self.isRefreshing) {
+        return cell;
+    }
     
     NSDictionary *moodPerson;
     CGFloat nameLabelX;
@@ -153,7 +149,7 @@
     
     if ([indexPath row] == 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.frame = CGRectMake(cellRect.origin.x + 10, cellRect.origin.y, cellRect.size.width - 20, cellRect.size.height - 10);
+        cell.frame = CGRectMake(cellRect.origin.x + 10, cellRect.origin.y + 5, cellRect.size.width - 20, cellRect.size.height - 4);
         UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
         backgroundView.backgroundColor = [UIColor whiteColor];
         backgroundView.layer.cornerRadius = 10;
@@ -220,7 +216,7 @@
         messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         
         // Mood Icon or checkbox
-        CGRect sideIconFrame = CGRectMake(nameLabelX + nameLabelRect.size.width + 16, nameLabelRect.origin.y + 12, 48, 48);
+        CGRect sideIconFrame = CGRectMake(self.tableView.frame.size.width - 65, nameLabelRect.origin.y + 10, 48, 48);
         if (self.textBarShowing && [self.selectedContacts containsObject:moodPerson]) {
             UIImageView *checkmarkIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"check_ios.png"]];
             checkmarkIcon.frame = sideIconFrame;
@@ -236,11 +232,11 @@
         [cell.contentView addSubview:nameLabel];
         [cell.contentView addSubview:messageLabel];
     } else {
-        UILabel *happening = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, cell.contentView.bounds.size.width, cell.contentView.bounds.size.height - 20)];
+        UILabel *happening = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, cell.contentView.bounds.size.width, cell.contentView.bounds.size.height - 15)];
         happening.textAlignment = NSTextAlignmentCenter;
         happening.backgroundColor = [UIColor clearColor];
         happening.text = @"What's Happening?";
-        happening.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:23];
+        happening.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:23];
         happening.textColor = HAPP_PURPLE_COLOR;
         [cell.contentView addSubview:happening];
     }
@@ -292,6 +288,8 @@
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
     [self.smsVC dismissViewControllerAnimated:YES completion:nil];
+    [self setTextBarEnabled:NO];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Scroll view delegate methods
@@ -314,6 +312,7 @@
     [self.tableView reloadData];
     [self refreshControlFinished];
     [self setTextBarEnabled:NO];
+    self.isRefreshing = NO;
 }
 
 - (void)modelDidPost {
@@ -332,11 +331,21 @@
 
 #pragma mark - Getters
 
+- (UIToolbar *)textBarContainerContainer {
+    if (!_textBarContainerContainer) {
+        CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
+        _textBarContainerContainer = [[UIToolbar alloc] initWithFrame:frame];
+        _textBarContainerContainer.barTintColor = HAPP_PURPLE_COLOR;
+        [_textBarContainerContainer addSubview:self.textBarContainer];
+    }
+    return _textBarContainerContainer;
+}
+
 - (UIControl *)textBarContainer {
     if (!_textBarContainer) {
-        CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
+        CGRect frame = CGRectMake(0, 0, self.tableView.frame.size.width, 40);
         _textBarContainer = [[UIControl alloc] initWithFrame:frame];
-        _textBarContainer.backgroundColor = HAPP_PURPLE_COLOR;
+//        _textBarContainer.backgroundColor = HAPP_PURPLE_COLOR;
         [_textBarContainer addSubview:self.textBar];
         [_textBarContainer addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -466,7 +475,6 @@
 }
 
 - (void)sendText {
-    self.smsVC = [[MFMessageComposeViewController alloc] init];
     if ([MFMessageComposeViewController canSendText]) {
         self.smsVC.recipients = [self.selectedContactsInOrder valueForKey:@"_id"];
         self.smsVC.messageComposeDelegate = self;
@@ -491,6 +499,7 @@
 }
 
 - (void)refresh {
+    self.isRefreshing = YES;
     [self.model refresh];
 }
 
@@ -508,20 +517,21 @@
 
 - (void)setTextBarEnabled:(BOOL)enabled {
     if (enabled) {
-        [self.navigationController.view addSubview:self.textBarContainer];
+        [self.navigationController.view addSubview:self.textBarContainerContainer];
         CGRect onScreenFrame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
         [UIView animateWithDuration:0.25 animations:^{
-            self.textBarContainer.frame = onScreenFrame;
+            self.textBarContainerContainer.frame = onScreenFrame;
             self.tableView.contentInset = UIEdgeInsetsMake(34, 0, 0, 0);
         }];
         self.textBarShowing = YES;
+        self.smsVC = [[MFMessageComposeViewController alloc] init];
     } else {
         CGRect offScreenFrame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
         [UIView animateWithDuration:0.25 animations:^{
-            self.textBarContainer.frame = offScreenFrame;
+            self.textBarContainerContainer.frame = offScreenFrame;
             self.tableView.contentInset = UIEdgeInsetsMake(34, 0, -40, 0);
         } completion:^(BOOL finished) {
-            [self.textBarContainer removeFromSuperview];
+            [self.textBarContainerContainer removeFromSuperview];
         }];
         self.textBarShowing = NO;
         [self.selectedContacts removeAllObjects];

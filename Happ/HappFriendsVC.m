@@ -33,6 +33,7 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationController.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
     self.navigationItem.title = @"Contacts";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(saveFriends)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset" style:UIBarButtonItemStylePlain target:self action:@selector(resetFriends)];

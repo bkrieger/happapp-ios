@@ -12,6 +12,17 @@
 #import "HappAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface PhoneNumberTextField : UITextField
+@end
+@implementation PhoneNumberTextField
+
+- (void)addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+// Don't allow any taps to the text field.
+}
+
+@end
+
+
 @interface HappEnterPhoneViewController ()
 
 @property (nonatomic, strong) UILabel *enterPhoneNumberLabel;
@@ -33,10 +44,10 @@
     titleImageView.frame = CGRectMake(27, 27, titleImage.size.width, titleImage.size.height);
     
     
-    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, -20.f, 320.f, 64.f)];
-    colorView.opaque = NO;
-    colorView.backgroundColor = HAPP_PURPLE_COLOR;
-    [self.navigationController.navigationBar.layer insertSublayer:colorView.layer atIndex:1];
+//    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, -20.f, 320.f, 64.f)];
+//    colorView.opaque = NO;
+//    colorView.backgroundColor = HAPP_PURPLE_COLOR;
+//    [self.navigationController.navigationBar.layer insertSublayer:colorView.layer atIndex:1];
     
     self.view.backgroundColor = HAPP_WHITE_COLOR;
     [self.view addSubview:self.phoneNumberField];
@@ -55,8 +66,8 @@
     NSLog(@"Verification Code: %@",randomNumber);
     NSString *message = [NSString stringWithFormat:@"Thanks for using Happ! Click here to verify your phone number: happ://%@", randomNumber];
     
-    [[NSUserDefaults standardUserDefaults] setObject:[self formatNumber:self.phoneNumberField.text] forKey:@"unverifiedPhoneNumber"];
-    [[NSUserDefaults standardUserDefaults] setObject:randomNumber forKey:@"verificationCode"];
+    [[NSUserDefaults standardUserDefaults] setObject:[self formatNumber:self.phoneNumberField.text] forKey:UNVERIFIED_PHONE_NUMBER_KEY];
+    [[NSUserDefaults standardUserDefaults] setObject:randomNumber forKey:VERIFICATION_CODE_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // Build request
@@ -116,7 +127,7 @@
                                             self.view.bounds.size.height/3,
                                             self.view.bounds.size.width - 2*offset,
                                             height);
-        _phoneNumberField = [[UITextField alloc] initWithFrame:phoneNumberRect];
+        _phoneNumberField = [[PhoneNumberTextField alloc] initWithFrame:phoneNumberRect];
         _phoneNumberField.delegate = self;
         _phoneNumberField.textAlignment = NSTextAlignmentCenter;
         _phoneNumberField.borderStyle = UITextBorderStyleNone;
@@ -220,3 +231,4 @@
 }
 
 @end
+

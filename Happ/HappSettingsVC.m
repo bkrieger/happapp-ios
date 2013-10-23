@@ -8,6 +8,7 @@
 
 #import "HappSettingsVC.h"
 #import "HappFriendsVC.h"
+#import "HappViewController.h"
 
 @interface HappSettingsVC ()
 
@@ -35,6 +36,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationController.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
     self.navigationItem.title = @"Settings";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done)];
     UILabel *copyrightFooter = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
@@ -85,7 +87,7 @@
             cell.textLabel.text = @"Friends";
         } else if (indexPath.row == 1) {
             // Description of friends
-            cell.textLabel.text = @"We've automatically added everyone in your contacts to your friends list. If there are people in your contacts you don't want to be friends with, you can change that here.";
+            cell.textLabel.text = @"We've automatically added everyone in your contacts to your friends list. Only friends can see your status.";
             cell.textLabel.textColor = HAPP_BLACK_COLOR;
             cell.textLabel.numberOfLines = 4;
             cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
@@ -105,7 +107,7 @@
         // Reset
         if (indexPath.row == 0) {
             // Reset all settings
-            cell.textLabel.text = @"Reset all settings";
+            cell.textLabel.text = @"Reset phone number";
         }
     }
     
@@ -183,7 +185,7 @@
             [[UIApplication sharedApplication] openURL:url];
         } else if (indexPath.row == 2) {
             // Give feedback
-            UIAlertView *feedbackPopup = [[UIAlertView alloc] initWithTitle:@"Give feedback" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Send",nil];
+            UIAlertView *feedbackPopup = [[UIAlertView alloc] initWithTitle:@"Send feedback" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Send",nil];
             feedbackPopup.tag = 1;
             feedbackPopup.alertViewStyle = UIAlertViewStylePlainTextInput;
             [feedbackPopup show];
@@ -192,7 +194,7 @@
         // Reset
         if (indexPath.row == 0) {
             // Reset all settings
-            UIAlertView *resetPopup = [[UIAlertView alloc] initWithTitle:@"Reset Happ" message:@"Are you sure? Doing this will reset Happ to the state it was in when you installed it." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Reset",nil];
+            UIAlertView *resetPopup = [[UIAlertView alloc] initWithTitle:@"Reset phone number" message:@"Are you sure? Doing this will force you to re-enter your phone number." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Reset",nil];
             resetPopup.tag = 2;
             [resetPopup show];
         }
@@ -211,9 +213,14 @@
     } else if (alertView.tag == 2) {
         // reset all settings popup
         if (buttonIndex == 1) {
-            // Reset all settings
-            NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
-            [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+            // Reset phone number
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults removeObjectForKey:PHONE_NUMBER_KEY];
+            [userDefaults removeObjectForKey:UNVERIFIED_PHONE_NUMBER_KEY];
+            [userDefaults removeObjectForKey:VERIFICATION_CODE_KEY];
+            [userDefaults synchronize];
+            [[NSNotificationCenter defaultCenter] postNotificationName:HAPP_RESET_NOTIFICATION object:self];
+            [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }

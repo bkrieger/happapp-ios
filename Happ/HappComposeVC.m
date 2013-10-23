@@ -74,6 +74,8 @@
     self.catcher.hidden = YES;
     self.mood = HappModelMoodDefault;
     self.duration = HappModelDurationDefault;
+    self.view.backgroundColor = HAPP_WHITE_COLOR;
+    self.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -218,6 +220,7 @@
     pickerView.delegate = self;
     pickerView.dataSource = self;
     pickerView.showsSelectionIndicator = YES;
+    pickerView.backgroundColor = HAPP_WHITE_COLOR;
     [self.textView endEditing:YES];
     self.textView.inputView = pickerView;
     
@@ -246,7 +249,7 @@
         _placeholderTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(17, 43, 300, 100)];
         _placeholderTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
         _placeholderTextLabel.textColor = HAPP_GRAY_COLOR;
-        _placeholderTextLabel.text = @"Type the description here.";
+        _placeholderTextLabel.text = @"What's happening?";
     }
     return _placeholderTextLabel;
 }

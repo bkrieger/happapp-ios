@@ -47,7 +47,6 @@
 		C5AD0EDE17DC5B1100B9FC77 /* hippo_profile_ios@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios@2x.png */; };
 		C5CB0B7417E11FDB00E014E6 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */; };
 		C5F079B9180F2676005398B2 /* sad_hippo_xhdpi@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079B8180F2676005398B2 /* sad_hippo_xhdpi@2x.png */; };
-		C5F079BB180F33A2005398B2 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079BA180F33A2005398B2 /* delete.png */; };
 		C5F079DA180F5AC1005398B2 /* still_hippo.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079D9180F5AC1005398B2 /* still_hippo.png */; };
 		C5F079E2180F6A6C005398B2 /* dancing_hippo1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079DB180F6A6C005398B2 /* dancing_hippo1@2x.png */; };
 		C5F079E3180F6A6C005398B2 /* dancing_hippo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079DC180F6A6C005398B2 /* dancing_hippo2@2x.png */; };
@@ -117,7 +116,6 @@
 		C5B0A1DE17E8E853000DA2C9 /* Twilio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Twilio.h; sourceTree = "<group>"; };
 		C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C5F079B8180F2676005398B2 /* sad_hippo_xhdpi@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sad_hippo_xhdpi@2x.png"; sourceTree = "<group>"; };
-		C5F079BA180F33A2005398B2 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
 		C5F079D9180F5AC1005398B2 /* still_hippo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = still_hippo.png; sourceTree = "<group>"; };
 		C5F079DB180F6A6C005398B2 /* dancing_hippo1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancing_hippo1@2x.png"; sourceTree = "<group>"; };
 		C5F079DC180F6A6C005398B2 /* dancing_hippo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancing_hippo2@2x.png"; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 				C5F079BC180F371E005398B2 /* dancing_hippo */,
 				C5AD0EC817DC4D9400B9FC77 /* movie_ios.png */,
 				C5AD0EC917DC4D9400B9FC77 /* party_ios.png */,
-				C5F079BA180F33A2005398B2 /* delete.png */,
 				C5AD0ED317DC4DA300B9FC77 /* chill_ios_i.png */,
 				C528EC4D180E3056006F0386 /* check_ios.png */,
 				C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios@2x.png */,
@@ -344,7 +341,6 @@
 				C5AD0EDA17DC4DA300B9FC77 /* movie_ios_i.png in Resources */,
 				C5AD0EDB17DC4DA300B9FC77 /* party_ios_i.png in Resources */,
 				C5AD0EDC17DC4DA300B9FC77 /* sport_ios_i.png in Resources */,
-				C5F079BB180F33A2005398B2 /* delete.png in Resources */,
 				C5F079E2180F6A6C005398B2 /* dancing_hippo1@2x.png in Resources */,
 				C5F079DA180F5AC1005398B2 /* still_hippo.png in Resources */,
 				C5F079B9180F2676005398B2 /* sad_hippo_xhdpi@2x.png in Resources */,
