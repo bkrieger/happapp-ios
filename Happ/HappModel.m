@@ -108,7 +108,15 @@
 
 - (void)sendFeedback:(NSString *)message {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    NSString *feedbackUrl = [NSString stringWithFormat:@"%@me=%@&message=%@", HAPP_URL_FEEDBACK, self.myPhoneNumber, [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSString *feedback = [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString *device = [[NSString stringWithFormat:@"%@ %@ %@",
+                         [[UIDevice currentDevice] model],
+                         [[UIDevice currentDevice] systemName],
+                         [[UIDevice currentDevice] systemVersion]]
+                        stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString *version = [HAPP_VERSION_NUMBER stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString *feedbackUrl = [NSString stringWithFormat:@"%@user=%@&feedback=%@&device=%@&happversion=%@",
+                             HAPP_URL_FEEDBACK, self.myPhoneNumber, feedback, device, version];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:feedbackUrl]];
     [request setHTTPMethod:@"POST"];
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
