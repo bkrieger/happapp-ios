@@ -40,7 +40,7 @@
     self.navigationItem.title = @"Settings";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done)];
     UILabel *copyrightFooter = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
-    copyrightFooter.text = [NSString stringWithFormat:@"Happ \u00A9 2013"];
+    copyrightFooter.text = [NSString stringWithFormat:@"v%@ \u00A9 2013 Happ", HAPP_VERSION_NUMBER];
     copyrightFooter.textColor = HAPP_BLACK_COLOR;
     copyrightFooter.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
     copyrightFooter.textAlignment = NSTextAlignmentCenter;
@@ -135,7 +135,7 @@
             height = 50;
         } else if (indexPath.row == 1) {
             // Description of friends
-            height = 80;
+            height = 70;
         }
     } else if (indexPath.section == 1) {
         //Information
@@ -209,6 +209,9 @@
         if (buttonIndex == 1) {
             // Send feedback
             NSString *input = [alertView textFieldAtIndex:0].text;
+            if ([input length] > 0) {
+                [self.happModel sendFeedback:input];
+            }
         }
     } else if (alertView.tag == 2) {
         // reset all settings popup

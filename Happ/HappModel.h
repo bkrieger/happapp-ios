@@ -25,6 +25,8 @@
                    mood:(HappModelMood)mood
                duration:(HappModelDuration)duration;
 
+- (void)sendFeedback:(NSString *)message;
+
 - (void)updateFriends;
 
 - (NSInteger)getMoodPersonCount;

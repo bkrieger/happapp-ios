@@ -24,6 +24,7 @@
 @property BOOL isRefreshing;
 
 @property (nonatomic, strong) UIImageView *stillRefreshView;
+@property (nonatomic) CGFloat originalStillRefreshViewHeight;
 @property (nonatomic, strong) UIImageView *animatingRefreshView;
 @property (nonatomic, strong) UIImageView *nothingIsHappeningView;
 @property (nonatomic, strong) UIView *verticalLine;
@@ -82,7 +83,6 @@
     [self.tableView addSubview:self.stillRefreshView];
     // We use the UIRefreshControl to do all the work for us, but we cover it up with our own image.
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshControlStarted) forControlEvents:UIControlEventValueChanged];
     refreshControl.tintColor = [UIColor clearColor];
     self.refreshControl = refreshControl;
 
@@ -296,14 +296,25 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Stretch the still hippo as you pull to refresh.
-    CGFloat stretchedHeight = (scrollView.contentOffset.y * -1.0f) - 42.0f;
-    if (stretchedHeight < 0) {
-        stretchedHeight = 0;
+    CGFloat height = (scrollView.contentOffset.y * -1.0f) - 42.0f;
+    
+    if (height <= self.originalStillRefreshViewHeight) {
+        self.stillRefreshView.transform = CGAffineTransformMakeRotation(0);
+        if (height < 0) {
+            height = 0;
+        }
+        self.stillRefreshView.frame = CGRectMake(self.stillRefreshView.frame.origin.x, -height + 20, self.stillRefreshView.frame.size.width, height);
+    } else {
+        CGFloat difference = height - self.originalStillRefreshViewHeight;
+        if (difference > 53.0f) {
+            difference = 53.0f;
+            if (!self.isRefreshing) {
+                // If we go up high enough, start refreshing
+                [self refreshControlStarted];
+            }
+        }
+        self.stillRefreshView.transform = CGAffineTransformMakeRotation(difference * .093f);
     }
-    self.stillRefreshView.frame = CGRectMake(self.stillRefreshView.frame.origin.x,
-                                             -stretchedHeight + 25,
-                                             self.stillRefreshView.frame.size.width,
-                                             stretchedHeight);
 }
 
 #pragma mark - HappModelDelegate methods
@@ -365,9 +376,10 @@
 - (UIImageView *)stillRefreshView {
     if (!_stillRefreshView) {
         UIImage *image = [UIImage imageNamed:@"still_hippo.png"];
+        self.originalStillRefreshViewHeight = image.size.height;
         CGRect frame = CGRectMake(
                                   (self.tableView.frame.size.width - image.size.width) / 2,
-                                  -25,
+                                  -20,
                                   image.size.width,
                                   image.size.height);
         _stillRefreshView = [[UIImageView alloc] initWithImage:image];

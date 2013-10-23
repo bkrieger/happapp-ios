@@ -12,6 +12,7 @@
 
 #define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?"
 #define HAPP_URL_UPDATE_FRIENDS @"http://54.221.209.211:3000/api/v1/friends?"
+#define HAPP_URL_FEEDBACK @"http://54.221.209.211:3000/api/v1/feedback?"
 #define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappModel()
@@ -100,6 +101,15 @@
     self.contactsUrl = [self.happABModel getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self createUpdateFriendsUrl]]];
+    [request setHTTPMethod:@"POST"];
+    NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [serverConnection start];
+}
+
+- (void)sendFeedback:(NSString *)message {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSString *feedbackUrl = [NSString stringWithFormat:@"%@me=%@&message=%@", HAPP_URL_FEEDBACK, self.myPhoneNumber, [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:feedbackUrl]];
     [request setHTTPMethod:@"POST"];
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
