@@ -22,7 +22,11 @@
 @property HappModelDuration duration;
 
 @property (nonatomic, strong) UIViewController *composeVC;
+
+@property (nonatomic, strong) UIBarButtonItem *sendButton;
+
 @property (nonatomic, strong) UITextView *textView;
+@property (nonatomic, strong) UILabel *placeholderTextLabel;
 @property (nonatomic, strong) UIButton *catcher;
 
 @property (nonatomic, strong) UIView *accerssoryView;
@@ -64,21 +68,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
     [self setUpViews];
     self.isDisplayingPickerView = NO;
     self.catcher.hidden = YES;
     self.mood = HappModelMoodDefault;
     self.duration = HappModelDurationDefault;
-    
-    [self.textView becomeFirstResponder];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewDidAppear:(BOOL)animated {
+    // We do this here not in viewDidLoad to prevent lag.
+    [self.textView becomeFirstResponder];
 }
 
 - (void)setUpViews {
@@ -96,16 +96,18 @@
     cancelButton.tintColor = HAPP_WHITE_COLOR;
     
     // Send set up
-    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc]
+    self.sendButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Send"
                 style:UIBarButtonItemStylePlain
                target:self
                action:@selector(sendButtonWasPressed)];
-    [[self.composeVC navigationItem] setRightBarButtonItem:sendButton];
+    [self.sendButton setEnabled:NO];
+    [[self.composeVC navigationItem] setRightBarButtonItem:self.sendButton];
     
     self.catcher = [[UIButton alloc] initWithFrame:self.composeVC.view.bounds];
     [self.catcher addTarget:self action:@selector(didTapOnTextField) forControlEvents:UIControlEventTouchDown];
     [self.composeVC.view addSubview:self.textView];
+    [self.composeVC.view addSubview:self.placeholderTextLabel];
 
     self.accerssoryView = [[UIView alloc]
         initWithFrame:CGRectMake(0, 0, self.composeVC.view.bounds.size.width, 100)];
@@ -137,9 +139,11 @@
 }
 
 - (void)sendButtonWasPressed {
-    [self.happDelegate postWithMessage:self.textView.text
-                                  mood:self.mood
-                              duration:self.duration];
+    if (self.textView.text.length > 0) {
+        [self.happDelegate postWithMessage:self.textView.text
+                                      mood:self.mood
+                                  duration:self.duration];
+    }
 }
 
 - (void)didTapOnDurationSelector {
@@ -237,13 +241,22 @@
     return _textView;
 }
 
+- (UILabel *)placeholderTextLabel {
+    if (!_placeholderTextLabel) {
+        _placeholderTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(17, 43, 300, 100)];
+        _placeholderTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
+        _placeholderTextLabel.textColor = HAPP_GRAY_COLOR;
+        _placeholderTextLabel.text = @"Type the description here.";
+    }
+    return _placeholderTextLabel;
+}
+
 - (UIButton *)moodSelector {
     if (!_moodSelector) {
         CGRect moodSelectorFrame = CGRectMake(0, 0,
             self.accerssoryView.bounds.size.width,
             self.accerssoryView.bounds.size.height / 2);
         _moodSelector = [[UIButton alloc] initWithFrame:moodSelectorFrame];
-//        _moodSelector.backgroundColor = [UIColor blueColor];
         [_moodSelector addTarget:self
                           action:@selector(didTapOnMoodSelector)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -275,7 +288,6 @@
            self.accerssoryView.bounds.size.width,
            self.accerssoryView.bounds.size.height / 2);
         _durationSelector = [[UIButton alloc] initWithFrame:durationSelectorFrame];
-//        _durationSelector.backgroundColor = [UIColor redColor];
         [_durationSelector addTarget:self
                               action:@selector(didTapOnDurationSelector)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -335,7 +347,9 @@
     shouldChangeTextInRange:(NSRange)range
             replacementText:(NSString *)text {
     if ([text isEqualToString:@"\n"]) {
-        [self.happDelegate postWithMessage:textView.text mood:self.mood duration:self.duration];
+        if (textView.text.length > 0) {
+            [self.happDelegate postWithMessage:textView.text mood:self.mood duration:self.duration];
+        }
         return NO;
     }
     if ([textView.text length] > 40) {
@@ -343,6 +357,13 @@
     }
     return YES;
 }
+
+- (void)textViewDidChange:(UITextView *)textView {
+    BOOL textViewHasText = textView.text.length > 0;
+    self.placeholderTextLabel.hidden = textViewHasText;
+    [self.sendButton setEnabled:textViewHasText];
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     return YES;
 }

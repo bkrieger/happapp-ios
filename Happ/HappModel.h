@@ -9,15 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "HappModelEnums.h"
 #import "HappComposeVCDataSource.h"
+#import "HappABModel.h"
 
 @protocol HappModelDelegate;
 
 @interface HappModel : NSObject<NSURLConnectionDataDelegate,
                                 HappComposeVCDataSource>
 
-- (id)initWithGetUrlPrefix:(NSString *)getUrlPrefix
-               contactsUrl:(NSString *)contactsUrl
-             postUrl:(NSString *)postUrl
+- (id)initWithHappABModel:(HappABModel *)happABModel
             delegate:(NSObject<HappModelDelegate> *)delegate;
     
 - (void)refresh;
@@ -25,8 +24,13 @@
 - (void)postWithMessage:(NSString *)message
                    mood:(HappModelMood)mood
                duration:(HappModelDuration)duration;
+
+- (void)updateFriends;
+
 - (NSInteger)getMoodPersonCount;
+
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index;
+
 - (NSDictionary *)getMoodPersonForMe;
 
 @end

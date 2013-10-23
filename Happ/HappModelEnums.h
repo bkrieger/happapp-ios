@@ -6,6 +6,9 @@
 #define HAPP_BLACK_COLOR [UIColor colorWithRed:0.188 green:0.188 blue:0.188 alpha:1]
 #define HAPP_DIVIDER_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]
 
+#define HAPPS_POSTED_COUNT_KEY @"happsPostedCount"
+#define PHONE_NUMBER_KEY @"phoneNumber"
+
 typedef enum HappModelMoods {
     HappModelMoodChill = 1,
     HappModelMoodFood = 2,
@@ -22,6 +25,8 @@ typedef enum HappModelDurations {
     HappModelDurationTwoHour,
     HappModelDurationThreeHour,
     HappModelDurationFourHour,
+    HappModelDurationFiveHour,
+    HappModelDurationSixHour,
     HappModelDurationInvalid,
-    HappModelDurationDefault = HappModelDurationTwoHour
+    HappModelDurationDefault = HappModelDurationFourHour
 } HappModelDuration;

@@ -1,19 +1,26 @@
 //
 //  HappModel.m
 //  Happ
-// 9176785919
+// 
 //  Created by Brandon Krieger on 9/6/13.
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
 
 #import "HappModel.h"
 #import "HappModelDelegate.h"
+#import "Twilio.h"
+
+#define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?"
+#define HAPP_URL_UPDATE_FRIENDS @"http://54.221.209.211:3000/api/v1/friends?"
+#define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappModel()
-@property NSString *myPhoneNumber;
 
-@property NSString *getUrl;
-@property NSString *postUrl;
+@property (nonatomic, strong) HappABModel *happABModel;
+
+@property (nonatomic, strong) NSString *myPhoneNumber;
+@property (nonatomic, strong) NSString *contactsUrl;
+
 @property (nonatomic, strong) NSMutableArray *moodPersons;
 @property (nonatomic, strong) NSDictionary *meMoodPerson;
 @property NSMutableData *temporaryData;
@@ -23,26 +30,47 @@
 
 @implementation HappModel
 
-- (id)initWithGetUrlPrefix:(NSString *)getUrlPrefix
-               contactsUrl:(NSString *)contactsUrl
-                   postUrl:(NSString *)postUrl
+- (id)initWithHappABModel:(HappABModel *)happABModel
                   delegate:(NSObject<HappModelDelegate> *)delegate {
     self = [super init];
     if (self) {
-        _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"phoneNumber"];
-        _getUrl = [NSString stringWithFormat:@"%@%@%@", getUrlPrefix, _myPhoneNumber, contactsUrl];
-        _postUrl = postUrl;
+        _happABModel = happABModel;
+        _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:PHONE_NUMBER_KEY];
+        _contactsUrl = [happABModel getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR];
         _moodPersons = [[NSMutableArray alloc] init];
         _delegate = delegate;
     }
     return self;
 }
 
+- (NSString *)createGetUrl {
+    return [NSString stringWithFormat:@"%@%@&me=%@%@",
+            HAPP_URL_PREFIX, AUTHENTICATION_KEY, self.myPhoneNumber, self.contactsUrl];
+}
+
+- (NSString *)createPostUrlWithMessage:(NSString *)message
+                                  mood:(HappModelMood)mood
+                              duration:(HappModelDuration)duration {
+    return [NSString stringWithFormat:@"%@%@%@&id=%@&msg=%@&tag=%@&duration=%@",
+            HAPP_URL_PREFIX,
+            AUTHENTICATION_KEY,
+            self.contactsUrl,
+            self.myPhoneNumber,
+            [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
+            [self getMoodPostDataFor:mood],
+            [self getDurationPostDataFor:duration]];
+}
+
+- (NSString *)createUpdateFriendsUrl {
+    return [NSString stringWithFormat:@"%@%@&me=%@%@",
+            HAPP_URL_UPDATE_FRIENDS, AUTHENTICATION_KEY, self.myPhoneNumber, self.contactsUrl];
+}
+
 - (void)refresh {
     [self.moodPersons removeAllObjects];
 
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.getUrl]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[self createGetUrl]]];
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
 }
@@ -68,11 +96,20 @@
     return self.meMoodPerson;
 }
 
+- (void)updateFriends {
+    self.contactsUrl = [self.happABModel getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self createUpdateFriendsUrl]]];
+    [request setHTTPMethod:@"POST"];
+    NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [serverConnection start];
+}
+
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     if ([connection.currentRequest.HTTPMethod isEqualToString:@"POST"]) {
-        NSLog(@"OH NO! %@", response);
+        // We don't receive data from POST mood or update friends.
     } else {
         self.temporaryData = [[NSMutableData alloc] init];
     }
@@ -80,6 +117,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     if ([connection.currentRequest.HTTPMethod isEqualToString:@"POST"]) {
+        // We don't receive data from POST mood or update friends.
     } else {
         [self.temporaryData appendData:data];
     }
@@ -93,12 +131,17 @@
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
+    [self.delegate modelIsReady];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     if ([connection.currentRequest.HTTPMethod isEqualToString:@"POST"]) {
-        [self.delegate modelDidPost];
+        if ([connection.currentRequest.URL.absoluteString hasPrefix:HAPP_URL_PREFIX]) {
+            [self.delegate modelDidPost];
+        } else if ([connection.currentRequest.URL.absoluteString hasPrefix:HAPP_URL_UPDATE_FRIENDS]) {
+            [self refresh];
+        }
     } else {
         NSDictionary *results = [NSJSONSerialization JSONObjectWithData:self.temporaryData
                                                                 options:NSJSONReadingMutableContainers
@@ -106,8 +149,6 @@
         
         [self.moodPersons addObjectsFromArray:[[results objectForKey:@"data"] objectForKey:@"contacts"]];
         self.meMoodPerson = [[results objectForKey:@"data"] objectForKey:@"me"];
-        
-        NSLog(@"%@", results);
         [self.delegate modelIsReady];
     }
 }
@@ -119,21 +160,19 @@
                duration:(HappModelDuration)duration {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
-    NSString *postString = [NSString
-        stringWithFormat:@"id=%@&msg=%@&tag=%@&duration=%@",
-                         self.myPhoneNumber,
-                         [message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding],
-                         [self getMoodPostDataFor:mood],
-                         [self getDurationPostDataFor:duration]];
-    NSLog(@"%@", postString);
-    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL
-        URLWithString:[NSString stringWithFormat:@"%@%@",self.postUrl, postString]]];
+        URLWithString:[self createPostUrlWithMessage:message
+                                                mood:mood
+                                            duration:duration]]];
     [request setHTTPMethod:@"POST"];
     
-    NSLog(@"%@", [request URL]);
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
+    
+    // Increment stored count of number of posts.
+    NSInteger count = [[NSUserDefaults standardUserDefaults] integerForKey:HAPPS_POSTED_COUNT_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:count+1 forKey:HAPPS_POSTED_COUNT_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark HappComposeVCDataSource methods
@@ -172,8 +211,16 @@
             title = @"four hours";
             break;
             
+        case HappModelDurationFiveHour:
+            title = @"five hours";
+            break;
+            
+        case HappModelDurationSixHour:
+            title = @"six hours";
+            break;
+            
         case HappModelDurationInvalid:
-            title = @"chillin";
+            title = @"unsure";
             break;
     }
     return [[HappModelDurationObject alloc] initWithTitle:title duration:duration];
@@ -319,8 +366,16 @@
             title = @"14400";
             break;
             
+        case HappModelDurationFiveHour:
+            title = @"18000";
+            break;
+            
+        case HappModelDurationSixHour:
+            title = @"21600";
+            break;
+            
         case HappModelDurationInvalid:
-            title = @"chillin";
+            title = @"unsure";
             break;
     }
     return title;
