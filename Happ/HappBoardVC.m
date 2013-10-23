@@ -528,7 +528,7 @@
 }
 
 - (void)setTextBarEnabled:(BOOL)enabled {
-    if (enabled) {
+    if (enabled && [MFMessageComposeViewController canSendText]) {
         [self.navigationController.view addSubview:self.textBarContainerContainer];
         CGRect onScreenFrame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
         [UIView animateWithDuration:0.25 animations:^{
