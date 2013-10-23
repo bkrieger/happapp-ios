@@ -28,18 +28,16 @@
     [super viewDidLoad];
     UIImage *titleImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
     UIImageView *titleImageView = [[UIImageView alloc] initWithImage:titleImage];
+    self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width * 2, titleImage.size.height * 2)];
+    [self.navigationItem.titleView addSubview:titleImageView];
+    titleImageView.frame = CGRectMake(27, 27, titleImage.size.width, titleImage.size.height);
+    
     
     UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, -20.f, 320.f, 64.f)];
     colorView.opaque = NO;
     colorView.backgroundColor = HAPP_PURPLE_COLOR;
     [self.navigationController.navigationBar.layer insertSublayer:colorView.layer atIndex:1];
     
-    self.navigationItem.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, titleImage.size.width, titleImage.size.height)];
-    [self.navigationItem.titleView addSubview:titleImageView];
-    titleImageView.frame = CGRectMake(25,
-                                      27,
-                                      titleImage.size.width / 2,
-                                      titleImage.size.height / 2);
     self.view.backgroundColor = HAPP_WHITE_COLOR;
     [self.view addSubview:self.phoneNumberField];
     [self.view addSubview:self.enterPhoneNumberLabel];
