@@ -121,7 +121,7 @@
         NSInteger offset = 30;
         CGRect phoneNumberLabelRect =
             CGRectMake(offset,
-                       80 + offset,
+                       50 + offset,
                        self.view.bounds.size.width - 2*offset,
                        80);
         _enterPhoneNumberLabel = [[UILabel alloc] initWithFrame:phoneNumberLabelRect];
@@ -137,7 +137,7 @@
 - (UITextField *)phoneNumberField {
     if (!_phoneNumberField) {
         NSInteger offset = 30;
-        NSInteger height = 50;
+        NSInteger height = 40;
         CGRect phoneNumberRect = CGRectMake(offset,
                                             self.view.bounds.size.height/3,
                                             self.view.bounds.size.width - 2*offset,
