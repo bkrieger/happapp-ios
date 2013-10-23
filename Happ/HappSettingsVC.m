@@ -55,7 +55,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2; // Me, Information
+    return 3; // Me, Information, Reset
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -66,6 +66,8 @@
     } else if (section == 1) {
         // Information
         return 3; // Terms of Use, Terms of Service, Feedback
+    } else if (section == 2) {
+        return 1; // Reset Happ
     } else {
         return 0;
     }
@@ -99,6 +101,12 @@
         } else if (indexPath.row == 2) {
             cell.textLabel.text = @"Give feeback about Happ";
         }
+    } else if (indexPath.section == 2) {
+        // Reset
+        if (indexPath.row == 0) {
+            // Reset all settings
+            cell.textLabel.text = @"Reset all settings";
+        }
     }
     
     return cell;
@@ -109,6 +117,8 @@
         return @"Me";
     } else if (section == 1) {
         return @"Information";
+    } else if (section == 2) {
+        return @"Reset";
     } else {
         return @"";
     }
@@ -135,6 +145,12 @@
             height = 50;
         } else if (indexPath.row == 2) {
             // Give feedback
+            height = 50;
+        }
+    } else if (indexPath.section == 2) {
+        // Reset
+        if (indexPath.row == 0) {
+            // Reset all settings
             height = 50;
         }
     }
@@ -168,8 +184,17 @@
         } else if (indexPath.row == 2) {
             // Give feedback
             UIAlertView *feedbackPopup = [[UIAlertView alloc] initWithTitle:@"Give feedback" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Send",nil];
+            feedbackPopup.tag = 1;
             feedbackPopup.alertViewStyle = UIAlertViewStylePlainTextInput;
             [feedbackPopup show];
+        }
+    } else if (indexPath.section == 2) {
+        // Reset
+        if (indexPath.row == 0) {
+            // Reset all settings
+            UIAlertView *resetPopup = [[UIAlertView alloc] initWithTitle:@"Reset Happ" message:@"Are you sure? Doing this will reset Happ to the state it was in when you installed it." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Reset",nil];
+            resetPopup.tag = 2;
+            [resetPopup show];
         }
     }
 }
@@ -177,9 +202,19 @@
 #pragma mark - ui alert view delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        // Send feedback
-        NSString *input = [alertView textFieldAtIndex:0].text;
+    if (alertView.tag == 1) {
+        // feedback popup
+        if (buttonIndex == 1) {
+            // Send feedback
+            NSString *input = [alertView textFieldAtIndex:0].text;
+        }
+    } else if (alertView.tag == 2) {
+        // reset all settings popup
+        if (buttonIndex == 1) {
+            // Reset all settings
+            NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+            [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+        }
     }
 }
 
