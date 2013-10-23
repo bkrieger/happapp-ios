@@ -70,7 +70,6 @@
         }
         self.viewController = [[HappViewController alloc] initWithNibName:@"HappViewController" bundle:nil];
         self.window.rootViewController = self.viewController;
-//        self.window.rootViewController = [[HappViewController alloc] initWithNibName:nil bundle:nil];
         return YES;
     } 
     return NO;

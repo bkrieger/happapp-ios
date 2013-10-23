@@ -302,7 +302,7 @@
             break;
             
         case HappModelMoodInvalid:
-            title = @"Chillin'";
+            title = @"Unsure";
             image = [UIImage imageNamed:@"chill_ios.png"];
             imageInverse = [UIImage imageNamed:@"chill_ios_i.png"];
             break;
@@ -352,7 +352,7 @@
             break;
         
         case HappModelMoodInvalid:
-            title = @"chillin";
+            title = @"unsure";
             break;
         
     }

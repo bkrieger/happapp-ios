@@ -81,21 +81,36 @@
     NSString *bodyString = [NSString stringWithFormat:@"From=%@&To=%@&Body=%@", kFromNumber, kToNumber, message];
     NSData *data = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:data];
-    NSError *error;
-    NSURLResponse *response;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
-    // Handle the received data
-    if (error) {
-        NSLog(@"Error on Twilio POST: %@", error);
-    }
-    
+    NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [serverConnection start];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [self.verifyButton setTitle:@"Sending..." forState:UIControlStateNormal];
+}
+
+#pragma mark NSURLConnectionDataDelegate methods
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error"
+                                                    message:@"Unable to connect. Check your internet connection and try again."
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    appDelegate.alertToDismiss = alert;
+    [alert show];
+    [self.verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Verification text sent"
-                                                   message:@"Please click on the verification link in your text message."
-                                                  delegate:nil
-                                         cancelButtonTitle:nil
-                                         otherButtonTitles:nil];
+                                                    message:@"Please click on the verification link in your text message."
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:nil];
     appDelegate.alertToDismiss = alert;
     [alert show];
 }

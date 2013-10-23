@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HappEnterPhoneViewController : UIViewController<UITextFieldDelegate>
+@interface HappEnterPhoneViewController : UIViewController<UITextFieldDelegate, NSURLConnectionDataDelegate>
 
 @end
