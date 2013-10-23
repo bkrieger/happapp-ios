@@ -36,8 +36,9 @@
 }
 
 - (void)setUp {
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"witewall_3_@2x.png"]];
-    self.tableView.backgroundColor = HAPP_WHITE_COLOR;
+    UIView *background = [[UIView alloc] initWithFrame:self.tableView.backgroundView.frame];
+    background.backgroundColor = HAPP_WHITE_COLOR;
+    [self.tableView.backgroundView addSubview:background];
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -85,7 +86,7 @@
     [composeInnerButton addTarget:self action:@selector(launchComposeView:) forControlEvents:UIControlEventTouchUpInside];
     composeInnerButton.contentEdgeInsets = UIEdgeInsetsMake(0, -40, 0, 40);
 
-    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]; spacer.width = 5;
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]; spacer.width = -10;
 
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
     [[self navigationItem] setRightBarButtonItems:@[spacer, composeButton ]];

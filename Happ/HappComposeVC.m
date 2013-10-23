@@ -185,8 +185,8 @@
 #pragma mark SelectorState - methods
 
 - (void)resetSelectorState {
-    self.durationSelector.backgroundColor = [UIColor clearColor];
-    self.moodSelector.backgroundColor = [UIColor clearColor];
+    self.durationSelector.backgroundColor = HAPP_WHITE_COLOR;
+    self.moodSelector.backgroundColor = HAPP_WHITE_COLOR;
     self.durationSelectorLabel.textColor = HAPP_BLACK_COLOR;
     self.durationSelectorValue.textColor = HAPP_BLACK_COLOR;
     self.durationSelectorVerticalDivider.backgroundColor = HAPP_DIVIDER_COLOR;
