@@ -88,8 +88,11 @@
     [composeInnerButton addTarget:self action:@selector(launchComposeView) forControlEvents:UIControlEventTouchUpInside];
     composeInnerButton.contentEdgeInsets = UIEdgeInsetsMake(0, -40, 0, 40);
 
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    spacer.width = -10;
+    
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
-    self.navigationItem.rightBarButtonItem = composeButton;
+    self.navigationItem.rightBarButtonItems = @[spacer, composeButton];
 //    
 //    UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
 //    [[self navigationItem] setLeftBarButtonItem:friendsButton];
