@@ -30,6 +30,7 @@
 		C58F0FB517DADE9B006D481E /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0FB417DADE9B006D481E /* AddressBook.framework */; };
 		C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C58F0FB717DB6F78006D481E /* HappComposeVC.m */; };
 		C58F0FBA17DB7FB9006D481E /* happ@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C58F0FB917DB7FB9006D481E /* happ@2x.png */; };
+		C5A9D5AD18173F9B00E9A0E2 /* HappSettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C5A9D5AC18173F9B00E9A0E2 /* HappSettingsVC.m */; };
 		C5AD0EC417DC486100B9FC77 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EC317DC486100B9FC77 /* Default.png */; };
 		C5AD0ECC17DC4D9400B9FC77 /* chill_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EC517DC4D9400B9FC77 /* chill_ios.png */; };
 		C5AD0ECD17DC4D9400B9FC77 /* compose_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EC617DC4D9400B9FC77 /* compose_ios.png */; };
@@ -97,6 +98,8 @@
 		C58F0FBB17DB90B1006D481E /* HappComposeVCDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappComposeVCDelegate.h; sourceTree = "<group>"; };
 		C58F0FBC17DB90C0006D481E /* HappComposeVCDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappComposeVCDataSource.h; sourceTree = "<group>"; };
 		C58F0FBD17DB912C006D481E /* HappModelEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HappModelEnums.h; sourceTree = "<group>"; };
+		C5A9D5AB18173F9B00E9A0E2 /* HappSettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappSettingsVC.h; sourceTree = "<group>"; };
+		C5A9D5AC18173F9B00E9A0E2 /* HappSettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappSettingsVC.m; sourceTree = "<group>"; };
 		C5AD0EC317DC486100B9FC77 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		C5AD0EC517DC4D9400B9FC77 /* chill_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chill_ios.png; sourceTree = "<group>"; };
 		C5AD0EC617DC4D9400B9FC77 /* compose_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = compose_ios.png; sourceTree = "<group>"; };
@@ -189,6 +192,8 @@
 				C58F0FB717DB6F78006D481E /* HappComposeVC.m */,
 				C58F0FAD17DAC122006D481E /* HappBoardVC.h */,
 				C58F0FAE17DAC122006D481E /* HappBoardVC.m */,
+				C5A9D5AB18173F9B00E9A0E2 /* HappSettingsVC.h */,
+				C5A9D5AC18173F9B00E9A0E2 /* HappSettingsVC.m */,
 				C53AD1561803A389009BC207 /* HappFriendsVC.h */,
 				C53AD1571803A389009BC207 /* HappFriendsVC.m */,
 				C58F0FB117DAD3C5006D481E /* HappABModel.h */,
@@ -361,6 +366,7 @@
 				C58F0FAC17DAABBF006D481E /* HappModel.m in Sources */,
 				C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */,
 				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
+				C5A9D5AD18173F9B00E9A0E2 /* HappSettingsVC.m in Sources */,
 				C51ECADD1815B87F009A3BE6 /* HappArcView.m in Sources */,
 				C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */,
 				C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */,

@@ -47,14 +47,14 @@
 }
 
 -(void)resetFriends {
-    UIAlertView *confirmResetView = [[UIAlertView alloc] initWithTitle:@"Reset friends" message:@"Are you sure you want to reset your friends to all contacts?" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Yes", @"No", nil];
+    UIAlertView *confirmResetView = [[UIAlertView alloc] initWithTitle:@"Reset friends" message:@"Are you sure you want to reset your friends to all contacts?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     [confirmResetView show];
 }
 
 #pragma mark - UI alert view delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
+    if (buttonIndex == 1) {
         // YES
         [self.happABModel unblockAllContacts];
         [self.tableView reloadData];
@@ -74,6 +74,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] init];
     cell.textLabel.text = name;
     cell.textLabel.textColor = HAPP_BLACK_COLOR;
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
 
     if ([self.happABModel isPersonBlocked:person]) {
         cell.accessoryType = UITableViewCellAccessoryNone;

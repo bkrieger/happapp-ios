@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "HappBoardVC.h"
 #import "HappComposeVC.h"
-#import "HappFriendsVC.h"
+#import "HappSettingsVC.h"
 #import "HappModel.h"
 #import "HappABModel.h"
 #import "HappArcView.h"
@@ -90,9 +90,13 @@
 
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithCustomView:composeInnerButton];
     self.navigationItem.rightBarButtonItem = composeButton;
+//    
+//    UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
+//    [[self navigationItem] setLeftBarButtonItem:friendsButton];
     
-    UIBarButtonItem *friendsButton = [[UIBarButtonItem alloc] initWithTitle:@"Friends" style:UIBarButtonItemStylePlain target:self action:@selector(launchFriends)];
-    [[self navigationItem] setLeftBarButtonItem:friendsButton];
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(launchSettings)];
+    self.navigationItem.leftBarButtonItem = settingsButton;
+
     // Get rid of padding that iOS adds by default around tableview
     self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, -40, 0);
 }
@@ -440,10 +444,19 @@
     [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
 }
 
-- (void)launchFriends {
+//- (void)launchFriends {
+//    [self setTextBarEnabled:NO];
+//    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
+//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
+//
+//    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//    [self presentViewController:navController animated:YES completion:nil];
+//}
+
+- (void)launchSettings {
     [self setTextBarEnabled:NO];
-    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
+    HappSettingsVC *happSettingsVC = [[HappSettingsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happSettingsVC];
     
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:navController animated:YES completion:nil];
