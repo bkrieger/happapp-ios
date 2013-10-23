@@ -24,6 +24,7 @@
 @property BOOL isRefreshing;
 
 @property (nonatomic, strong) UIImageView *stillRefreshView;
+@property (nonatomic, strong) UIView *stillRefreshCover;
 @property (nonatomic) CGFloat originalStillRefreshViewHeight;
 @property (nonatomic, strong) UIImageView *animatingRefreshView;
 @property (nonatomic, strong) UIImageView *nothingIsHappeningView;
@@ -81,6 +82,12 @@
     refreshBackgroundView.backgroundColor = [UIColor colorWithRed:237/255.0f green:201/255.0f blue:225/255.0f alpha:1.0f];
     [self.tableView addSubview:refreshBackgroundView];
     [self.tableView addSubview:self.stillRefreshView];
+    // The stillRefreshCover covers the still hippo when it is behind the top bar, that way it
+    // can't be seen through the transparent top bar.
+    self.stillRefreshCover = [[UIView alloc] initWithFrame:CGRectMake(0, -200, 320, 230)];
+    self.stillRefreshCover.backgroundColor = refreshBackgroundView.backgroundColor;
+    self.stillRefreshCover.layer.zPosition = 1;
+    [self.tableView addSubview:self.stillRefreshCover];
     // We use the UIRefreshControl to do all the work for us, but we cover it up with our own image.
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.tintColor = [UIColor clearColor];
@@ -298,13 +305,15 @@
     // Stretch the still hippo as you pull to refresh.
     CGFloat height = (scrollView.contentOffset.y * -1.0f) - 42.0f;
     
+    // We move the cover so that it covers the still hippo when the hippo is behind the top bar, but otherwise
+    // is higher up so it doesn't interfere with the transparency of the bar.
+    self.stillRefreshCover.frame = CGRectMake(0, -30 -fabsf(height), self.stillRefreshCover.frame.size.width, 52);
+    
     if (height <= self.originalStillRefreshViewHeight) {
         self.stillRefreshView.transform = CGAffineTransformMakeRotation(0);
-        if (height < 0) {
-            height = 0;
-        }
-        self.stillRefreshView.frame = CGRectMake(self.stillRefreshView.frame.origin.x, -height + 20, self.stillRefreshView.frame.size.width, height);
     } else {
+        // We need to use self.originalStillRefreshViewHeight, because when we rotate the image, its
+        // size.height changes
         CGFloat difference = height - self.originalStillRefreshViewHeight;
         if (difference > 53.0f) {
             difference = 53.0f;
@@ -379,7 +388,7 @@
         self.originalStillRefreshViewHeight = image.size.height;
         CGRect frame = CGRectMake(
                                   (self.tableView.frame.size.width - image.size.width) / 2,
-                                  -20,
+                                  -25,
                                   image.size.width,
                                   image.size.height);
         _stillRefreshView = [[UIImageView alloc] initWithImage:image];

@@ -67,7 +67,7 @@
         return 2; // Friends, description of friends
     } else if (section == 1) {
         // Information
-        return 3; // Terms of Use, Terms of Service, Feedback
+        return 2; // Feedback, Terms of Service
     } else if (section == 2) {
         return 1; // Reset Happ
     } else {
@@ -96,17 +96,16 @@
     } else if (indexPath.section == 1) {
         //Information
         if (indexPath.row == 0) {
-            // Terms of Use
-            cell.textLabel.text = @"Terms of Use";
+            // Feedback
+            cell.textLabel.text = @"Send feeback about Happ";
         } else if (indexPath.row == 1) {
+            // Terms of Service
             cell.textLabel.text = @"Terms of Service";
-        } else if (indexPath.row == 2) {
-            cell.textLabel.text = @"Give feeback about Happ";
         }
     } else if (indexPath.section == 2) {
         // Reset
         if (indexPath.row == 0) {
-            // Reset all settings
+            // Reset phone number
             cell.textLabel.text = @"Reset phone number";
         }
     }
@@ -140,19 +139,16 @@
     } else if (indexPath.section == 1) {
         //Information
         if (indexPath.row == 0) {
-            // Terms of Use
+            // Feeback
             height = 50;
         } else if (indexPath.row == 1) {
             // Terms of Service
-            height = 50;
-        } else if (indexPath.row == 2) {
-            // Give feedback
             height = 50;
         }
     } else if (indexPath.section == 2) {
         // Reset
         if (indexPath.row == 0) {
-            // Reset all settings
+            // Reset phone number
             height = 50;
         }
     }
@@ -176,19 +172,15 @@
     } else if (indexPath.section == 1) {
         //Information
         if (indexPath.row == 0) {
-            // Terms of Use
-            NSURL *url = [[NSURL alloc ] initWithString: @"http://www.happ.us/termsofuse"];
-            [[UIApplication sharedApplication] openURL:url];
+            // Give feedback
+            UIAlertView *feedbackPopup = [[UIAlertView alloc] initWithTitle:@"Send feedback" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Send", nil];
+            feedbackPopup.tag = 1;
+            feedbackPopup.alertViewStyle = UIAlertViewStylePlainTextInput;
+            [feedbackPopup show];
         } else if (indexPath.row == 1) {
             // Terms of Service
             NSURL *url = [[NSURL alloc ] initWithString: @"http://www.happ.us/termsofservice"];
             [[UIApplication sharedApplication] openURL:url];
-        } else if (indexPath.row == 2) {
-            // Give feedback
-            UIAlertView *feedbackPopup = [[UIAlertView alloc] initWithTitle:@"Send feedback" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Send",nil];
-            feedbackPopup.tag = 1;
-            feedbackPopup.alertViewStyle = UIAlertViewStylePlainTextInput;
-            [feedbackPopup show];
         }
     } else if (indexPath.section == 2) {
         // Reset
