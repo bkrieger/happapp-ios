@@ -75,7 +75,7 @@
     self.mood = HappModelMoodDefault;
     self.duration = HappModelDurationDefault;
     self.view.backgroundColor = HAPP_WHITE_COLOR;
-    self.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
+    self.navigationBar.barTintColor = HAPP_BARTINT_COLOR;
 }
 
 - (void)viewDidAppear:(BOOL)animated {

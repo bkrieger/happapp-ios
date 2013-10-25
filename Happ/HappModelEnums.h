@@ -1,5 +1,6 @@
 
 #define HAPP_PURPLE_COLOR [UIColor colorWithRed:0.667 green:0.016 blue:0.439 alpha:1] /*#aa0470*/
+#define HAPP_BARTINT_COLOR [UIColor colorWithRed:0.667 green:0.016 blue:0.439 alpha:.65] /*#aa0470 with alpha*/
 #define HAPP_PURPLE_ALPHA_COLOR [UIColor colorWithRed:130/255.0f green:4/255.0f blue:112/255.0f alpha:0.21f]
 #define HAPP_WHITE_COLOR [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1.0]
 #define HAPP_GRAY_COLOR [UIColor colorWithRed:0.729 green:0.729 blue:0.729 alpha:1.0]

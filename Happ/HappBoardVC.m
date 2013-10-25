@@ -66,7 +66,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationController.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
+    self.navigationController.navigationBar.barTintColor = HAPP_BARTINT_COLOR;
     self.tableView.backgroundColor = HAPP_WHITE_COLOR;
     self.tableView.separatorColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -361,7 +361,7 @@
     if (!_textBarContainerContainer) {
         CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
         _textBarContainerContainer = [[UIToolbar alloc] initWithFrame:frame];
-        _textBarContainerContainer.barTintColor = HAPP_PURPLE_COLOR;
+        _textBarContainerContainer.barTintColor = HAPP_BARTINT_COLOR;
         [_textBarContainerContainer addSubview:self.textBarContainer];
     }
     return _textBarContainerContainer;

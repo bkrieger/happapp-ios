@@ -36,7 +36,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationController.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
+    self.navigationController.navigationBar.barTintColor = HAPP_BARTINT_COLOR;
     self.navigationItem.title = @"Settings";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(done)];
     UILabel *copyrightFooter = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];

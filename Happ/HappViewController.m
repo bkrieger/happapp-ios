@@ -27,7 +27,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAppState:) name:HAPP_RESET_NOTIFICATION object:nil];
 
-    self.navigationBar.barTintColor = HAPP_PURPLE_COLOR;
+    self.navigationBar.barTintColor = HAPP_BARTINT_COLOR;
     [UINavigationBar appearance].alpha = 0.f;
     [UINavigationBar appearance].barStyle = UIBarStyleBlackTranslucent;
     [UINavigationBar appearance].tintColor = HAPP_WHITE_COLOR;
