@@ -10,6 +10,6 @@
 
 @interface HappArcView : UIView
 
-- initWithColor:(UIColor*)color angle:(CGFloat) angle;
+- initWithColor:(UIColor*)color percentOfCircle:(CGFloat) percentOfCircle;
 
 @end

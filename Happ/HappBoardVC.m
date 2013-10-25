@@ -177,9 +177,15 @@
 
         UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
         UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
-        personView.frame = CGRectMake(0, 0, personImage.size.width, personImage.size.height);
+        personView.frame = CGRectMake(6, 6, personImage.size.width - 12, personImage.size.height - 12);
 
-        HappArcView *leftIconView = [[HappArcView alloc] initWithColor:color angle:2];
+        // Calculate the percent of the circle around the left icon to display
+        NSTimeInterval timeNowSeconds = [[NSDate date] timeIntervalSince1970];
+        NSTimeInterval timePostedSeconds = [[moodPerson objectForKey:@"timestamp"] doubleValue] / 1000;
+        NSTimeInterval duration = [[moodPerson objectForKey:@"duration"] doubleValue];
+        CGFloat percentOfCircle = 1 - ((timeNowSeconds - timePostedSeconds) / duration);
+        
+        HappArcView *leftIconView = [[HappArcView alloc] initWithColor:color percentOfCircle:percentOfCircle];
         leftIconView.frame = CGRectMake(10, 8, personImage.size.width, personImage.size.height);
         leftIconView.layer.cornerRadius = leftIconView.frame.size.width / 2;
         leftIconView.layer.masksToBounds = YES;
@@ -187,7 +193,7 @@
         [leftIconView addSubview:personView];
         [cell.contentView addSubview:leftIconView];
                 
-        nameLabelX = leftIconView.frame.origin.x + personView.frame.size.width + 15;
+        nameLabelX = leftIconView.frame.origin.x + personView.frame.size.width + 17;
         nameLabelRect = CGRectMake(nameLabelX,
                                           leftIconView.frame.origin.y - 7,
                                           150,
@@ -525,13 +531,14 @@
 }
 
 - (UIColor *)generateColor:(NSInteger)phoneNumber {
-    NSArray *colors = @[[UIColor colorWithRed:4/255.0f green:4/255.0f blue:170/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:4/255.0f green:167/255.0f blue:170/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:4/255.0f green:170/255.0f blue:43/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:170/255.0f green:40/255.0f blue:4/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:255/255.0f green:216/255.0f blue:30/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:31/255.0f green:196/255.0f blue:222/255.0f alpha:1.0f],
-                        [UIColor colorWithRed:250/255.0f green:117/255.0f blue:0/255.0f alpha:1.0f]];
+    NSArray *colors = @[[UIColor colorWithRed:0.949 green:0.173 blue:0.173 alpha:1.0], // #F22C2C
+                        [UIColor colorWithRed:0 green:0.4 blue:0.6 alpha:1.0], //#006699
+                        [UIColor colorWithRed:0.016 green:0.667 blue:0.169 alpha:1.0], //#04AA2B
+                        [UIColor colorWithRed:0.667 green:0.157 blue:0.016 alpha:1.0], //#AA2804
+                        [UIColor colorWithRed:0.871 green:0.82 blue:0.122 alpha:1.0], //#DED11F
+                        [UIColor colorWithRed:0.122 green:0.769 blue:0.871 alpha:1.0], //#1FC4DE
+                        [UIColor colorWithRed:0.49 green:0.49 blue:0.49 alpha:1.0], //#7D7D7D
+                        [UIColor colorWithRed:0.98 green:0.459 blue:0 alpha:1.0]]; //#FA7500
     NSInteger index = phoneNumber % [colors count];
     return [colors objectAtIndex:index];
 }

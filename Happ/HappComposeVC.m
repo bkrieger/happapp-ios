@@ -239,6 +239,7 @@
         _textView.returnKeyType = UIReturnKeySend;
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
+        _textView.enablesReturnKeyAutomatically = YES;
         _textView.delegate = self;
     }
     return _textView;

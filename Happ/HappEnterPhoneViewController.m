@@ -86,6 +86,7 @@
     [serverConnection start];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self.verifyButton setTitle:@"Sending..." forState:UIControlStateNormal];
+    self.verifyButton.enabled = NO;
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -101,6 +102,7 @@
     appDelegate.alertToDismiss = alert;
     [alert show];
     [self.verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
+    self.verifyButton.enabled = YES;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -113,6 +115,7 @@
                                           otherButtonTitles:nil];
     appDelegate.alertToDismiss = alert;
     [alert show];
+    [self.verifyButton setTitle:@"Verification text sent" forState:UIControlStateNormal];
 }
 
 #pragma mark getters
