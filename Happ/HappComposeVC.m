@@ -27,6 +27,7 @@
 
 @property (nonatomic, strong) UITextView *textView;
 @property (nonatomic, strong) UILabel *placeholderTextLabel;
+@property (nonatomic, strong) UILabel *characterCountLabel;
 @property (nonatomic, strong) UIButton *catcher;
 
 @property (nonatomic, strong) UIView *accerssoryView;
@@ -110,6 +111,7 @@
     [self.catcher addTarget:self action:@selector(didTapOnTextField) forControlEvents:UIControlEventTouchDown];
     [self.composeVC.view addSubview:self.textView];
     [self.composeVC.view addSubview:self.placeholderTextLabel];
+    [self.composeVC.view addSubview:self.characterCountLabel];
 
     self.accerssoryView = [[UIView alloc]
         initWithFrame:CGRectMake(0, 0, self.composeVC.view.bounds.size.width, 100)];
@@ -229,6 +231,10 @@
     [self.textView becomeFirstResponder];
 }
 
+- (void)setCharacterCount:(NSInteger) count {
+    self.characterCountLabel.text = [NSString stringWithFormat:@"%d/50", count];
+}
+
 #pragma mark getters
 
 // Must be called after composeVC is initialized.
@@ -238,7 +244,7 @@
         _textView = [[UITextView alloc] initWithFrame:textFieldFrame];
         _textView.returnKeyType = UIReturnKeySend;
         _textView.backgroundColor = [UIColor clearColor];
-        _textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
+        _textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:([[UIScreen mainScreen] bounds].size.height > 500 ? 22 : 18)];
         _textView.enablesReturnKeyAutomatically = YES;
         _textView.delegate = self;
     }
@@ -248,11 +254,28 @@
 - (UILabel *)placeholderTextLabel {
     if (!_placeholderTextLabel) {
         _placeholderTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(17, 43, 300, 100)];
-        _placeholderTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:22];
+        _placeholderTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:([[UIScreen mainScreen] bounds].size.height > 500 ? 22 : 18)];
         _placeholderTextLabel.textColor = HAPP_GRAY_COLOR;
         _placeholderTextLabel.text = @"What's happening?";
     }
     return _placeholderTextLabel;
+}
+
+- (UILabel *)characterCountLabel {
+    if (!_characterCountLabel) {
+        // We have to make the frame in terms of the size of the view so that it works
+        // with a 3.5 inch or 4 inch screen.
+        _characterCountLabel = [[UILabel alloc] initWithFrame:
+                                CGRectMake(self.composeVC.view.frame.size.width * .8,
+                                           self.composeVC.view.frame.size.height * .27,
+                                           self.composeVC.view.frame.size.width * .15,
+                                           self.composeVC.view.frame.size.height * .1)];
+        _characterCountLabel.textAlignment = NSTextAlignmentRight;
+        _characterCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+        _characterCountLabel.textColor = HAPP_GRAY_COLOR;
+        _characterCountLabel.text = @"0/50";
+    }
+    return _characterCountLabel;
 }
 
 - (UIButton *)moodSelector {
@@ -356,7 +379,8 @@
         }
         return NO;
     }
-    if ([textView.text length] > 40) {
+    // Don't allow input if length is already 50 and this is not a backspace
+    if ([textView.text length] >= 50 && ![text isEqualToString:@""]) {
         return NO;
     }
     return YES;
@@ -366,6 +390,7 @@
     BOOL textViewHasText = textView.text.length > 0;
     self.placeholderTextLabel.hidden = textViewHasText;
     [self.sendButton setEnabled:textViewHasText];
+    [self setCharacterCount:[textView.text length]];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
