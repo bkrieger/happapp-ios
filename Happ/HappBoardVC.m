@@ -30,8 +30,7 @@
 @property (nonatomic, strong) UIImageView *nothingIsHappeningView;
 @property (nonatomic, strong) UIView *verticalLine;
 
-@property (nonatomic, strong) UIToolbar *textBarContainerContainer;
-@property (nonatomic, strong) UIControl *textBarContainer;
+@property (nonatomic, strong) UIToolbar *textBarContainer;
 @property (nonatomic, strong) UILabel *textBar;
 @property BOOL textBarShowing;
 // We store the contacts in a set and an array because:
@@ -357,30 +356,24 @@
 
 #pragma mark - Getters
 
-- (UIToolbar *)textBarContainerContainer {
-    if (!_textBarContainerContainer) {
-        CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
-        _textBarContainerContainer = [[UIToolbar alloc] initWithFrame:frame];
-        _textBarContainerContainer.barTintColor = HAPP_BARTINT_COLOR;
-        [_textBarContainerContainer addSubview:self.textBarContainer];
-    }
-    return _textBarContainerContainer;
-}
-
-- (UIControl *)textBarContainer {
+- (UIToolbar *)textBarContainer {
     if (!_textBarContainer) {
-        CGRect frame = CGRectMake(0, 0, self.tableView.frame.size.width, 40);
-        _textBarContainer = [[UIControl alloc] initWithFrame:frame];
-//        _textBarContainer.backgroundColor = HAPP_PURPLE_COLOR;
+        CGRect frame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
+        _textBarContainer = [[UIToolbar alloc] initWithFrame:frame];
+        _textBarContainer.barTintColor = HAPP_BARTINT_COLOR;
         [_textBarContainer addSubview:self.textBar];
-        [_textBarContainer addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        UIBarButtonItem *airplane = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"airplane.png"] style:UIBarButtonItemStylePlain target:self action:@selector(sendText)];
+        airplane.tintColor = HAPP_WHITE_COLOR;
+        _textBarContainer.items = [NSArray arrayWithObjects:flex, airplane, nil];
     }
     return _textBarContainer;
 }
 
 - (UILabel *)textBar {
     if (!_textBar) {
-        CGRect frame = CGRectMake(10, 0, self.tableView.frame.size.width - 20, 40);
+        CGRect frame = CGRectMake(10, 0, self.tableView.frame.size.width - 55, 40);
         _textBar = [[UILabel alloc] initWithFrame:frame];
         _textBar.lineBreakMode = NSLineBreakByTruncatingHead;
         _textBar.textColor = HAPP_WHITE_COLOR;
@@ -483,15 +476,6 @@
     [[self navigationController] presentViewController:self.happCompose animated:YES completion:nil];
 }
 
-//- (void)launchFriends {
-//    [self setTextBarEnabled:NO];
-//    HappFriendsVC *happFriendsVC = [[HappFriendsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
-//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:happFriendsVC];
-//
-//    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//    [self presentViewController:navController animated:YES completion:nil];
-//}
-
 - (void)launchSettings {
     [self setTextBarEnabled:NO];
     HappSettingsVC *happSettingsVC = [[HappSettingsVC alloc] initWithHappABModel:self.addressBook happModel:self.model];
@@ -545,10 +529,10 @@
 
 - (void)setTextBarEnabled:(BOOL)enabled {
     if (enabled && [MFMessageComposeViewController canSendText]) {
-        [self.navigationController.view addSubview:self.textBarContainerContainer];
+        [self.navigationController.view addSubview:self.textBarContainer];
         CGRect onScreenFrame = CGRectMake(0, self.tableView.frame.size.height - 40, self.tableView.frame.size.width, 40);
         [UIView animateWithDuration:0.25 animations:^{
-            self.textBarContainerContainer.frame = onScreenFrame;
+            self.textBarContainer.frame = onScreenFrame;
             self.tableView.contentInset = UIEdgeInsetsMake(34, 0, 0, 0);
         }];
         self.textBarShowing = YES;
@@ -556,10 +540,10 @@
     } else {
         CGRect offScreenFrame = CGRectMake(0, self.tableView.frame.size.height, self.tableView.frame.size.width, 40);
         [UIView animateWithDuration:0.25 animations:^{
-            self.textBarContainerContainer.frame = offScreenFrame;
+            self.textBarContainer.frame = offScreenFrame;
             self.tableView.contentInset = UIEdgeInsetsMake(34, 0, -40, 0);
         } completion:^(BOOL finished) {
-            [self.textBarContainerContainer removeFromSuperview];
+            [self.textBarContainer removeFromSuperview];
         }];
         self.textBarShowing = NO;
         [self.selectedContacts removeAllObjects];
