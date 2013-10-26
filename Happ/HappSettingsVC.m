@@ -179,7 +179,7 @@
             [feedbackPopup show];
         } else if (indexPath.row == 1) {
             // Terms of Service
-            NSURL *url = [[NSURL alloc ] initWithString: @"http://www.happ.us/termsofservice"];
+            NSURL *url = [[NSURL alloc ] initWithString: @"http://www.happ.us/terms"];
             [[UIApplication sharedApplication] openURL:url];
         }
     } else if (indexPath.section == 2) {
