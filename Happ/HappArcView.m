@@ -47,7 +47,7 @@
     [arc fill];
     
     // Draw inner circle to cover missing part of pie
-    radius = (self.frame.size.width / 2) - 6;
+    radius = (self.frame.size.width / 2) - 5;
     startPosition = 0;
     endPosition = M_PI * 2; // full circle
     arc = [UIBezierPath bezierPath]; //empty path

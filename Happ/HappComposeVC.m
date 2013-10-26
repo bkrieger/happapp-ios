@@ -13,6 +13,19 @@
 #define HAPP_HORIZONTAL_PADDING 7
 #define HAPP_VERTICAL_PADDING 10
 
+@interface ComposeTextView : UITextView
+@end
+@implementation ComposeTextView
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    if (action == @selector(paste:)) {
+        return NO;
+    }
+    return [super canPerformAction:action withSender:sender];
+}
+
+@end
+
 @interface HappComposeVC ()
 
 @property (nonatomic, strong) NSObject<HappComposeVCDelegate> *happDelegate;
@@ -241,7 +254,7 @@
 - (UITextView *)textView {
     if (!_textView) {
         CGRect textFieldFrame = CGRectInset(self.composeVC.view.bounds, 10, 10);
-        _textView = [[UITextView alloc] initWithFrame:textFieldFrame];
+        _textView = [[ComposeTextView alloc] initWithFrame:textFieldFrame];
         _textView.returnKeyType = UIReturnKeySend;
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:([[UIScreen mainScreen] bounds].size.height > 500 ? 22 : 18)];

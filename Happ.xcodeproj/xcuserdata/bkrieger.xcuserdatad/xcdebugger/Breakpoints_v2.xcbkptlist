@@ -24,11 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Happ/HappComposeVC.m"
-            timestampString = "404414625.254349"
+            timestampString = "404509815.363972"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "-didTapOnDurationSelector"
             landmarkType = "5">
          </BreakpointContent>
