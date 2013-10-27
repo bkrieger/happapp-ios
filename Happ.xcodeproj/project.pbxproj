@@ -14,6 +14,10 @@
 		C528EC4E180E3056006F0386 /* check_ios@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C528EC4D180E3056006F0386 /* check_ios@2x.png */; };
 		C53AD15518038B1F009BC207 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AD15418038B1F009BC207 /* AddressBookUI.framework */; };
 		C53AD1581803A389009BC207 /* HappFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C53AD1571803A389009BC207 /* HappFriendsVC.m */; };
+		C54179D6181C8C0B00790491 /* happ_ios_120.png in Resources */ = {isa = PBXBuildFile; fileRef = C54179D5181C8C0B00790491 /* happ_ios_120.png */; };
+		C54179D8181C8C2500790491 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C54179D7181C8C2500790491 /* Images.xcassets */; };
+		C54179DA181C8C3E00790491 /* happ_ios_80.png in Resources */ = {isa = PBXBuildFile; fileRef = C54179D9181C8C3E00790491 /* happ_ios_80.png */; };
+		C54179DC181C8C4900790491 /* happ_ios_58.png in Resources */ = {isa = PBXBuildFile; fileRef = C54179DB181C8C4900790491 /* happ_ios_58.png */; };
 		C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */; };
 		C58F0F8817DAA84A006D481E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8717DAA84A006D481E /* UIKit.framework */; };
 		C58F0F8A17DAA84A006D481E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C58F0F8917DAA84A006D481E /* Foundation.framework */; };
@@ -65,6 +69,10 @@
 		C53AD15418038B1F009BC207 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		C53AD1561803A389009BC207 /* HappFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappFriendsVC.h; sourceTree = "<group>"; };
 		C53AD1571803A389009BC207 /* HappFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappFriendsVC.m; sourceTree = "<group>"; };
+		C54179D5181C8C0B00790491 /* happ_ios_120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happ_ios_120.png; sourceTree = "<group>"; };
+		C54179D7181C8C2500790491 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C54179D9181C8C3E00790491 /* happ_ios_80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happ_ios_80.png; sourceTree = "<group>"; };
+		C54179DB181C8C4900790491 /* happ_ios_58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happ_ios_58.png; sourceTree = "<group>"; };
 		C56024E717E2B105004DC4EB /* HappEnterPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HappEnterPhoneViewController.h; sourceTree = "<group>"; };
 		C56024E817E2B105004DC4EB /* HappEnterPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HappEnterPhoneViewController.m; sourceTree = "<group>"; };
 		C58F0F8417DAA84A006D481E /* Happ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Happ.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +209,7 @@
 				C58F0FBD17DB912C006D481E /* HappModelEnums.h */,
 				C58F0FB017DAD0BE006D481E /* HappModelDelegate.h */,
 				C58F0FA217DAA84B006D481E /* HappViewController.xib */,
+				C54179D7181C8C2500790491 /* Images.xcassets */,
 				C58F0F8E17DAA84A006D481E /* Supporting Files */,
 			);
 			path = Happ;
@@ -220,6 +229,9 @@
 		C58F160717E0CE5600B90185 /* assets */ = {
 			isa = PBXGroup;
 			children = (
+				C54179D9181C8C3E00790491 /* happ_ios_80.png */,
+				C54179D5181C8C0B00790491 /* happ_ios_120.png */,
+				C54179DB181C8C4900790491 /* happ_ios_58.png */,
 				C5994013181AEC4400F701E9 /* airplane@2x.png */,
 				C522DEF817DC46FD00C1BC65 /* Default@2x.png */,
 				C5AD0EC317DC486100B9FC77 /* Default.png */,
@@ -311,6 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C58F0F9217DAA84A006D481E /* InfoPlist.strings in Resources */,
+				C54179DC181C8C4900790491 /* happ_ios_58.png in Resources */,
 				C5F079E4180F6A6C005398B2 /* dancing_hippo3@2x.png in Resources */,
 				C58F0FA417DAA84B006D481E /* HappViewController.xib in Resources */,
 				C58F0FBA17DB7FB9006D481E /* happ@2x.png in Resources */,
@@ -326,13 +339,16 @@
 				C5AD0ED117DC4D9400B9FC77 /* sport_ios@2x.png in Resources */,
 				C5F079E3180F6A6C005398B2 /* dancing_hippo2@2x.png in Resources */,
 				C5AD0ED817DC4DA300B9FC77 /* chill_ios_i@2x.png in Resources */,
+				C54179D6181C8C0B00790491 /* happ_ios_120.png in Resources */,
 				C5F079E6180F6A6C005398B2 /* dancing_hippo5@2x.png in Resources */,
 				C5F079E7180F6A6C005398B2 /* dancing_hippo6@2x.png in Resources */,
 				C5F079E8180F6A6C005398B2 /* dancing_hippo7@2x.png in Resources */,
 				C5AD0ED917DC4DA300B9FC77 /* food_ios_i@2x.png in Resources */,
+				C54179D8181C8C2500790491 /* Images.xcassets in Resources */,
 				C5AD0EDA17DC4DA300B9FC77 /* movie_ios_i@2x.png in Resources */,
 				C5AD0EDB17DC4DA300B9FC77 /* party_ios_i@2x.png in Resources */,
 				C5AD0EDC17DC4DA300B9FC77 /* sport_ios_i@2x.png in Resources */,
+				C54179DA181C8C3E00790491 /* happ_ios_80.png in Resources */,
 				C5F079E2180F6A6C005398B2 /* dancing_hippo1@2x.png in Resources */,
 				C5F079DA180F5AC1005398B2 /* still_hippo@2x.png in Resources */,
 				C5F079B9180F2676005398B2 /* sad_hippo_xhdpi@2x.png in Resources */,
@@ -444,6 +460,8 @@
 		C58F0FA817DAA84B006D481E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Happ/Happ-Prefix.pch";
 				INFOPLIST_FILE = "Happ/Happ-Info.plist";
@@ -456,6 +474,8 @@
 		C58F0FA917DAA84B006D481E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Brandon Krieger (D622BEY5T6)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Happ/Happ-Prefix.pch";

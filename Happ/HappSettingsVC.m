@@ -97,7 +97,7 @@
         //Information
         if (indexPath.row == 0) {
             // Feedback
-            cell.textLabel.text = @"Send feeback about Happ";
+            cell.textLabel.text = @"Send feedback about Happ";
         } else if (indexPath.row == 1) {
             // Terms of Service
             cell.textLabel.text = @"Terms of Service";
