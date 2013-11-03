@@ -64,7 +64,7 @@
     NSString *kToNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
     NSString *randomNumber = [NSString stringWithFormat:@"%d", abs(arc4random())];
     NSLog(@"Verification Code: %@",randomNumber);
-    NSString *message = [NSString stringWithFormat:@"Thanks for using Happ! Click here to verify your phone number: happ://%@", randomNumber];
+    NSString *message = [NSString stringWithFormat:@"Thanks for using Happ! Click here to verify your phone number: http://www.happ.us/verify?code=%@", randomNumber];
     
     [[NSUserDefaults standardUserDefaults] setObject:[self formatNumber:self.phoneNumberField.text] forKey:UNVERIFIED_PHONE_NUMBER_KEY];
     [[NSUserDefaults standardUserDefaults] setObject:randomNumber forKey:VERIFICATION_CODE_KEY];
