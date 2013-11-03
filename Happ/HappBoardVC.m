@@ -13,6 +13,7 @@
 #import "HappModel.h"
 #import "HappABModel.h"
 #import "HappArcView.h"
+#import "MBProgressHUD.h"
 
 
 @interface HappBoardVC ()
@@ -56,12 +57,6 @@
     return self;
 }
 
-- (void)setUp {
-    // Set Up model
-    self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
-    [self refresh];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -100,6 +95,23 @@
 
     // Get rid of padding that iOS adds by default around tableview
     self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, -40, 0);
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    // Set Up model
+    // This can take a while, so put a loading screen
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+    hud.labelText = @"Processing contacts...";
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:[UIApplication sharedApplication].keyWindow animated:YES];
+            [self refresh];
+        });
+    });
 }
 
 #pragma mark - Table view data source

@@ -7,11 +7,13 @@
 //
 
 #import "HappFriendsVC.h"
+#import "MBProgressHUD.h"
 
 @interface HappFriendsVC ()
 
 @property (nonatomic, strong) HappABModel *happABModel;
 @property (nonatomic, strong) HappModel *happModel;
+@property (nonatomic, strong) NSArray *contacts;
 
 @end
 
@@ -22,6 +24,7 @@
     if (self) {
         _happABModel = happABModel;
         _happModel = happModel;
+        _contacts = nil;
     }
     return self;
 }
@@ -29,6 +32,7 @@
 - (void)dispose {
     self.happABModel = nil;
     self.happModel = nil;
+    self.contacts = nil;
 }
 
 -(void)viewDidLoad {
@@ -39,6 +43,17 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset" style:UIBarButtonItemStylePlain target:self action:@selector(resetFriends)];
     self.tableView.sectionIndexColor = HAPP_PURPLE_COLOR;
     [[UITableViewCell appearance] setTintColor:HAPP_PURPLE_COLOR];
+    
+    // This can take a while, so put a loading screen
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+    hud.labelText = @"Loading contacts...";
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        self.contacts = self.happABModel.contactsSeparatedByFirstLetter;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:[UIApplication sharedApplication].keyWindow animated:YES];
+            [self.tableView reloadData];
+        });
+    });
 }
 
 -(void)saveFriends {
@@ -65,33 +80,43 @@
 #pragma mark - Table view data source methods
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *contactsForSection = [self.happABModel.contactsSeparatedByFirstLetter objectAtIndex:indexPath.section];
-    ABRecordRef person = (__bridge ABRecordRef)([contactsForSection objectAtIndex:indexPath.row]);
-    NSString *name = [self.happABModel fullNameForPerson:person];
-    if (!name) {
-        name = @"";
-    }
-    
     UITableViewCell *cell = [[UITableViewCell alloc] init];
-    cell.textLabel.text = name;
-    cell.textLabel.textColor = HAPP_BLACK_COLOR;
-    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
 
-    if ([self.happABModel isPersonBlocked:person]) {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    if (self.contacts) {
+        NSArray *contactsForSection = [self.contacts objectAtIndex:indexPath.section];
+        ABRecordRef person = (__bridge ABRecordRef)([contactsForSection objectAtIndex:indexPath.row]);
+        NSString *name = [self.happABModel fullNameForPerson:person];
+        if (!name) {
+            name = @"";
+        }
+        
+        cell.textLabel.text = name;
+        cell.textLabel.textColor = HAPP_BLACK_COLOR;
+        cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+        
+        if ([self.happABModel isPersonBlocked:person]) {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
     }
     return cell;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [self.happABModel.contactsSeparatedByFirstLetter count];
+    if (self.contacts) {
+        return [self.contacts count];
+    } else {
+        return 0;
+    }
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSArray *contactsForSection = [self.happABModel.contactsSeparatedByFirstLetter objectAtIndex:section];
-    return [contactsForSection count];
+    if (self.contacts) {
+        return [[self.contacts objectAtIndex:section] count];
+    } else {
+        return 0;
+    }
 }
 
 -(NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
@@ -111,20 +136,24 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSArray *contactsForSection = [self.happABModel.contactsSeparatedByFirstLetter objectAtIndex:section];
-    if ([contactsForSection count] == 0) {
-        // Don't display a section header if the section has no rows.
+    if (self.contacts) {
+        NSArray *contactsForSection = [self.contacts objectAtIndex:section];
+        if ([contactsForSection count] == 0) {
+            // Don't display a section header if the section has no rows.
+            return nil;
+        }
+        NSString *title;
+        if (section >= 0 && section < 26) {
+            unichar letter = 'A';
+            letter += section;
+            title = [NSString stringWithCharacters:&letter length:1];
+        } else {
+            title = @"#";
+        }
+        return title;
+    } else {
         return nil;
     }
-    NSString *title;
-    if (section >= 0 && section < 26) {
-        unichar letter = 'A';
-        letter += section;
-        title = [NSString stringWithCharacters:&letter length:1];
-    } else {
-        title = @"#";
-    }
-    return title;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -139,7 +168,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
-    NSArray *contactsForSection = [self.happABModel.contactsSeparatedByFirstLetter objectAtIndex:indexPath.section];
+    NSArray *contactsForSection = [self.contacts objectAtIndex:indexPath.section];
     ABRecordRef person = (__bridge ABRecordRef)([contactsForSection objectAtIndex:indexPath.row]);
     
     BOOL blocked;

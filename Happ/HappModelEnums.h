@@ -11,6 +11,7 @@
 #define PHONE_NUMBER_KEY @"phoneNumber"
 #define UNVERIFIED_PHONE_NUMBER_KEY @"unverifiedPhoneNumber"
 #define VERIFICATION_CODE_KEY @"verificationCode"
+#define PHONE_NUMBER_NAME_MAP_KEY @"phoneNumberNameMap"
 
 #define HAPP_RESET_NOTIFICATION @"happResetNotification"
 

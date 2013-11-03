@@ -70,7 +70,6 @@
         [self pushViewController:[[HappEnterPhoneViewController alloc] init] animated:NO];
     } else {
         self.happBoard = [[HappBoardVC alloc] initWithStyle:UITableViewStyleGrouped];
-        [self.happBoard setUp];
         [self pushViewController:self.happBoard animated:NO];
     }
 }

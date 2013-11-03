@@ -15,7 +15,4 @@
 
 @interface HappBoardVC : UITableViewController<HappModelDelegate, HappComposeVCDelegate, MFMessageComposeViewControllerDelegate>
 
-// Must be called after initialization.
-- (void)setUp;
-
 @end

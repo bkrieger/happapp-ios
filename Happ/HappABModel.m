@@ -9,6 +9,7 @@
 #define BLOCKED_NUMBERS_KEY @"blockedNumbers"
 
 #import "HappABModel.h"
+#import "HappModelEnums.h"
 
 @interface HappABModel()
 
@@ -94,27 +95,40 @@
 
 - (NSDictionary *)phoneNumberNameMap {
     if (!_phoneNumberNameMap) {
-        NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
         
-        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSDictionary *persistentDictionary = [userDefaults dictionaryForKey:PHONE_NUMBER_NAME_MAP_KEY];
         
-        CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
-        for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook); i++ )
-        {
-            ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
-            ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
-            NSString *personName = [self fullNameForPerson:person];
-            if (personName) {
-                for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
-                    NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, i);
-                    NSString *sanitizedPhoneNumber = [self sanitizePhoneNumber:phoneNumber];
-                    if (sanitizedPhoneNumber && [sanitizedPhoneNumber length] >= 10) {
-                        [map setObject:personName forKey:sanitizedPhoneNumber];
+        if (persistentDictionary) {
+            _phoneNumberNameMap = persistentDictionary;
+        } else {
+            NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
+            
+            ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+            
+            CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople( addressBook );
+            for ( int i = 0; i < ABAddressBookGetPersonCount(addressBook); i++ )
+            {
+                NSLog(@"%d",i);
+                ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
+                ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
+                NSString *personName = [self fullNameForPerson:person];
+                if (personName) {
+                    for (int j = 0; j < ABMultiValueGetCount(phoneNumbers); j++) {
+                        NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, j);
+                        NSString *sanitizedPhoneNumber = [self sanitizePhoneNumber:phoneNumber];
+                        if (sanitizedPhoneNumber && [sanitizedPhoneNumber length] >= 10) {
+                            [map setObject:personName forKey:sanitizedPhoneNumber];
+                        }
                     }
                 }
             }
+            _phoneNumberNameMap = map;
+            // store map persistenly
+            [userDefaults setObject:_phoneNumberNameMap forKey:PHONE_NUMBER_NAME_MAP_KEY];
+            [userDefaults synchronize];
         }
-        _phoneNumberNameMap = map;
+        
     }
     return _phoneNumberNameMap;
 }
@@ -146,8 +160,12 @@
 
 #pragma mark - getters
 
+// This getter will also reload contacts into phoneNumberNameMap, in case address book has changed
 - (NSArray *)contactsSeparatedByFirstLetter {
     if (!_contactsSeparatedByFirstLetter) {
+        
+        NSMutableDictionary *phoneNumberNameMap = [[NSMutableDictionary alloc] init];
+        
         // 27 = alphabet + #
         NSMutableArray *lettersArray = [[NSMutableArray alloc] initWithCapacity:27];
         for (int i = 0; i < 27; i++) {
@@ -188,9 +206,19 @@
                 }
                 // Add the person to the proper inner array.
                 [innerArray addObject:(__bridge id)(person)];
+                
+                // Put new phone number in phoneNumberNameMap
+                for (int j = 0; j < ABMultiValueGetCount(phoneNumbers); j++) {
+                    NSString *phoneNumber = (__bridge_transfer NSString *) ABMultiValueCopyValueAtIndex(phoneNumbers, j);
+                    NSString *sanitizedPhoneNumber = [self sanitizePhoneNumber:phoneNumber];
+                    if (sanitizedPhoneNumber && [sanitizedPhoneNumber length] >= 10) {
+                        [phoneNumberNameMap setObject:name forKey:sanitizedPhoneNumber];
+                    }
+                }
             }
         }
         _contactsSeparatedByFirstLetter = lettersArray;
+        _phoneNumberNameMap = phoneNumberNameMap;
     }
     return _contactsSeparatedByFirstLetter;
 }

@@ -47,6 +47,7 @@
 		C5AD0EDB17DC4DA300B9FC77 /* party_ios_i@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0ED617DC4DA300B9FC77 /* party_ios_i@2x.png */; };
 		C5AD0EDC17DC4DA300B9FC77 /* sport_ios_i@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0ED717DC4DA300B9FC77 /* sport_ios_i@2x.png */; };
 		C5AD0EDE17DC5B1100B9FC77 /* hippo_profile_ios@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios@2x.png */; };
+		C5B677AD1826D103001F3DE2 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C5B677AC1826D103001F3DE2 /* MBProgressHUD.m */; };
 		C5CB0B7417E11FDB00E014E6 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */; };
 		C5F079B9180F2676005398B2 /* sad_hippo_xhdpi@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079B8180F2676005398B2 /* sad_hippo_xhdpi@2x.png */; };
 		C5F079DA180F5AC1005398B2 /* still_hippo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5F079D9180F5AC1005398B2 /* still_hippo@2x.png */; };
@@ -118,6 +119,8 @@
 		C5AD0ED717DC4DA300B9FC77 /* sport_ios_i@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sport_ios_i@2x.png"; sourceTree = "<group>"; };
 		C5AD0EDD17DC5B1100B9FC77 /* hippo_profile_ios@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hippo_profile_ios@2x.png"; sourceTree = "<group>"; };
 		C5B0A1DE17E8E853000DA2C9 /* Twilio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Twilio.h; sourceTree = "<group>"; };
+		C5B677AB1826D103001F3DE2 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		C5B677AC1826D103001F3DE2 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		C5CB0B7317E11FDB00E014E6 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C5F079B8180F2676005398B2 /* sad_hippo_xhdpi@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sad_hippo_xhdpi@2x.png"; sourceTree = "<group>"; };
 		C5F079D9180F5AC1005398B2 /* still_hippo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "still_hippo@2x.png"; sourceTree = "<group>"; };
@@ -183,6 +186,8 @@
 		C58F0F8D17DAA84A006D481E /* Happ */ = {
 			isa = PBXGroup;
 			children = (
+				C5B677AB1826D103001F3DE2 /* MBProgressHUD.h */,
+				C5B677AC1826D103001F3DE2 /* MBProgressHUD.m */,
 				C58F0F9617DAA84A006D481E /* HappAppDelegate.h */,
 				C58F0F9717DAA84A006D481E /* HappAppDelegate.m */,
 				C58F0F9F17DAA84B006D481E /* HappViewController.h */,
@@ -380,6 +385,7 @@
 				C58F0FAF17DAC122006D481E /* HappBoardVC.m in Sources */,
 				C58F0FB317DAD3C5006D481E /* HappABModel.m in Sources */,
 				C5A9D5AD18173F9B00E9A0E2 /* HappSettingsVC.m in Sources */,
+				C5B677AD1826D103001F3DE2 /* MBProgressHUD.m in Sources */,
 				C51ECADD1815B87F009A3BE6 /* HappArcView.m in Sources */,
 				C58F0FB817DB6F78006D481E /* HappComposeVC.m in Sources */,
 				C56024E917E2B105004DC4EB /* HappEnterPhoneViewController.m in Sources */,
