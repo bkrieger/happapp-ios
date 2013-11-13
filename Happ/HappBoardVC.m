@@ -102,16 +102,18 @@
     [super viewDidAppear:animated];
 
     // Set Up model
-    // This can take a while, so put a loading screen
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
-    hud.labelText = @"Processing contacts...";
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:[UIApplication sharedApplication].keyWindow animated:YES];
-            [self refresh];
+    if (!self.model) {
+        // This can take a while, so put a loading screen
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+        hud.labelText = @"Processing contacts...";
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            self.model = [[HappModel alloc] initWithHappABModel:self.addressBook delegate:self];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:[UIApplication sharedApplication].keyWindow animated:YES];
+                [self refresh];
+            });
         });
-    });
+    }
 }
 
 #pragma mark - Table view data source

@@ -6,6 +6,13 @@
 //  Copyright (c) 2013 Happ. All rights reserved.
 //
 
+#define LOGIN_TEXT @"or login if you have an account"
+#define VERIFY_TEXT @"Verify phone number"
+#define SENDING_TEXT @"Sending..."
+
+#define BOTTOM_BUTTON_POSITION CGRectMake(0, self.view.bounds.size.height - 220, self.view.bounds.size.width, 40)
+#define MIDDLE_BUTTON_POSITION CGRectMake(0, self.view.bounds.size.height - 270, self.view.bounds.size.width, 40)
+
 #import "HappEnterPhoneViewController.h"
 #import "HappModelEnums.h"
 #import "Twilio.h"
@@ -22,13 +29,17 @@
 
 @end
 
-
 @interface HappEnterPhoneViewController ()
 
 @property (nonatomic, strong) UILabel *enterPhoneNumberLabel;
 @property (nonatomic, strong) UITextField *phoneNumberField;
 @property (nonatomic, strong) UIView *phoneNumberLabelBackground;
+@property (nonatomic, strong) UIBarButtonItem *verifyBarButton;
 @property (nonatomic, strong) UIButton *verifyButton;
+@property (nonatomic, strong) UIButton *loginButton;
+@property (nonatomic) BOOL displayingLoginButton;
+@property (nonatomic, strong) UIAlertView *loginPopup;
+@property (nonatomic) BOOL usernamePasswordValid;
 
 @end
 
@@ -43,18 +54,24 @@
     [self.navigationItem.titleView addSubview:titleImageView];
     titleImageView.frame = CGRectMake(27, 27, titleImage.size.width, titleImage.size.height);
     
-    
-//    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, -20.f, 320.f, 64.f)];
-//    colorView.opaque = NO;
-//    colorView.backgroundColor = HAPP_PURPLE_COLOR;
-//    [self.navigationController.navigationBar.layer insertSublayer:colorView.layer atIndex:1];
+    self.verifyBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Verify" style:UIBarButtonItemStyleDone target:self action:@selector(onVerifyClick)];
+    self.navigationItem.rightBarButtonItem = self.verifyBarButton;
     
     self.view.backgroundColor = HAPP_WHITE_COLOR;
     [self.view addSubview:self.phoneNumberField];
     [self.view addSubview:self.enterPhoneNumberLabel];
-    self.phoneNumberField.inputAccessoryView = self.verifyButton;
-    self.verifyButton.enabled = NO;
+    [self.view addSubview:self.loginButton];
+    self.displayingLoginButton = YES;
+    self.verifyBarButton.enabled = NO;
+
     [self.phoneNumberField becomeFirstResponder];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please enter your phone number."
+                                                    message:@"We will confirm your number with a one-time SMS. We will not share your number with anyone; it simply helps your friends to share with you on Happ."
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+
 }
 
 - (void)onVerifyClick {
@@ -85,14 +102,61 @@
     NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [serverConnection start];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [self.verifyButton setTitle:@"Sending..." forState:UIControlStateNormal];
+    [self.verifyBarButton setTitle:SENDING_TEXT];
+    [self.verifyButton setTitle:SENDING_TEXT forState:UIControlStateNormal];
+    self.verifyBarButton.enabled = NO;
     self.verifyButton.enabled = NO;
+}
+
+- (void)onLoginButtonClick {
+    [self openLoginPopupWithInvalidPassword:NO];
+}
+
+- (void)openLoginPopupWithInvalidPassword:(BOOL)invalidPassword {
+    if (invalidPassword) {
+        self.loginPopup.message = @"Invalid password";
+    } else {
+        self.loginPopup.message = @" ";
+    }
+    [self.loginPopup show];
+}
+
+#pragma mark UIAlertView delegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    // Check that the user tried to log in
+    if (alertView == self.loginPopup && buttonIndex == 1) {
+        NSString *username = [alertView textFieldAtIndex:0].text;
+        NSString *password = [alertView textFieldAtIndex:1].text;
+        if ([username isEqualToString:@"sample"] && [password isEqualToString:@"sample"]) {
+            self.usernamePasswordValid = YES;
+        } else {
+            self.usernamePasswordValid = NO;
+        }
+        NSString *urlString = [NSString stringWithFormat:@"http://www.happ.us/login"];
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+        NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        [serverConnection start];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        self.loginButton.enabled = NO;
+        [self.loginButton setTitle:SENDING_TEXT forState:UIControlStateNormal];
+    }
+}
+
+- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
+    if (alertView == self.loginPopup) {
+        NSString *username = [alertView textFieldAtIndex:0].text;
+        NSString *password = [alertView textFieldAtIndex:1].text;
+        return [username length] > 4 && [password length] > 4;
+    }
+    return YES;
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
     HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error"
                                                     message:@"Unable to connect. Check your internet connection and try again."
@@ -101,21 +165,42 @@
                                           otherButtonTitles:nil];
     appDelegate.alertToDismiss = alert;
     [alert show];
-    [self.verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
+    [self.verifyBarButton setTitle:@"Verify"];
+    [self.verifyButton setTitle:VERIFY_TEXT forState:UIControlStateNormal];
+    self.verifyBarButton.enabled = YES;
     self.verifyButton.enabled = YES;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Verification text sent"
-                                                    message:@"Please click on the verification link in your text message."
-                                                   delegate:nil
-                                          cancelButtonTitle:nil
-                                          otherButtonTitles:nil];
-    appDelegate.alertToDismiss = alert;
-    [alert show];
-    [self.verifyButton setTitle:@"Verification text sent" forState:UIControlStateNormal];
+
+    if([connection.currentRequest.HTTPMethod isEqualToString:@"GET"]) {
+        // This was a return from a login
+        if (self.usernamePasswordValid) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"5555555555" forKey:PHONE_NUMBER_KEY];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSNotificationCenter defaultCenter] postNotificationName:HAPP_RESET_NOTIFICATION object:self];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            self.loginButton.enabled = YES;
+            [self.loginButton setTitle:LOGIN_TEXT forState:UIControlStateNormal];
+            [self openLoginPopupWithInvalidPassword:YES];
+        }
+    } else {
+        // This was a return from trying to verify phone number.
+        HappAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Verification text sent"
+                                                        message:@"Please click on the verification link in your text message."
+                                                       delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:nil];
+        appDelegate.alertToDismiss = alert;
+        [alert show];
+        [self.verifyBarButton setTitle:@"Verify"];
+        [self.verifyButton setTitle:VERIFY_TEXT forState:UIControlStateNormal];
+        self.verifyBarButton.enabled = NO;
+        self.verifyButton.enabled = NO;
+    }
 }
 
 #pragma mark getters
@@ -128,7 +213,7 @@
                        self.view.bounds.size.width - 2*offset,
                        80);
         _enterPhoneNumberLabel = [[UILabel alloc] initWithFrame:phoneNumberLabelRect];
-        _enterPhoneNumberLabel.text = @"Please enter your phone number to start using Happ.";
+        _enterPhoneNumberLabel.text = @"Please enter and verify your phone number.";
         _enterPhoneNumberLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20];
         _enterPhoneNumberLabel.textAlignment = NSTextAlignmentCenter;
         _enterPhoneNumberLabel.textColor = HAPP_BLACK_COLOR;
@@ -170,20 +255,40 @@
 
 - (UIButton *)verifyButton {
     if (!_verifyButton) {
-        CGRect verifyButtonRect = CGRectMake(0,
-                                             0,
-                                             self.view.bounds.size.width,
-                                             70);
-        _verifyButton = [[UIButton alloc] initWithFrame:verifyButtonRect];
+        _verifyButton = [[UIButton alloc] initWithFrame:MIDDLE_BUTTON_POSITION];
         _verifyButton.backgroundColor = HAPP_WHITE_COLOR;
         [_verifyButton setTitleColor:HAPP_PURPLE_COLOR forState:UIControlStateNormal];
         [_verifyButton setTitleColor:HAPP_PURPLE_ALPHA_COLOR forState:UIControlStateHighlighted];
         [_verifyButton setTitleColor:HAPP_GRAY_COLOR forState:UIControlStateDisabled];
-        [_verifyButton setTitle:@"Verify your phone number" forState:UIControlStateNormal];
-        _verifyButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+        [_verifyButton setTitle:VERIFY_TEXT forState:UIControlStateNormal];
+        _verifyButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
+        _verifyButton.enabled = NO;
         [_verifyButton addTarget:self action:@selector(onVerifyClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _verifyButton;
+}
+
+- (UIButton *)loginButton {
+    if (!_loginButton) {
+        _loginButton = [[UIButton alloc] initWithFrame:MIDDLE_BUTTON_POSITION];
+        _loginButton.backgroundColor = HAPP_WHITE_COLOR;
+        [_loginButton setTitleColor:HAPP_PURPLE_COLOR forState:UIControlStateNormal];
+        [_loginButton setTitleColor:HAPP_PURPLE_ALPHA_COLOR forState:UIControlStateHighlighted];
+        [_loginButton setTitleColor:HAPP_GRAY_COLOR forState:UIControlStateDisabled];
+        [_loginButton setTitle:LOGIN_TEXT forState:UIControlStateNormal];
+        _loginButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+        _loginButton.enabled = YES;
+        [_loginButton addTarget:self action:@selector(onLoginButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _loginButton;
+}
+
+- (UIAlertView *)loginPopup {
+    if (!_loginPopup) {
+        _loginPopup = [[UIAlertView alloc] initWithTitle:@"Enter your username and password to login" message:@" " delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Login", nil];
+        _loginPopup.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+    }
+    return _loginPopup;
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -240,12 +345,34 @@
 
     NSInteger newTextLength = length - range.length + string.length;
     if (newTextLength == 10) {
+        self.verifyBarButton.enabled = YES;
         self.verifyButton.enabled = YES;
     } else {
+        self.verifyBarButton.enabled = NO;
         self.verifyButton.enabled = NO;
     }
     
+    if (newTextLength > 0 && self.displayingLoginButton) {
+        [self.loginButton removeFromSuperview];
+        self.displayingLoginButton = NO;
+        [self addAndSlideUpButton:self.verifyButton];
+    } else if (newTextLength == 0 && !self.displayingLoginButton) {
+        [self.verifyButton removeFromSuperview];
+        self.displayingLoginButton = YES;
+        [self.view addSubview:self.loginButton];
+    }
+    
     return YES;
+}
+
+#pragma mark helpers
+
+- (void)addAndSlideUpButton:(UIButton *)button {
+    button.frame = BOTTOM_BUTTON_POSITION;
+    [self.view addSubview:button];
+    [UIView animateWithDuration:.4 animations:^{
+        button.frame = MIDDLE_BUTTON_POSITION;
+    }];
 }
 
 @end
