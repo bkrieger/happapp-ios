@@ -29,6 +29,8 @@
 
 - (void)updateFriends;
 
+- (void)registerForPushNotifications;
+
 - (NSInteger)getMoodPersonCount;
 
 - (NSDictionary *)getMoodPersonForIndex:(NSInteger)index;

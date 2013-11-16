@@ -13,6 +13,7 @@
 #define HAPP_URL_PREFIX @"http://54.221.209.211:3000/api/v1/moods?"
 #define HAPP_URL_UPDATE_FRIENDS @"http://54.221.209.211:3000/api/v1/friends?"
 #define HAPP_URL_FEEDBACK @"http://54.221.209.211:3000/api/v1/feedback?"
+#define HAPP_URL_REGISTER_PUSH @"http://54.221.209.211:3000/api/v1/registerpush?"
 #define HAPP_URL_SEPARATOR @"&n[]="
 
 @interface HappModel()
@@ -39,7 +40,7 @@
         _myPhoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:PHONE_NUMBER_KEY];
         _contactsUrl = [happABModel getUrlFromContactsWithSeparator:HAPP_URL_SEPARATOR];
         _moodPersons = [[NSMutableArray alloc] init];
-        _delegate = delegate;
+        _delegate = delegate;        
     }
     return self;
 }
@@ -123,11 +124,32 @@
     [serverConnection start];
 }
 
+- (void)registerForPushNotifications {
+    NSString *deviceToken = [[NSUserDefaults standardUserDefaults] stringForKey:DEVICE_TOKEN_KEY];
+    if (deviceToken) {
+        NSString *urlString = [NSString stringWithFormat:@"%@%@&me=%@&os=0&token=%@",
+                               HAPP_URL_REGISTER_PUSH, AUTHENTICATION_KEY, self.myPhoneNumber, deviceToken];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+        [request setHTTPMethod:@"POST"];
+        NSURLConnection *serverConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        [serverConnection start];
+    }
+}
+
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     if ([connection.currentRequest.HTTPMethod isEqualToString:@"POST"]) {
         // We don't receive data from POST mood or update friends.
+        if ([connection.currentRequest.URL.absoluteString hasPrefix:HAPP_URL_REGISTER_PUSH]) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+            NSInteger statusCode = httpResponse.statusCode;
+            if (statusCode == 200) {
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                [defaults setBool:YES forKey:PUSH_REGISTRATION_SUCCEEDED_KEY];
+                [defaults synchronize];
+            }
+        }
     } else {
         self.temporaryData = [[NSMutableData alloc] init];
     }

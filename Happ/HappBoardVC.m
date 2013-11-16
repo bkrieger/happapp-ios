@@ -111,6 +111,10 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideHUDForView:[UIApplication sharedApplication].keyWindow animated:YES];
                 [self refresh];
+                // Register for push notifications if we haven't already
+                if(![[NSUserDefaults standardUserDefaults] boolForKey:PUSH_REGISTRATION_SUCCEEDED_KEY]) {
+                    [self.model registerForPushNotifications];
+                }
             });
         });
     }
