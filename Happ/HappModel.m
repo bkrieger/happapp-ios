@@ -296,7 +296,7 @@
             break;
             
         case HappModelMoodSports:
-            title = @"Sports";
+            title = @"Activity";
             image = [UIImage imageNamed:@"sport_ios.png"];
             imageInverse = [UIImage imageNamed:@"sport_ios_i.png"];
             break;

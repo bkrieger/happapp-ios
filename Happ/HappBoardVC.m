@@ -42,6 +42,8 @@
 
 @property (nonatomic, strong) MFMessageComposeViewController *smsVC;
 
+@property BOOL hasDismissedCompose;
+
 @end
 
 @implementation HappBoardVC
@@ -86,21 +88,23 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.tintColor = [UIColor clearColor];
     self.refreshControl = refreshControl;
-
+    
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(launchComposeView)];
     self.navigationItem.rightBarButtonItem = composeButton;
     
     UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(launchSettings)];
     self.navigationItem.leftBarButtonItem = settingsButton;
-
+    
     // Get rid of padding that iOS adds by default around tableview
     self.tableView.contentInset = UIEdgeInsetsMake(-30, 0, -40, 0);
     
+    //Each time we open app we want to show compose screen
+    self.hasDismissedCompose = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
+    
     // Set Up model
     if (!self.model) {
         // This can take a while, so put a loading screen
@@ -154,7 +158,7 @@
     sublayer.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height * .89);
     [selectedView.layer addSublayer:sublayer];
     cell.selectedBackgroundView = selectedView;
-
+    
     cell.backgroundColor = [UIColor clearColor];
     cell.backgroundView.hidden = YES;
     
@@ -187,11 +191,11 @@
         moodPerson = [self.model getMoodPersonForIndex:[indexPath row] - 1];
         NSString *phoneNumber = [NSString stringWithFormat:@"%@", [moodPerson objectForKey:@"_id"]];
         UIColor *color = [self generateColor:[phoneNumber hash]];
-
+        
         UIImage *personImage = [UIImage imageNamed:@"hippo_profile_ios.png"];
         UIImageView *personView = [[UIImageView alloc] initWithImage:personImage];
         personView.frame = CGRectMake(6, 6, personImage.size.width - 12, personImage.size.height - 12);
-
+        
         // Calculate the percent of the circle around the left icon to display
         NSTimeInterval timeNowSeconds = [[NSDate date] timeIntervalSince1970];
         NSTimeInterval timePostedSeconds = [[moodPerson objectForKey:@"timestamp"] doubleValue] / 1000;
@@ -205,13 +209,13 @@
         leftIconView.backgroundColor = color;
         [leftIconView addSubview:personView];
         [cell.contentView addSubview:leftIconView];
-                
+        
         nameLabelX = leftIconView.frame.origin.x + personView.frame.size.width + 17;
         nameLabelRect = CGRectMake(nameLabelX,
-                                          leftIconView.frame.origin.y - 7,
-                                          150,
-                                          cellRect.size.height / 3);
-
+                                   leftIconView.frame.origin.y - 7,
+                                   150,
+                                   cellRect.size.height / 3);
+        
         name = [NSString stringWithFormat:@"%@", [self.addressBook getNameForPhoneNumber:phoneNumber]];
     }
     
@@ -223,7 +227,7 @@
     nameLabel.shadowOffset = CGSizeZero;
     nameLabel.shadowColor = [UIColor clearColor];
     nameLabel.text = name;
-
+    
     if ([moodPerson objectForKey:@"message"]) {
         // Message...
         CGRect messageLabelRect = CGRectMake(nameLabelX,
@@ -352,6 +356,12 @@
     [self refreshControlFinished];
     [self setTextBarEnabled:NO];
     self.isRefreshing = NO;
+    
+    // If we have no status, force compose view if not already dismissed
+    NSDictionary *meMoodPerson = [self.model getMoodPersonForMe];
+    if (!self.hasDismissedCompose && ![meMoodPerson objectForKey:@"message"]) {
+        [self launchComposeView];
+    }
 }
 
 - (void)modelDidPost {
@@ -435,7 +445,7 @@
 - (UIView *)verticalLine {
     if (!_verticalLine) {
         CGRect frame = CGRectMake(38, -self.tableView.bounds.size.height, 4,
-                                             self.tableView.bounds.size.height * 3);
+                                  self.tableView.bounds.size.height * 3);
         _verticalLine = [[UIView alloc] initWithFrame:frame];
         _verticalLine.backgroundColor = HAPP_PURPLE_ALPHA_COLOR;
         _verticalLine.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -577,6 +587,8 @@
 }
 
 - (void)removeHappComposeVC {
+    self.hasDismissedCompose = YES;
+    
     [[self navigationController] dismissViewControllerAnimated:YES completion:nil];
     
     [self.happCompose dispose];
