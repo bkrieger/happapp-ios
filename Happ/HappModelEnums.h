@@ -15,7 +15,7 @@
 
 #define HAPP_RESET_NOTIFICATION @"happResetNotification"
 
-#define HAPP_VERSION_NUMBER @"2.0.0"
+#define HAPP_VERSION_NUMBER @"2.1.0"
 
 typedef enum HappModelMoods {
     HappModelMoodChill = 1,
